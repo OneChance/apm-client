@@ -1,0 +1,53 @@
+{
+  "name": "apm",
+  "version": "1.0.0",
+  "description": "APM",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --host 0.0.0.0 --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js --display-modules"
+  },
+  "author": "huasi",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@vue/babel-helper-vue-jsx-merge-props": "^1.0.0",
+    "@vue/babel-preset-jsx": "^1.1.2",
+    "babel-loader": "^8.0.0-beta.0",
+    "babili-webpack-plugin": "^0.1.2",
+    "clean-webpack-plugin": "^1.0.0",
+    "css-loader": "^1.0.1",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-webpack-plugin": "^2.3.0",
+    "jsxobj": "^1.1.0",
+    "mini-css-extract-plugin": "^0.4.5",
+    "node-sass": "^4.10.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2",
+    "vue-hot-reload-api": "^2.3.1",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^15.4.2",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10",
+    "webpack-merge": "^4.1.4"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "element-ui": "^2.13.2",
+    "jquery": "^3.3.1",
+    "svg.js": "^2.7.0",
+    "vue": "^2.5.17",
+    "vue-axios": "^2.1.4",
+    "vue-router": "^3.0.2"
+  }
+}
