@@ -114,7 +114,6 @@
             this.oneLevelMenu = this.menus.filter(menu => menu.sub === undefined);
             this.MultiLevelMenu = this.menus.filter(menu => menu.sub !== undefined);
             App.router.$router.push('/index/my').catch(e => e);
-
             this.$nextTick(() => {
                 $('.small-menu-bar').on('click', function (e) {
                     e.preventDefault();
@@ -135,7 +134,7 @@
                 } else {
                     $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
                     if (App.router.$route.fullPath !== '/index/my/personal' || key !== 'my') {
-                        App.router.$router.push('/index/' + key).catch(e => e)
+                        App.toPage('/index/' + key)
                     }
                 }
             }

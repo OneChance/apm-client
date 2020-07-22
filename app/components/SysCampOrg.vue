@@ -146,10 +146,10 @@
                      </span>
                      <span>
                          <el-tooltip className="item" effect="dark" content="增加" placement="left">
-                             <i class="fa fa fa-plus fa-lg click-fa add-fa" on-click={() => this.add(node)}></i>
+                             <i class="fa fa fa-plus fa-lg click-fa primary-fa" on-click={() => this.add(node)}></i>
                          </el-tooltip>
                          <el-tooltip className="item" effect="dark" content="编辑" placement="top">
-                             <i class="fa fa-pencil-square-o fa-lg click-fa edit-fa"
+                             <i class="fa fa-pencil-square-o fa-lg click-fa warning-fa"
                                 on-click={() => this.edit(node)}></i>
                          </el-tooltip>
                          <el-tooltip className="item" effect="dark" content="删除" placement="right">

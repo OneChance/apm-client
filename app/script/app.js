@@ -69,5 +69,9 @@ export default {
 
             this.hub = new Vue();
         }
+    },
+    toPage: function (path) {
+        console.log('验证权限')
+        this.router.$router.push(path).catch(e => e)
     }
 }

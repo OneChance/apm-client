@@ -34,7 +34,7 @@
                 <el-table-column prop="edit" label="操作" align="left">
                     <template slot-scope="scope" v-if="!scope.row.hasChildren">
                         <el-tooltip class="item" effect="dark" content="编辑" placement="left">
-                            <i class="fa fa-pencil-square-o fa-lg click-fa edit-fa"
+                            <i class="fa fa-pencil-square-o fa-lg click-fa warning-fa"
                                @click="dialogVisible=true;editRight(scope.row)"></i>
                         </el-tooltip>
                         <el-tooltip class="item" effect="dark" content="删除" placement="right">

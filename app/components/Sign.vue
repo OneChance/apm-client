@@ -63,12 +63,8 @@
                 window.location.href = "https://uaaap.yzu.edu.cn/cas/login?service=http%3a%2f%2fwxgl.yzu.edu.cn/sys/index.page";
             },
             signCallback: function (res) {
-
-                //App.router.$router.push('index')
+                App.router.$router.push('index')
             },
-            serverErrorCallback: function () {
-                $(this.$el).find(".sign-btn").button('loading').button('reset');
-            }
         },
         mounted: function () {
             let comp = this
@@ -84,19 +80,6 @@
 </script>
 
 <style scoped>
-    * {
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-size: 14px;
-        background: #fff;
-        color: #222222;
-        width: 100%;
-        overflow: auto;
-        font-family: Microsoft Yahei, Arial, Helvetica, sans-serif;
-    }
 
     .login-card {
         width: 350px;

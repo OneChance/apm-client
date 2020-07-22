@@ -54,19 +54,23 @@ body {
   color: #e1184a !important;
 }
 
-.edit-fa {
+.success-fa {
+  color: #67C23A !important;
+}
+
+.warning-fa {
   color: #E6A23C !important;
 }
 
-.add-fa {
+.primary-fa {
   color: #409EFF !important;
 }
 
 //可点击的字体图标
 .click-fa {
   cursor: pointer;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 //树结构图标颜色
@@ -168,6 +172,38 @@ body {
 
 .small-menu {
   display: none !important;
+}
+
+//表格
+.table-center {
+  tr {
+    th > div {
+      text-align: center;
+    }
+
+    td > div {
+      text-align: center;
+    }
+  }
+}
+
+//分页导航
+.page-nav {
+  margin-top: 10px;
+  float: right;
+  margin-bottom: 10px;
+}
+
+//穿梭框宽度
+.el-transfer-panel {
+  width: 300px !important;
+}
+
+//角色分配用户对话框宽度
+.role-user {
+  .el-dialog {
+    width: 823px
+  }
 }
 
 //适配小屏幕
