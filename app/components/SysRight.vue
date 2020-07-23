@@ -97,7 +97,7 @@
         name: "SysRight",
         mounted: function () {
 
-            this.rights = Right.getRight()
+            this.rights = Right.getRights()
 
             //格式化cascader数据====================================================
             let rightsPrepare = []

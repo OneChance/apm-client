@@ -1,7 +1,7 @@
 import Net from './net.js'
 
 export default {
-    getRight: function () {
+    getRights: function () {
         //return Net.post('/signIn/', data);
         return [
             {
@@ -85,5 +85,9 @@ export default {
                 isLeaf: true
             }
         ]
+    },
+    getRoleRights: function (roldId) {
+        console.log("获得角色" + roldId + "的权限");
+        return [2, 5, 9]
     }
 }
