@@ -4,7 +4,32 @@ export default {
     getIndexMenu: function () {
         //return Net.post('/signIn/', data);
         return [
-            {index: 'my', name: '我的'},
+            {
+                index: 'my', name: '我的', sub: [
+                    {index: 'personal', name: '个人中心', icon: 'fa-user-o'},
+                    {
+                        index: 'mymsg', name: '我的消息', icon: 'fa-commenting-o', sub: [
+                            {index: 'inbox', name: '收件箱', icon: 'fa-share'},
+                            {index: 'outbox', name: '发件箱', icon: 'fa fa-reply'},
+                            {index: 'draft', name: '草稿箱', icon: 'fa-envelope-o'}
+                        ]
+                    },
+                    {
+                        index: 'mywork', name: '我的事项', icon: 'fa-briefcase', sub: [
+                            {index: 'willdo', name: '待办', icon: 'fa-pencil-square-o'},
+                            {index: 'done', name: '已办', icon: 'fa-pencil-square-o'},
+                            {index: 'started', name: '已发起', icon: 'fa-pencil-square-o'},
+                            {index: 'mission', name: '任务单', icon: 'fa-list-alt'},
+                            {index: 'tobealloc', name: '待分配', icon: 'fa-list-alt'},
+                        ]
+                    },
+                    {
+                        index: 'mystatistic', name: '我的统计', icon: 'fa-bar-chart', sub: [
+                            {index: 'completed', name: '已完成项目汇总', icon: 'fa-line-chart'},
+                        ]
+                    }
+                ]
+            },
             {
                 index: 'audit', name: '审计管理', sub: [
                     {index: 'auditFirst', name: '初审'},
@@ -29,28 +54,7 @@ export default {
     },
     getMyMenu: function () {
         return [
-            {index: 'personal', name: '个人中心', icon: 'fa-user-o'},
-            {
-                index: 'mymsg', name: '我的消息', icon: 'fa-commenting-o', sub: [
-                    {index: 'inbox', name: '收件箱', icon: 'fa-share'},
-                    {index: 'outbox', name: '发件箱', icon: 'fa fa-reply'},
-                    {index: 'draft', name: '草稿箱', icon: 'fa-envelope-o'}
-                ]
-            },
-            {
-                index: 'mywork', name: '我的事项', icon: 'fa-briefcase', sub: [
-                    {index: 'willdo', name: '待办', icon: 'fa-pencil-square-o'},
-                    {index: 'done', name: '已办', icon: 'fa-pencil-square-o'},
-                    {index: 'started', name: '已发起', icon: 'fa-pencil-square-o'},
-                    {index: 'mission', name: '任务单', icon: 'fa-list-alt'},
-                    {index: 'tobealloc', name: '待分配', icon: 'fa-list-alt'},
-                ]
-            },
-            {
-                index: 'mystatistic', name: '我的统计', icon: 'fa-bar-chart', sub: [
-                    {index: 'completed', name: '已完成项目汇总', icon: 'fa-line-chart'},
-                ]
-            },
+
         ]
     }
 }

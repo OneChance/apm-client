@@ -15,16 +15,9 @@
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
-                    <el-menu-item :index="menu.index" v-for="menu in oneLevelMenu" :key="menu.index">
+                    <el-menu-item :index="menu.index" v-for="menu in menus" :key="menu.index">
                         {{menu.name}}
                     </el-menu-item>
-
-                    <el-submenu :index="menu.index" v-for="menu in MultiLevelMenu" :key="menu.index">
-                        <template slot="title">{{ menu.name }}</template>
-                        <el-menu-item :index="m.index" v-for="m in menu.sub" :key="m.index">
-                            {{m.name}}
-                        </el-menu-item>
-                    </el-submenu>
                 </el-menu>
             </el-col>
             <el-col :span="4" class="header-bar-right">
@@ -50,28 +43,12 @@
                 text-color="#303133"
                 active-text-color="#e1184a"
                 @select="handleSelect">
-            <el-menu-item :index="menu.index" v-for="menu in oneLevelMenu" :key="menu.index">
+            <el-menu-item :index="menu.index" v-for="menu in menus" :key="menu.index">
                 <i :class="'fa '+menu.icon+' fa-lg fa-inverse'"></i>
                 <span slot="title">
                         {{menu.name}}
-                    </span>
+                </span>
             </el-menu-item>
-            <el-submenu :index="menu.index" v-for="menu in MultiLevelMenu" :key="menu.index">
-                <template slot="title">
-                    <i :class="'fa '+menu.icon+' fa-lg fa-inverse'"></i>
-                    <span slot="title">
-                            {{ menu.name }}
-                        </span>
-                </template>
-                <el-menu-item :index="m.index" v-for="m in menu.sub" :key="m.index">
-                    <template slot="title">
-                        <i :class="'fa '+m.icon+' fa-lg fa-inverse'"></i>
-                        <span slot="title">
-                                {{m.name}}
-                            </span>
-                    </template>
-                </el-menu-item>
-            </el-submenu>
         </el-menu>
 
         <div class="main_center" id="main_center">
@@ -97,8 +74,6 @@
             return {
                 img: require("../assets/images/header.jpg"),
                 menus: [],
-                oneLevelMenu: [],
-                MultiLevelMenu: [],
                 activeIndex: 'my',
                 userOper: [
                     {
@@ -111,8 +86,6 @@
         },
         mounted: function () {
             this.menus = Menu.getIndexMenu()
-            this.oneLevelMenu = this.menus.filter(menu => menu.sub === undefined);
-            this.MultiLevelMenu = this.menus.filter(menu => menu.sub !== undefined);
             App.router.$router.push('/index/my').catch(e => e);
             this.$nextTick(() => {
                 $('.small-menu-bar').on('click', function (e) {

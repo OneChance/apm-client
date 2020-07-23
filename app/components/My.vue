@@ -59,7 +59,7 @@
         },
         mounted: function () {
             let comp = this
-            this.menus = Menu.getMyMenu()
+            this.menus = Menu.getIndexMenu().filter(menu => menu.index === 'my')[0].sub
             this.oneLevelMenu = this.menus.filter(menu => menu.sub === undefined)
             this.MultiLevelMenu = this.menus.filter(menu => menu.sub !== undefined)
             this.$nextTick(() => {
