@@ -6,7 +6,8 @@ import My from '../components/My.vue'
 import Personal from '../components/Personal.vue'
 
 import Audit from '../components/Audit.vue'
-import Submission from "../components/Submission";
+import AuditSubmission from "../components/AuditSubmission";
+import AuditProject from "../components/AuditProject";
 
 import Sys from '../components/Sys.vue'
 import SysCampOrg from '../components/SysCampOrg.vue'
@@ -25,6 +26,7 @@ Vue.use(ElementUI)
 
 export default {
     loginPage: "http://localhost:8888",
+    currentPage:"/index/my/personal",
     router: null,
     hub: null,
     init: function () {
@@ -52,7 +54,10 @@ export default {
                             children: [
                                 {
                                     path: 'submission',
-                                    component: Submission
+                                    component: AuditSubmission
+                                }, {
+                                    path: 'auditProject',
+                                    component: AuditProject
                                 }
                             ]
                         },

@@ -66,7 +66,7 @@
             })
 
             this.$nextTick(() => {
-                App.router.$router.push('/index/my/personal').catch(e => e)
+                //App.router.$router.push('/index/my/personal').catch(e => e)
                 comp.isCollapse = document.body.clientWidth <= 480
             });
             window.onresize = () => {

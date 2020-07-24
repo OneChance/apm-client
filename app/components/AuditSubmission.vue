@@ -14,7 +14,6 @@
 
         },
         mounted() {
-
         },
         data: function () {
             return {}

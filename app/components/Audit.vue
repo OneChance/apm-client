@@ -57,6 +57,11 @@
                 isCollapse: false
             }
         },
+        created() {
+            /*if (App.currentPage) {
+                App.toPage(App.currentPage)
+            }*/
+        },
         mounted: function () {
             let comp = this
             Menu.getMenu().then(res => {

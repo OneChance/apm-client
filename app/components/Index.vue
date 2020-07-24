@@ -93,7 +93,7 @@
             Account.getLoginUser().then(res => {
                 this.userOper[0].name = res.user.name
             })
-            App.router.$router.push('/index/my/').catch(e => e);
+            //App.router.$router.push('/index/my/').catch(e => e);
             this.$nextTick(() => {
                 $('.small-menu-bar').on('click', function (e) {
                     e.preventDefault();

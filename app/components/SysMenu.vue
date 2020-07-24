@@ -92,9 +92,12 @@
     export default {
         name: "SysMenu",
         mounted: function () {
-            this.menus = Menu.getMenu()
-            this.treeToList(this.menus, this, 0, 1)
-            this.menuPath = this.menus
+            let comp = this
+            Menu.getMenu().then(res => {
+                comp.menus = res.menus
+                comp.treeToList(this.menus, this, 0, 1)
+                comp.menuPath = this.menus
+            })
         },
         data: function () {
             return {
@@ -205,9 +208,9 @@
                         url: t.value,
                         level: level,
                         showChildren: false,
-                        hasChildren: t.children !== undefined,
+                        hasChildren: t.children !== null,
                         visible: level === 1,
-                        isLeaf: t.children === undefined
+                        isLeaf: t.children === null
                     }
                     comp.menuList.push(item)
                     if (t.children) {
