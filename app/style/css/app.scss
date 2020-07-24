@@ -5,6 +5,13 @@ body {
   margin: 0;
 }
 
+.el-menu {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .el-popup-parent--hidden {
   padding-right: 0 !important;
 }

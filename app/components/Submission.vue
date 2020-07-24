@@ -13,6 +13,9 @@
         created: function () {
 
         },
+        mounted() {
+
+        },
         data: function () {
             return {}
         },

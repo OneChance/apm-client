@@ -113,10 +113,9 @@
                     window.location.href = App.loginPage
                 } else {
                     $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
-                    /*if (App.router.$route.fullPath !== '/index/my/personal' || key !== 'my') {
-
-                    }*/
-                    App.toPage(key)
+                    if (App.router.$route.fullPath.indexOf(key) === -1) {
+                        App.toPage(key)
+                    }
                 }
             }
         },
