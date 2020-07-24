@@ -5,6 +5,10 @@ body {
   margin: 0;
 }
 
+.el-popup-parent--hidden {
+  padding-right: 0 !important;
+}
+
 .card-content {
   display: -webkit-flex; /* Safari */
   display: flex;
@@ -51,6 +55,7 @@ body {
 
 //字体图标
 .fa {
+  width: 20px;
   color: #e1184a !important;
 }
 

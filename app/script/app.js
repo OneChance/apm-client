@@ -3,11 +3,18 @@ import VueRouter from 'vue-router'
 import Sign from '../components/Sign.vue';
 import Index from '../components/Index.vue'
 import My from '../components/My.vue'
+import Personal from '../components/Personal.vue'
+
+import Audit from '../components/Audit.vue'
+import Submission from "../components/Submission";
+
+import Sys from '../components/Sys.vue'
 import SysCampOrg from '../components/SysCampOrg.vue'
 import SysRight from '../components/SysRight.vue'
-import Personal from '../components/Personal.vue'
 import SysUser from '../components/SysUser.vue'
 import SysRole from '../components/SysRole.vue'
+import SysMenu from '../components/SysMenu.vue'
+
 //ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -40,21 +47,41 @@ export default {
                             ]
                         },
                         {
-                            path: 'sysCampOrg',
-                            component: SysCampOrg
+                            path: 'audit',
+                            component: Audit,
+                            children: [
+                                {
+                                    path: 'submission',
+                                    component: Submission
+                                }
+                            ]
                         },
                         {
-                            path: 'sysRight',
-                            component: SysRight
+                            path: 'sys',
+                            component: Sys,
+                            children: [
+                                {
+                                    path: 'sysCampOrg',
+                                    component: SysCampOrg
+                                },
+                                {
+                                    path: 'sysRight',
+                                    component: SysRight
+                                },
+                                {
+                                    path: 'sysUser',
+                                    component: SysUser
+                                },
+                                {
+                                    path: 'sysRole',
+                                    component: SysRole
+                                },
+                                {
+                                    path: 'sysMenu',
+                                    component: SysMenu
+                                }
+                            ]
                         },
-                        {
-                            path: 'SysUser',
-                            component: SysUser
-                        },
-                        {
-                            path: 'SysRole',
-                            component: SysRole
-                        }
                     ]
                 },
             ];

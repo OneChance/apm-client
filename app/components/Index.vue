@@ -15,8 +15,8 @@
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
-                    <el-menu-item :index="menu.index" v-for="menu in menus" :key="menu.index">
-                        {{menu.name}}
+                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value">
+                        {{menu.label }}
                     </el-menu-item>
                 </el-menu>
             </el-col>
@@ -26,9 +26,9 @@
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
-                    <el-submenu :index="menu.index" v-for="menu in userOper" :key="menu.index">
+                    <el-submenu :index="menu.index" v-for="menu in userOper" :key="menu.value">
                         <template slot="title">{{ menu.name }}</template>
-                        <el-menu-item :index="m.index" v-for="m in menu.sub" :key="m.index">
+                        <el-menu-item :index="m.index" v-for="m in menu.sub" :key="m.value">
                             {{m.name}}
                         </el-menu-item>
                     </el-submenu>
@@ -43,10 +43,10 @@
                 text-color="#303133"
                 active-text-color="#e1184a"
                 @select="handleSelect">
-            <el-menu-item :index="menu.index" v-for="menu in menus" :key="menu.index">
+            <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value">
                 <i :class="'fa '+menu.icon+' fa-lg fa-inverse'"></i>
                 <span slot="title">
-                        {{menu.name}}
+                        {{menu.label}}
                 </span>
             </el-menu-item>
         </el-menu>
@@ -74,7 +74,7 @@
             return {
                 img: require("../assets/images/header.jpg"),
                 menus: [],
-                activeIndex: 'my',
+                activeIndex: '/index/my',
                 userOper: [
                     {
                         index: 'userOper', name: '管理员', sub: [
@@ -85,8 +85,15 @@
             }
         },
         mounted: function () {
-            this.menus = Menu.getIndexMenu()
-            App.router.$router.push('/index/my').catch(e => e);
+            let comp = this;
+            Menu.getMenu().then(res => {
+                comp.menus = res.menus
+            })
+
+            Account.getLoginUser().then(res => {
+                this.userOper[0].name = res.user.name
+            })
+            App.router.$router.push('/index/my/').catch(e => e);
             this.$nextTick(() => {
                 $('.small-menu-bar').on('click', function (e) {
                     e.preventDefault();
@@ -106,9 +113,10 @@
                     window.location.href = App.loginPage
                 } else {
                     $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
-                    if (App.router.$route.fullPath !== '/index/my/personal' || key !== 'my') {
-                        App.toPage('/index/' + key)
-                    }
+                    /*if (App.router.$route.fullPath !== '/index/my/personal' || key !== 'my') {
+
+                    }*/
+                    App.toPage(key)
                 }
             }
         },

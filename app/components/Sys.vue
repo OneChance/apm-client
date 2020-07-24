@@ -3,8 +3,8 @@
         <el-col :span="4">
             <el-menu
                     id="left-menu"
-                    default-active="/index/my/personal"
-                    class="el-menu-vertical-demo my-menu"
+                    default-active="/index/sys/sysCampOrg"
+                    class="el-menu-vertical-demo left-menu"
                     text-color="#303133"
                     active-text-color="#e1184a"
                     @select="handleSelect"
@@ -48,7 +48,7 @@
     import Menu from '../script/server/menu.js'
 
     export default {
-        name: "My",
+        name: "Sys",
         data: function () {
             return {
                 menus: [],
@@ -60,13 +60,12 @@
         mounted: function () {
             let comp = this
             Menu.getMenu().then(res => {
-                comp.menus = res.menus.filter(menu => menu.value === '/index/my')[0].children
+                comp.menus = res.menus.filter(menu => menu.value === '/index/sys')[0].children
                 this.oneLevelMenu = comp.menus.filter(menu => menu.children === null)
                 this.MultiLevelMenu = comp.menus.filter(menu => menu.children !== null)
             })
-
             this.$nextTick(() => {
-                App.router.$router.push('/index/my/personal').catch(e => e)
+                App.toPage('/index/sys/sysCampOrg')
                 comp.isCollapse = document.body.clientWidth <= 480
             });
             window.onresize = () => {
@@ -77,7 +76,7 @@
         },
         methods: {
             handleSelect(key, keyPath) {
-                App.router.$router.push(key).catch(e => e)
+                App.toPage(key)
             }
         },
         components: {}

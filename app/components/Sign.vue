@@ -29,6 +29,7 @@
 
     import Account from '../script/server/account.js'
     import App from '../script/app.js'
+    import md5 from 'js-md5';
 
     export default {
         data: function () {
@@ -56,7 +57,7 @@
             signIn: function () {
                 Account.signIn({
                     username: this.name,
-                    password: this.password
+                    password: md5(this.password)
                 }).then(this.signCallback).catch(this.serverErrorCallback);
             },
             authCenter: function () {
