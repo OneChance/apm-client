@@ -3,8 +3,8 @@
         <el-col :span="4">
             <el-menu
                     id="left-menu"
-                    default-active="/index/audit/submission"
-                    class="el-menu-vertical-demo left-menu"
+                    :default-active="leftActiveIndex"
+                    class="el-menu-vertical-demo my-menu"
                     text-color="#303133"
                     active-text-color="#e1184a"
                     @select="handleSelect"
@@ -36,7 +36,7 @@
         </el-col>
         <el-col :span="20">
             <div class="main_right" id="main_right">
-                <router-view></router-view>
+                <component v-bind:is="currentComponent" class="tab"></component>
             </div>
         </el-col>
     </el-row>
@@ -44,33 +44,36 @@
 
 <script>
 
-    import App from '../script/app.js'
-    import Menu from '../script/server/menu.js'
+    import Personal from '../components/Personal.vue'
+    import SysCampOrg from '../components/SysCampOrg.vue'
+    import SysRight from '../components/SysRight.vue'
+    import SysRole from '../components/SysRole.vue'
+    import AuditSubmission from '../components/AuditSubmission.vue'
 
     export default {
-        name: "Audit",
+        name: "leftMenuFrame",
         data: function () {
             return {
-                menus: [],
                 oneLevelMenu: [],
                 MultiLevelMenu: [],
-                isCollapse: false
+                leftActiveIndex: 'personal',
+                isCollapse: false,
+                currentComponent: 'personal'
             }
         },
-        created() {
-            /*if (App.currentPage) {
-                App.toPage(App.currentPage)
-            }*/
+        props: ['menus'],
+        watch: {
+            menus: function (newVal, oldVal) {
+                this.oneLevelMenu = newVal.filter(menu => menu.children === null)
+                this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
+                this.leftActiveIndex = newVal[0].value
+                this.currentComponent = newVal[0].value
+            }
         },
         mounted: function () {
             let comp = this
-            Menu.getMenu().then(res => {
-                comp.menus = res.menus.filter(menu => menu.value === '/index/audit')[0].children
-                this.oneLevelMenu = comp.menus.filter(menu => menu.children === null)
-                this.MultiLevelMenu = comp.menus.filter(menu => menu.children !== null)
-            })
+
             this.$nextTick(() => {
-                App.toPage('/index/audit/submission')
                 comp.isCollapse = document.body.clientWidth <= 480
             });
             window.onresize = () => {
@@ -81,10 +84,17 @@
         },
         methods: {
             handleSelect(key, keyPath) {
-                App.toPage(key)
-            }
+                console.log('验证权限' + key)
+                this.currentComponent = key
+            },
         },
-        components: {}
+        components: {
+            Personal,
+            SysCampOrg,
+            SysRight,
+            SysRole,
+            AuditSubmission
+        }
     }
 </script>
 

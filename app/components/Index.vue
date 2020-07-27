@@ -10,7 +10,7 @@
                 </div>
             </el-col>
             <el-col :span="16" class="header-navi">
-                <el-menu :default-active="activeIndex" class="el-menu-demo navi-menu" mode="horizontal"
+                <el-menu :default-active="activeMenuIndex" class="el-menu-demo navi-menu" mode="horizontal"
                          background-color="#e1184a"
                          text-color="#fff"
                          active-text-color="#fff"
@@ -52,9 +52,7 @@
         </el-menu>
 
         <div class="main_center" id="main_center">
-            <transition name='router' mode="out-in">
-                <router-view></router-view>
-            </transition>
+            <component v-bind:menus="leftMenus" v-bind:is="currentComponent" class="tab"></component>
         </div>
 
     </div>
@@ -65,6 +63,7 @@
     import Menu from '../script/server/menu.js'
     import Account from '../script/server/account.js'
     import App from '../script/app.js'
+    import LeftMenuFrame from '../components/LeftMenuFrame.vue'
 
     export default {
         created: function () {
@@ -74,26 +73,29 @@
             return {
                 img: require("../assets/images/header.jpg"),
                 menus: [],
-                activeIndex: '/index/my',
+                leftMenus:[],
+                activeMenuIndex: 'my',
                 userOper: [
                     {
                         index: 'userOper', name: '管理员', sub: [
                             {index: 'sign', name: '退出'},
                         ]
                     }
-                ]
+                ],
+                currentComponent:'leftMenuFrame'   //默认加载左边为菜单的组件
             }
         },
         mounted: function () {
             let comp = this;
             Menu.getMenu().then(res => {
                 comp.menus = res.menus
+                comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
             })
 
             Account.getLoginUser().then(res => {
                 this.userOper[0].name = res.user.name
             })
-            //App.router.$router.push('/index/my/').catch(e => e);
+
             this.$nextTick(() => {
                 $('.small-menu-bar').on('click', function (e) {
                     e.preventDefault();
@@ -113,13 +115,14 @@
                     window.location.href = App.loginPage
                 } else {
                     $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
-                    if (App.router.$route.fullPath.indexOf(key) === -1) {
-                        App.toPage(key)
-                    }
+                    //如果非左边菜单架构，替换当前组件
+                    //this.currentComponent = key
+                    //否则，替换组件数据
+                    this.leftMenus = this.menus.filter(menu => menu.value === key)[0].children
                 }
             }
         },
-        components: {},
+        components: {LeftMenuFrame},
     }
 </script>
 

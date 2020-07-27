@@ -76,7 +76,15 @@ body {
 
 .primary-fa {
   color: #409EFF !important;
+
 }
+
+.right-fa {
+  float: right;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
 
 //可点击的字体图标
 .click-fa {
@@ -196,6 +204,42 @@ body {
     td > div {
       text-align: center;
     }
+  }
+}
+
+.form-dialog {
+  .el-dialog {
+    width: 900px;
+  }
+}
+
+.form-table {
+  width: 100%;
+  font-family: verdana, arial, sans-serif;
+  font-size: 11px;
+  color: #333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
+
+  th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+  }
+
+  td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+  }
+
+  .form-input-code {
+    width: 160px;
   }
 }
 
