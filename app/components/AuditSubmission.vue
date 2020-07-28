@@ -225,6 +225,19 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th>资料组</th>
+                                <td colspan="3">
+                                    <el-select v-model="value" placeholder="请选择">
+                                        <el-option
+                                                v-for="group in materialGroups"
+                                                :key="group.id"
+                                                :label="group.name"
+                                                :value="group.name">
+                                        </el-option>
+                                    </el-select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="4" class="compact-td">
                                     <table class="form-table">
                                         <tr>
@@ -259,7 +272,7 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="print-info">
                                 <th>送审部门盖章</th>
                                 <td style="height: 100px;">
 
@@ -269,7 +282,7 @@
 
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="print-info">
                                 <th>项目负责人</th>
                                 <td>
                                     <el-input v-model="submissionForm.projectLeader" placeholder="填写项目负责人"></el-input>
@@ -279,7 +292,7 @@
                                     <el-input v-model="submissionForm.auditReceiver" placeholder="填写审计接收人"></el-input>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="print-info">
                                 <th>送审人联系电话</th>
                                 <td>
                                     <el-input v-model="submissionForm.submissionTel" placeholder="填写送审人联系电话"></el-input>
@@ -317,6 +330,10 @@
 
         },
         mounted() {
+            this.$nextTick(() => {
+                console.log($(".print-info"))
+                //$(".print-info").hide()
+            });
         },
         watch: {
             dialogVisible: function (newVal, oldVal) {
@@ -381,6 +398,7 @@
                     url: 'https://m.baidu.com/sf/vsearch?pd=image_content&word=%E9%AB%98%E8%BE%BE%E5%A4%B4%E5%83%8F&tn=vsearch&atn=mediacy&fr=index&sa=ts_2&imgtype=0&imgpn=1&imgspn=0&imgcontent=%7B%22subjectJson%22%3A%7B%22tagname%22%3A%22%E5%A4%B4%E5%83%8F%22%2C%22subject_type%22%3A3%2C%22entityname%22%3A%22%E9%AB%98%E8%BE%BE%22%7D%7D&mediacyKey=undefined&tt=1&di=38170&pi=0&cs=2439081361%2C1326926205&adpicid=&bdtype=0&objurl=https%3A%2F%2Ftimgsa.baidu.com%2Ftimg%3Fimage%26quality%3D80%26size%3Db9999_10000%26sec%3D1595908496653%26di%3D937024bd253c7230e3b558431f9b09f7%26imgtype%3D0%26src%3Dhttp%253A%252F%252Fwww.jf258.com%252Fuploads%252F2013-08-09%252F045809775.jpg&imgos=2371011960%2C15442097&imgis=0%2C0&isRecFrClick=0'
                 }],
                 fileList2: [],
+                materialGroups: [{id: 1, name: '工程部'}, {id: 2, name: '技术部'}]
             }
         },
         methods: {
@@ -414,6 +432,7 @@
             },
             print: function () {
                 $(".upload-btn").hide()
+                $(".print-info").show()
                 $(".test").printArea({
                     importCSS: false
                 })

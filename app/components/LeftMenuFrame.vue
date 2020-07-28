@@ -49,6 +49,8 @@
     import SysRight from '../components/SysRight.vue'
     import SysRole from '../components/SysRole.vue'
     import SysMenu from '../components/SysMenu.vue'
+    import SysMaterialFile from '../components/SysMaterialFile.vue'
+    import SysMaterialFileGroup from '../components/SysMaterialFileGroup.vue'
     import AuditSubmission from '../components/AuditSubmission.vue'
 
     export default {
@@ -95,7 +97,9 @@
             SysRight,
             SysRole,
             AuditSubmission,
-            SysMenu
+            SysMenu,
+            SysMaterialFile,
+            SysMaterialFileGroup
         }
     }
 </script>
