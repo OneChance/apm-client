@@ -48,6 +48,7 @@
     import SysCampOrg from '../components/SysCampOrg.vue'
     import SysRight from '../components/SysRight.vue'
     import SysRole from '../components/SysRole.vue'
+    import SysMenu from '../components/SysMenu.vue'
     import AuditSubmission from '../components/AuditSubmission.vue'
 
     export default {
@@ -93,7 +94,8 @@
             SysCampOrg,
             SysRight,
             SysRole,
-            AuditSubmission
+            AuditSubmission,
+            SysMenu
         }
     }
 </script>

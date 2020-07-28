@@ -3,6 +3,9 @@ import VueRouter from 'vue-router'
 import Sign from '../components/Sign.vue';
 import Index from '../components/Index.vue'
 
+//局部打印插件
+import printArea from '../plugin/printarea/jquery.PrintArea'
+
 //ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'

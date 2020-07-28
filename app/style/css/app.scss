@@ -213,6 +213,7 @@ body {
   }
 }
 
+//表格表单
 .form-table {
   width: 100%;
   font-family: verdana, arial, sans-serif;
@@ -227,7 +228,7 @@ body {
     padding: 8px;
     border-style: solid;
     border-color: #666666;
-    background-color: #dedede;
+    background-color: #f9f8f8;
   }
 
   td {
@@ -240,6 +241,22 @@ body {
 
   .form-input-code {
     width: 160px;
+  }
+
+  .el-input__inner {
+    border: 0;
+  }
+
+  .el-form-item {
+    margin-bottom: 0;
+  }
+
+  .el-form-item__error {
+    position: relative;
+  }
+
+  .compact-td {
+    padding: 1px;
   }
 }
 
