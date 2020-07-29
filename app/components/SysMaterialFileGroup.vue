@@ -9,9 +9,11 @@
                 <el-button type="primary" @click="groupDialogVisible = true;addGroup()">添加资料组</el-button>
             </div>
 
+            <table-component v-bind:tableConfig="tableConfig"></table-component>
+
         </el-card>
 
-        <el-dialog :title="currentGroup.name"
+        <el-dialog :title="currentGroup.name+'资料清单维护'"
                    :visible.sync="groupDialogVisible"
                    :close-on-click-modal="false"
                    class="material-group">
@@ -55,12 +57,15 @@
 <script>
 
     import MaterialFile from '../script/server/materialFile'
-    import User from "../script/server/user";
+    import TableComponent from "./TableComponent";
 
     export default {
         name: "SysMaterialFileGroup",
         mounted: function () {
-
+            let comp = this
+            MaterialFile.getMaterialGroups().then(res => {
+                comp.tableConfig.data = res.list
+            })
         },
         data: function () {
             return {
@@ -69,7 +74,26 @@
                 },
                 alloc: [],    //待分配
                 alloced: [],  //已分配
-                groupDialogVisible: false
+                groupDialogVisible: false,
+                tableConfig: {
+                    data: [],
+                    cols: [
+                        {prop: 'name', label: '资料组名称', width: '500'},
+                    ],
+                    oper: [
+                        {
+                            class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                            tip: {content: '编辑', placement: 'top'},
+                            event: this.editGroup,
+                        },
+                        {
+                            class: 'fa fa-trash-o fa-lg click-fa',
+                            tip: {content: '删除', placement: 'right'},
+                            event: this.deleteGroup,
+                            check: true
+                        }
+                    ]
+                },
             }
         },
         methods: {
@@ -77,8 +101,9 @@
                 let comp = this
                 //数据清除
                 comp.alloc = []
+                comp.alloced = []
                 MaterialFile.getMaterialTypes().then(res => {
-                    //初始化穿梭框左边数据
+                    //初始化待分配资料类别
                     let search = res.list.map(type => type.name)
                     res.list.forEach((type, index) => {
                         comp.alloc.push({
@@ -95,15 +120,31 @@
                 }
             },
             editGroup() {
-
-            },
-            deletePrepare(row) {
-                this.currentGroup.id = row.id
+                //数据清除
+                comp.alloc = []
+                comp.alloced = []
+                MaterialFile.getMaterialTypes().then(res => {
+                    //初始化待分配资料类别
+                    let search = res.list.map(type => type.name)
+                    res.list.forEach((type, index) => {
+                        let addType = {
+                            label: type.name,
+                            key: type.id,
+                            search: search[index]
+                        }
+                        if (type.alloced) {
+                            comp.alloced.push(addType);
+                        } else {
+                            comp.alloc.push(addType);
+                        }
+                    });
+                })
             },
             deleteGroup() {
 
             }
         },
+        components: {TableComponent}
     }
 </script>
 

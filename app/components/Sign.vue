@@ -13,7 +13,9 @@
                         <el-input v-model="password" placeholder="密码"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="danger" class="sign-btn sign-local-btn" @click="signIn" disabled="disabled">登陆</el-button>
+                        <el-button type="danger" class="sign-btn sign-local-btn" @click="signIn" disabled="disabled">
+                            登陆
+                        </el-button>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="danger" class="sign-btn" @click="authCenter">统一身份认证</el-button>
@@ -139,8 +141,7 @@
         font-size: 12px;
         position: absolute;
         bottom: 30px;
-        left: 46%;
+        left: calc(50% - 55px);
         color: #e1184a;
     }
-
 </style>

@@ -52,6 +52,8 @@
     import SysMaterialFile from '../components/SysMaterialFile.vue'
     import SysMaterialFileGroup from '../components/SysMaterialFileGroup.vue'
     import AuditSubmission from '../components/AuditSubmission.vue'
+    import App from "../script/app";
+    import Size from "../script/server/size";
 
     export default {
         name: "leftMenuFrame",
@@ -77,19 +79,21 @@
             let comp = this
 
             this.$nextTick(() => {
-                comp.isCollapse = document.body.clientWidth <= 480
+                comp.menuCollapse(document.body.clientWidth)
             });
-            window.onresize = () => {
-                return (() => {
-                    comp.isCollapse = document.body.clientWidth <= 480
-                })();
-            };
+
+            App.hub.$on('windowResize', (size) => {
+                comp.menuCollapse(size)
+            })
         },
         methods: {
             handleSelect(key, keyPath) {
                 console.log('验证权限' + key)
                 this.currentComponent = key
             },
+            menuCollapse(size) {
+                this.isCollapse = size <= Size.leftMenuCollapseWidth
+            }
         },
         components: {
             Personal,
@@ -113,4 +117,5 @@
     .el-menu-vertical-demo:not(.el-menu--collapse) {
         width: 200px;
     }
+
 </style>

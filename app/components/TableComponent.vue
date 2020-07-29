@@ -3,8 +3,9 @@
         <el-table
                 :data="tableConfig.data"
                 border
-                style="width: 100%">
-            <el-table-column v-for="col in tableConfig.cols" :prop="col.prop" :label="col.label"
+                style="width: 100%"
+                :max-height="maxHeight">
+            <el-table-column v-for="col in tableConfig.cols" :prop="col.prop" :label="col.label" :key="col.prop"
                              :formatter="col.formatter"
                              :width="col.width"></el-table-column>
             <el-table-column
@@ -12,6 +13,7 @@
                     label="操作">
                 <template slot-scope="scope">
                     <el-tooltip v-for="o in tableConfig.oper" class="item" effect="dark" :content="o.tip.content"
+                                :key="o.tip.content"
                                 :placement="o.tip.placement">
                         <i :class="o.class"
                            @click="click(scope.row,o.event,o.check)"></i>
@@ -23,6 +25,7 @@
         <el-pagination v-if="tableConfig.page"
                        class="page-nav"
                        background
+                       :small="small"
                        layout="prev, pager, next"
                        @current-change="handleCurrentChange"
                        :total="100">
@@ -45,10 +48,13 @@
 <script>
 
     import App from '../script/app.js'
+    import Size from "../script/server/size";
 
     export default {
         data: function () {
             return {
+                small: false,
+                maxHeight: 620,
                 deleteConfirm: false,
                 deleteOper: {event: {}, row: {}}
             }
@@ -71,9 +77,16 @@
             handleCurrentChange: function (val) {
                 this.tableConfig.pageMethod(val)
             },
+            elementSize: function (width) {
+                this.small = width <= Size.pageNavSmallSize
+            }
         },
         mounted: function () {
-
+            let comp = this
+            comp.elementSize(document.body.clientWidth)
+            App.hub.$on('windowResize', (width) => {
+                comp.elementSize(width)
+            })
         },
     }
 </script>

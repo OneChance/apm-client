@@ -9,5 +9,14 @@ export default {
     },
     deleteMaterialTypes: function (data) {
         return Net.post('/material/delete/', data);
+    },
+    saveMaterialGroup: function (data) {
+        return Net.post('/material/group/addOrUpdate/', data);
+    },
+    getMaterialGroups: function () {
+        return Net.get('/material/group/list/');
+    },
+    deleteMaterialGroup: function (data) {
+        return Net.post('/material/group/delete/', data);
     }
 }

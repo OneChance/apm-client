@@ -73,7 +73,7 @@
             return {
                 img: require("../assets/images/header.jpg"),
                 menus: [],
-                leftMenus:[],
+                leftMenus: [],
                 activeMenuIndex: 'my',
                 userOper: [
                     {
@@ -82,7 +82,7 @@
                         ]
                     }
                 ],
-                currentComponent:'leftMenuFrame'   //默认加载左边为菜单的组件
+                currentComponent: 'leftMenuFrame'   //默认加载左边为菜单的组件
             }
         },
         mounted: function () {
@@ -102,17 +102,23 @@
                     $('.small-menu')[0].style.webkitTransform = "translate(0px,0px)";
                 })
             });
+
+            window.onresize = () => {
+                return (() => {
+                    App.hub.$emit('windowResize', document.body.clientWidth)
+                })();
+            };
         },
         methods: {
             signOut: function () {
-                Account.signOut().then(() => {
-                    //App.router.$router.push('sign');
-                })
+                App.router.$router.push('sign');
+                /*Account.signOut().then(() => {
+                    App.router.$router.push('sign');
+                })*/
             },
             handleSelect(key, keyPath) {
                 if (key === 'sign') {
-                    console.log('退出')
-                    window.location.href = App.loginPage
+                    this.signOut()
                 } else {
                     $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
                     //如果非左边菜单架构，替换当前组件

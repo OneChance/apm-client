@@ -15,8 +15,6 @@ Vue.use(VueRouter);
 Vue.use(ElementUI)
 
 export default {
-    loginPage: "http://localhost:8888",
-    currentPage: "/index/my/personal",
     router: null,
     hub: null,
     init: function () {

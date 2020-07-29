@@ -9,6 +9,7 @@
             <div class="right-button-group">
                 <el-button type="primary" @click="dialogVisible = true">添加资料类别</el-button>
             </div>
+
             <table-component v-bind:tableConfig="tableConfig"></table-component>
 
         </el-card>
@@ -38,7 +39,6 @@
 
     import MaterialFile from '../script/server/materialFile'
     import TableComponent from "./TableComponent";
-    import App from "../script/app";
 
     export default {
         name: "SysMaterialFile",
