@@ -9,7 +9,7 @@
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
                 <i class="fa fa-plus-circle fa-2x right-fa primary-fa" aria-hidden="true"
-                   @click="dialogVisible=true"></i>
+                   @click="add"></i>
             </el-form>
 
             <table-component v-bind:tableConfig="tableConfig"></table-component>
@@ -183,12 +183,12 @@
                             <tr>
                                 <th>资料组</th>
                                 <td colspan="3">
-                                    <el-select v-model="value" placeholder="请选择">
+                                    <el-select v-model="value" placeholder="请选择" @change="materialGroupChange">
                                         <el-option
                                                 v-for="group in materialGroups"
                                                 :key="group.id"
                                                 :label="group.name"
-                                                :value="group.name">
+                                                :value="group.id">
                                         </el-option>
                                     </el-select>
                                 </td>
@@ -198,12 +198,12 @@
                                     <table class="form-table">
                                         <tr>
                                             <th style="width:33%">资料清单</th>
-                                            <th>数量</th>
+                                            <th>附件</th>
                                             <th>备注</th>
                                         </tr>
-                                        <tr>
+                                        <tr v-for="fileType of this.fileGroupTypes">
                                             <td>
-                                                监理单位（报审单位）送审结算书
+                                                {{fileType.name}}{{fileType.id}}
                                             </td>
                                             <td>
                                                 <el-upload
@@ -212,10 +212,11 @@
                                                         :on-preview="handlePreview"
                                                         :on-remove="handleRemove"
                                                         :before-remove="beforeRemove"
+                                                        :on-success="afterUpload"
                                                         multiple
                                                         :limit="3"
                                                         :on-exceed="handleExceed"
-                                                        :file-list="fileList1">
+                                                        :file-list="fileType.files">
                                                     <el-button size="small" type="primary" class="upload-btn">点击上传
                                                     </el-button>
                                                 </el-upload>
@@ -280,6 +281,7 @@
 
     import {Notification} from 'element-ui';
     import TableComponent from "./TableComponent";
+    import MaterialFile from "../script/server/materialFile";
 
     export default {
         name: "AuditSubmission",
@@ -287,10 +289,7 @@
 
         },
         mounted() {
-            this.$nextTick(() => {
-                console.log($(".print-info"))
-                //$(".print-info").hide()
-            });
+
         },
         watch: {
             dialogVisible: function (newVal, oldVal) {
@@ -350,11 +349,7 @@
                         {type: 'date', required: true, message: '请选择竣工时间', trigger: 'blur'}
                     ],
                 },
-                fileList1: [{
-                    name: 'pda',
-                    url: 'https://m.baidu.com/sf/vsearch?pd=image_content&word=%E9%AB%98%E8%BE%BE%E5%A4%B4%E5%83%8F&tn=vsearch&atn=mediacy&fr=index&sa=ts_2&imgtype=0&imgpn=1&imgspn=0&imgcontent=%7B%22subjectJson%22%3A%7B%22tagname%22%3A%22%E5%A4%B4%E5%83%8F%22%2C%22subject_type%22%3A3%2C%22entityname%22%3A%22%E9%AB%98%E8%BE%BE%22%7D%7D&mediacyKey=undefined&tt=1&di=38170&pi=0&cs=2439081361%2C1326926205&adpicid=&bdtype=0&objurl=https%3A%2F%2Ftimgsa.baidu.com%2Ftimg%3Fimage%26quality%3D80%26size%3Db9999_10000%26sec%3D1595908496653%26di%3D937024bd253c7230e3b558431f9b09f7%26imgtype%3D0%26src%3Dhttp%253A%252F%252Fwww.jf258.com%252Fuploads%252F2013-08-09%252F045809775.jpg&imgos=2371011960%2C15442097&imgis=0%2C0&isRecFrClick=0'
-                }],
-                fileList2: [],
+                fileGroupTypes: [],
                 materialGroups: [{id: 1, name: '工程部'}, {id: 2, name: '技术部'}],
                 tableConfig: {
                     data: [],
@@ -383,6 +378,12 @@
             }
         },
         methods: {
+            add: function () {
+                this.dialogVisible = true
+                this.$nextTick(() => {
+                    $(".print-info").hide()
+                });
+            },
             editRow: function () {
 
             },
@@ -430,9 +431,18 @@
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${file.name}？`);
             },
+            afterUpload(response, file, fileList) {
+                console.log(fileList)
+            },
             toPage: function (val) {
                 console.log('to page :' + val);
             },
+            materialGroupChange: function (value) {
+                let comp = this
+                MaterialFile.getMaterialTypes().then(res => {
+                    comp.fileGroupTypes = res.list
+                })
+            }
         },
         components: {TableComponent}
     }
