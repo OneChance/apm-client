@@ -9,29 +9,6 @@
                 <el-button type="primary" @click="groupDialogVisible = true;addGroup()">添加资料组</el-button>
             </div>
 
-            <el-table
-                    :data="groups"
-                    border
-                    style="width: 100%">
-                <el-table-column
-                        prop="name"
-                        label="名称"
-                        width="600">
-                </el-table-column>
-                <el-table-column
-                        prop="roleOper"
-                        label="操作">
-                    <template slot-scope="scope">
-                        <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                            <i class="fa fa-pencil-square-o fa-lg click-fa warning-fa"
-                               @click="roleInfoDialogVisible=true;editGroup(scope.row)"></i>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="删除" placement="right">
-                            <i class="fa fa-trash-o fa-lg click-fa" @click="deletePrepare(scope.row)"></i>
-                        </el-tooltip>
-                    </template>
-                </el-table-column>
-            </el-table>
         </el-card>
 
         <el-dialog :title="currentGroup.name"

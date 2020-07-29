@@ -9,55 +9,7 @@
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
             </el-form>
-
-            <el-table
-                    :data="roles"
-                    border
-                    style="width: 100%">
-                <el-table-column
-                        prop="name"
-                        label="名称"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="type"
-                        label="类型"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="status"
-                        label="状态">
-                </el-table-column>
-                <el-table-column
-                        prop="roleOper"
-                        label="操作">
-                    <template slot-scope="scope">
-                        <el-tooltip class="item" effect="dark" content="用户" placement="left">
-                            <i class="fa fa fa-user-o fa-lg click-fa primary-fa"
-                               @click="roleUsersDialogVisible=true;roleUsers(scope.row)"></i>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="授权" placement="top">
-                            <i class="fa fa fa-key fa-lg click-fa success-fa"
-                               @click="roleRightsDialogVisible=true;authRights(scope.row)"></i>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                            <i class="fa fa-pencil-square-o fa-lg click-fa warning-fa"
-                               @click="roleInfoDialogVisible=true;editRole(scope.row)"></i>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="删除" placement="right">
-                            <i class="fa fa-trash-o fa-lg click-fa" @click="deleteRole()"></i>
-                        </el-tooltip>
-                    </template>
-                </el-table-column>
-            </el-table>
-
-            <el-pagination
-                    class="page-nav"
-                    background
-                    layout="prev, pager, next"
-                    @current-change="handleCurrentChange"
-                    :total="100">
-            </el-pagination>
+            <table-component v-bind:tableConfig="tableConfig"></table-component>
         </el-card>
 
         <!--角色分配用户Dialog-->
@@ -132,16 +84,17 @@
     import Role from '../script/server/role'
     import User from '../script/server/user'
     import Right from '../script/server/right'
+    import TableComponent from "./TableComponent";
+    import App from "../script/app";
 
     export default {
         name: "SysRole",
         mounted: function () {
-            this.roles = Role.getRoles()
+            this.tableConfig.data = Role.getRoles()
         },
         data: function () {
             return {
                 roleName: '',
-                roles: [],
                 roleUsersDialogVisible: false,
                 roleRightsDialogVisible: false,
                 roleInfoDialogVisible: false,
@@ -153,14 +106,48 @@
                 defaultKeys: [], //默认选中的权限
                 filterMethod(query, item) {
                     return item.search.indexOf(query) > -1;
-                }
+                },
+                tableConfig: {
+                    data: [],
+                    page: true,
+                    pageMethod: this.toPage,
+                    cols: [
+                        {prop: 'name', label: '名称', width: '180'},
+                        {prop: 'type', label: '类型', width: '180'},
+                        {prop: 'status', label: '状态', width: ''}
+                    ],
+                    oper: [
+                        {
+                            class: 'fa fa fa-user-o fa-lg click-fa primary-fa',
+                            tip: {content: '用户', placement: 'left'},
+                            event: this.roleUsers,
+                        },
+                        {
+                            class: 'fa fa fa-key fa-lg click-fa success-fa',
+                            tip: {content: '授权', placement: 'top'},
+                            event: this.authRights,
+                        },
+                        {
+                            class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                            tip: {content: '编辑', placement: 'top'},
+                            event: this.editRole,
+                        },
+                        {
+                            class: 'fa fa-trash-o fa-lg click-fa',
+                            tip: {content: '删除', placement: 'right'},
+                            event: this.deleteRole,
+                            check: true
+                        }
+                    ]
+                },
             }
         },
         methods: {
-            handleCurrentChange: function (val) {
+            toPage: function (val) {
                 console.log('to page :' + val);
             },
             roleUsers: function (row) {
+                this.roleUsersDialogVisible = true
                 this.currentRow = row
                 let comp = this
 
@@ -178,6 +165,7 @@
                 });
             },
             authRights: function (row) {
+                this.roleRightsDialogVisible = true
                 let comp = this
 
                 //数据清除
@@ -212,6 +200,7 @@
                 comp.defaultKeys = Right.getRoleRights(row.id)
             },
             editRole: function (row) {
+                this.roleInfoDialogVisible = true
                 this.currentRow = row
             },
             deleteRole: function () {
@@ -234,6 +223,7 @@
                 console.log(this.currentRow.name + " " + this.currentRow.status)
             }
         },
+        components: {TableComponent}
     }
 </script>
 

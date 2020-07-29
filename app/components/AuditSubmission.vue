@@ -12,52 +12,8 @@
                    @click="dialogVisible=true"></i>
             </el-form>
 
-            <el-table
-                    :data="forms"
-                    border
-                    style="width: 100%">
-                <el-table-column
-                        prop="itemCode"
-                        label="项目立项代码"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="auditNo"
-                        label="审计编号"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="projectName"
-                        label="工程项目名称"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="constructionUnit"
-                        label="施工单位名称"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="roleOper"
-                        label="操作">
-                    <template slot-scope="scope">
-                        <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                            <i class="fa fa-pencil-square-o fa-lg click-fa warning-fa"
-                               @click="dialogVisible=true;editRow(scope.row)"></i>
-                        </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="删除" placement="right">
-                            <i class="fa fa-trash-o fa-lg click-fa" @click="deleteRow()"></i>
-                        </el-tooltip>
-                    </template>
-                </el-table-column>
-            </el-table>
+            <table-component v-bind:tableConfig="tableConfig"></table-component>
 
-            <el-pagination
-                    class="page-nav"
-                    background
-                    layout="prev, pager, next"
-                    @current-change="handleCurrentChange"
-                    :total="100">
-            </el-pagination>
         </el-card>
 
         <el-dialog :title="工程结算送审表"
@@ -323,6 +279,7 @@
 
 
     import {Notification} from 'element-ui';
+    import TableComponent from "./TableComponent";
 
     export default {
         name: "AuditSubmission",
@@ -398,7 +355,31 @@
                     url: 'https://m.baidu.com/sf/vsearch?pd=image_content&word=%E9%AB%98%E8%BE%BE%E5%A4%B4%E5%83%8F&tn=vsearch&atn=mediacy&fr=index&sa=ts_2&imgtype=0&imgpn=1&imgspn=0&imgcontent=%7B%22subjectJson%22%3A%7B%22tagname%22%3A%22%E5%A4%B4%E5%83%8F%22%2C%22subject_type%22%3A3%2C%22entityname%22%3A%22%E9%AB%98%E8%BE%BE%22%7D%7D&mediacyKey=undefined&tt=1&di=38170&pi=0&cs=2439081361%2C1326926205&adpicid=&bdtype=0&objurl=https%3A%2F%2Ftimgsa.baidu.com%2Ftimg%3Fimage%26quality%3D80%26size%3Db9999_10000%26sec%3D1595908496653%26di%3D937024bd253c7230e3b558431f9b09f7%26imgtype%3D0%26src%3Dhttp%253A%252F%252Fwww.jf258.com%252Fuploads%252F2013-08-09%252F045809775.jpg&imgos=2371011960%2C15442097&imgis=0%2C0&isRecFrClick=0'
                 }],
                 fileList2: [],
-                materialGroups: [{id: 1, name: '工程部'}, {id: 2, name: '技术部'}]
+                materialGroups: [{id: 1, name: '工程部'}, {id: 2, name: '技术部'}],
+                tableConfig: {
+                    data: [],
+                    page: true,
+                    pageMethod: this.toPage,
+                    cols: [
+                        {prop: 'itemCode', label: '项目立项代码', width: '150'},
+                        {prop: 'auditNo', label: '审计编号', width: '150'},
+                        {prop: 'projectName', label: '工程项目名称', width: '220'},
+                        {prop: 'constructionUnit', label: '施工单位名称', width: '220'},
+                    ],
+                    oper: [
+                        {
+                            class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                            tip: {content: '编辑', placement: 'top'},
+                            event: this.editRow,
+                        },
+                        {
+                            class: 'fa fa-trash-o fa-lg click-fa',
+                            tip: {content: '删除', placement: 'right'},
+                            event: this.deleteRow,
+                            check: true
+                        }
+                    ]
+                },
             }
         },
         methods: {
@@ -449,10 +430,11 @@
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${file.name}？`);
             },
-            handleCurrentChange: function (val) {
+            toPage: function (val) {
                 console.log('to page :' + val);
             },
         },
+        components: {TableComponent}
     }
 </script>
 
