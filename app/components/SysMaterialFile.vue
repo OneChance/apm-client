@@ -44,9 +44,7 @@
         name: "SysMaterialFile",
         mounted: function () {
             let comp = this
-            MaterialFile.getMaterialTypes().then(res => {
-                comp.tableConfig.data = res.list
-            })
+            comp.list()
         },
         data: function () {
             return {
@@ -87,9 +85,7 @@
                         message: '操作成功',
                         type: 'success'
                     });
-                    MaterialFile.getMaterialTypes().then(res => {
-                        comp.tableConfig.data = res.list
-                    })
+                    comp.list()
                 })
             },
             editFileType(row) {
@@ -98,9 +94,6 @@
                 this.currentMaterialFileType.name = row.name
                 this.currentMaterialFileType.required = row.required
             },
-            deletePrepare(row) {
-                this.currentMaterialFileType.id = row.id
-            },
             deleteFileType(row) {
                 let comp = this
                 MaterialFile.deleteMaterialTypes({id: row.id}).then(res => {
@@ -108,9 +101,7 @@
                         message: '删除成功',
                         type: 'success'
                     });
-                    MaterialFile.getMaterialTypes().then(res => {
-                        comp.tableConfig.data = res.list
-                    })
+                    comp.list()
                 })
             },
             requiredFormatter(row, column) {
@@ -119,6 +110,11 @@
             toPage: function (val) {
                 console.log('to page :' + val);
             },
+            list: function () {
+                MaterialFile.getMaterialTypes().then(res => {
+                    this.tableConfig.data = res.list
+                })
+            }
         },
         components: {TableComponent}
     }

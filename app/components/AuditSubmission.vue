@@ -181,16 +181,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>资料组</th>
+                                <th>资料清单组</th>
                                 <td colspan="3">
-                                    <el-select v-model="value" placeholder="请选择" @change="materialGroupChange">
-                                        <el-option
-                                                v-for="group in materialGroups"
-                                                :key="group.id"
-                                                :label="group.name"
-                                                :value="group.id">
-                                        </el-option>
-                                    </el-select>
+                                    <el-form-item prop="materialGroup">
+                                        <el-select v-model="value" placeholder="请选择" @change="materialGroupChange">
+                                            <el-option
+                                                    v-for="group in materialGroups"
+                                                    :key="group.id"
+                                                    :label="group.name"
+                                                    :value="group.id">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
@@ -203,7 +205,7 @@
                                         </tr>
                                         <tr v-for="fileType of this.fileGroupTypes">
                                             <td>
-                                                {{fileType.name}}{{fileType.id}}
+                                                {{fileType.material.name}}
                                             </td>
                                             <td>
                                                 <el-upload
@@ -213,16 +215,18 @@
                                                         :on-remove="handleRemove"
                                                         :before-remove="beforeRemove"
                                                         :on-success="afterUpload"
+                                                        :data="uploadParams"
                                                         multiple
                                                         :limit="3"
                                                         :on-exceed="handleExceed"
                                                         :file-list="fileType.files">
-                                                    <el-button size="small" type="primary" class="upload-btn">点击上传
+                                                    <el-button size="small" type="primary" class="upload-btn"
+                                                               @click="toUpload(fileType.material.id)">点击上传
                                                     </el-button>
                                                 </el-upload>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.auditNo"
+                                                <el-input v-model="fileType.note"
                                                           placeholder="填写备注"></el-input>
                                             </td>
                                         </tr>
@@ -289,7 +293,11 @@
 
         },
         mounted() {
-
+            MaterialFile.getMaterialGroups().then(res => {
+                this.materialGroups = res.list
+            })
+            //设置表单唯一性Id
+            this.submissionForm.formInsId = 0
         },
         watch: {
             dialogVisible: function (newVal, oldVal) {
@@ -300,10 +308,10 @@
         },
         data: function () {
             return {
-                forms: [],
                 dialogVisible: false,
                 projectName: '',
                 submissionForm: {
+                    formInsId: '',
                     itemCode: '',
                     auditNo: '',
                     contractNo: '',
@@ -326,6 +334,7 @@
                     buildUnitTel: '',
                     content: '',
                     description: '',
+                    materialGroup: '',
                     projectLeader: '',
                     auditReceiver: '',
                     submissionTel: '',
@@ -347,6 +356,9 @@
                     ],
                     endDate: [
                         {type: 'date', required: true, message: '请选择竣工时间', trigger: 'blur'}
+                    ],
+                    materialGroup: [
+                        {required: true, message: '请选择资料清单组', trigger: 'blur'},
                     ],
                 },
                 fileGroupTypes: [],
@@ -375,6 +387,10 @@
                         }
                     ]
                 },
+                uploadParams: {
+                    fileType: '',
+                    insId: ''
+                }
             }
         },
         methods: {
@@ -394,13 +410,29 @@
                 let comp = this
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
+
+                        //验证附件上传情况
+                        for (let type of comp.fileGroupTypes) {
+                            if (type.required) {
+                                if ((!type.files || type.files.length === 0) && (!type.note || type.note.match(/^[ ]*$/))) {
+                                    Notification.error({
+                                        title: '提交失败!',
+                                        message: type.name + '必须上传附件或填写备注！',
+                                        duration: 5000
+                                    })
+                                    return
+                                }
+                            }
+                        }
+
                         comp.dialogVisible = false
                         Notification.success({
                             title: '提交成功!',
                             message: '',
                             duration: 2000
                         })
-                        comp.forms.push(comp.submissionForm)
+
+                        comp.tableConfig.data.push(comp.submissionForm)
                     } else {
                         Notification.error({
                             title: '提交失败!',
@@ -432,16 +464,21 @@
                 return this.$confirm(`确定移除 ${file.name}？`);
             },
             afterUpload(response, file, fileList) {
-                console.log(fileList)
+                let comp = this
+                comp.fileGroupTypes.filter(type => type.id === comp.currentFileType)[0]['files'] = fileList
             },
             toPage: function (val) {
                 console.log('to page :' + val);
             },
             materialGroupChange: function (value) {
                 let comp = this
-                MaterialFile.getMaterialTypes().then(res => {
-                    comp.fileGroupTypes = res.list
+                MaterialFile.getMaterialGroup({id: value}).then(res => {
+                    this.fileGroupTypes = res.materialGroup.details
                 })
+            },
+            toUpload(typeId) {
+                this.uploadParams.fileType = typeId
+                this.uploadParams.formInsId = this.submissionForm.formInsId
             }
         },
         components: {TableComponent}

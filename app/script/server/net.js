@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from '../app.js'
 import Env from './env.js'
 import axios from 'axios'
+
+const qs = require('qs');
 import VueAxios from 'vue-axios'
 import {Notification} from 'element-ui';
 
@@ -10,8 +12,8 @@ axios.defaults.withCredentials = true;
 Vue.use(VueAxios, axios);
 
 export default {
-    get(api) {
-        return request(api, 'get');
+    get(api, data) {
+        return request(api, 'get', data);
     },
     post(api, data) {
         return request(api, 'post', data);
@@ -25,10 +27,15 @@ let request = function (api, type, data) {
     let fullURL = Env.baseURL + api;
 
     if (type === 'get') {
-        axiosRequest = Vue.axios.get(fullURL);
+        axiosRequest = Vue.axios.get(fullURL, {
+            params: data,
+        });
     } else {
         axiosRequest = Vue.axios.post(fullURL, null, {
-            params: data
+            params: data,
+            paramsSerializer: function (params) {
+                return qs.stringify(params, {arrayFormat: 'repeat'})
+            }
         });
     }
 

@@ -6,15 +6,14 @@
             </div>
 
             <div class="right-button-group">
-                <el-button type="primary" @click="groupDialogVisible = true;addGroup()">添加资料组</el-button>
+                <el-button type="primary" @click="addGroup">添加资料组</el-button>
             </div>
 
             <table-component v-bind:tableConfig="tableConfig"></table-component>
 
         </el-card>
 
-        <el-dialog :title="currentGroup.name+'资料清单维护'"
-                   :visible.sync="groupDialogVisible"
+        <el-dialog :visible.sync="groupDialogVisible"
                    :close-on-click-modal="false"
                    class="material-group">
             <el-form label-width="100px">
@@ -38,19 +37,6 @@
                 <el-button type="primary" @click="groupDialogVisible=false;commitAlloc()">确 定</el-button>
             </div>
         </el-dialog>
-
-        <el-dialog
-                title="提示"
-                :visible.sync="deleteConfirm"
-                width="30%"
-                :close-on-click-modal="false">
-            <span>确认删除？</span>
-            <span slot="footer" class="dialog-footer">
-            <el-button @click="deleteConfirm = false">取 消</el-button>
-            <el-button type="primary" @click="deleteConfirm = false;deleteGroup()">确 定</el-button>
-            </span>
-        </el-dialog>
-
     </div>
 </template>
 
@@ -63,14 +49,15 @@
         name: "SysMaterialFileGroup",
         mounted: function () {
             let comp = this
-            MaterialFile.getMaterialGroups().then(res => {
-                comp.tableConfig.data = res.list
-            })
+            comp.list()
         },
         data: function () {
             return {
-                currentGroup: {
-                    name: ''
+                currentGroup: {},
+                submitGroup: {
+                    id: '',
+                    name: '',
+                    materialId: []
                 },
                 alloc: [],    //待分配
                 alloced: [],  //已分配
@@ -99,9 +86,9 @@
         methods: {
             addGroup() {
                 let comp = this
+                comp.groupDialogVisible = true;
                 //数据清除
-                comp.alloc = []
-                comp.alloced = []
+                comp.clearData()
                 MaterialFile.getMaterialTypes().then(res => {
                     //初始化待分配资料类别
                     let search = res.list.map(type => type.name)
@@ -115,33 +102,65 @@
                 })
             },
             commitAlloc() {
-                for (let a of this.alloced) {
-                    console.log(a)
+                let comp = this
+                comp.submitGroup.name = comp.currentGroup.name
+                for (let a of comp.alloced) {
+                    comp.submitGroup.materialId.push(a)
                 }
-            },
-            editGroup() {
-                //数据清除
-                comp.alloc = []
-                comp.alloced = []
-                MaterialFile.getMaterialTypes().then(res => {
-                    //初始化待分配资料类别
-                    let search = res.list.map(type => type.name)
-                    res.list.forEach((type, index) => {
-                        let addType = {
-                            label: type.name,
-                            key: type.id,
-                            search: search[index]
-                        }
-                        if (type.alloced) {
-                            comp.alloced.push(addType);
-                        } else {
-                            comp.alloc.push(addType);
-                        }
+                MaterialFile.saveMaterialGroup(comp.submitGroup).then(res => {
+                    comp.$message({
+                        message: '操作成功',
+                        type: 'success'
                     });
+                    comp.list()
                 })
             },
-            deleteGroup() {
-
+            editGroup(row) {
+                let comp = this
+                //数据清除
+                comp.clearData()
+                comp.groupDialogVisible = true;
+                comp.currentGroup = row
+                MaterialFile.getMaterialGroup({id: row.id}).then(res => {
+                    comp.submitGroup.id = res.materialGroup.id
+                    for (let detail of res.materialGroup.details) {
+                        comp.alloced.push(detail.material.id);
+                    }
+                    MaterialFile.getMaterialTypes().then(res => {
+                        //初始化待分配资料类别
+                        let search = res.list.map(type => type.name)
+                        res.list.forEach((type, index) => {
+                            comp.alloc.push({
+                                label: type.name,
+                                key: type.id,
+                                search: search[index]
+                            });
+                        });
+                    })
+                })
+            },
+            deleteGroup(row) {
+                let comp = this
+                MaterialFile.saveMaterialGroup({id: row.id}).then(res => {
+                    comp.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    comp.list()
+                })
+            },
+            list() {
+                MaterialFile.getMaterialGroups().then(res => {
+                    this.tableConfig.data = res.list
+                })
+            },
+            clearData() {
+                this.currentGroup = {}
+                this.submitGroup.id = ''
+                this.submitGroup.name = ''
+                this.submitGroup.materialId = []
+                this.alloc = []
+                this.alloced = []
             }
         },
         components: {TableComponent}

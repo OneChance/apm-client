@@ -16,6 +16,9 @@ export default {
     getMaterialGroups: function () {
         return Net.get('/material/group/list/');
     },
+    getMaterialGroup: function (data) {
+        return Net.get('/material/group/get/', data);
+    },
     deleteMaterialGroup: function (data) {
         return Net.post('/material/group/delete/', data);
     }
