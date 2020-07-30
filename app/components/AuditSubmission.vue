@@ -471,7 +471,6 @@
                 console.log('to page :' + val);
             },
             materialGroupChange: function (value) {
-                let comp = this
                 MaterialFile.getMaterialGroup({id: value}).then(res => {
                     this.fileGroupTypes = res.materialGroup.details
                 })

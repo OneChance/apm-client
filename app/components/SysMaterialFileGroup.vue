@@ -141,7 +141,7 @@
             },
             deleteGroup(row) {
                 let comp = this
-                MaterialFile.saveMaterialGroup({id: row.id}).then(res => {
+                MaterialFile.deleteMaterialGroup({id: row.id}).then(res => {
                     comp.$message({
                         message: '操作成功',
                         type: 'success'
