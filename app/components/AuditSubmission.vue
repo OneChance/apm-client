@@ -21,7 +21,7 @@
                    :visible.sync="dialogVisible"
                    :close-on-click-modal="false">
             <template>
-                <div class="test">
+                <div class="form">
                     <el-form :model="submissionForm" :rules="rules" ref="submissionForm">
                         <table class="form-table">
                             <tr>
@@ -84,11 +84,13 @@
                                 </td>
                                 <th>竣工时间<span style="color: red; ">*</span></th>
                                 <td>
-                                    <el-date-picker
-                                            v-model="submissionForm.endDate"
-                                            type="date"
-                                            placeholder="选择日期">
-                                    </el-date-picker>
+                                    <el-form-item prop="endDate">
+                                        <el-date-picker
+                                                v-model="submissionForm.endDate"
+                                                type="date"
+                                                placeholder="选择日期">
+                                        </el-date-picker>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
@@ -184,7 +186,8 @@
                                 <th>资料清单组</th>
                                 <td colspan="3">
                                     <el-form-item prop="materialGroup">
-                                        <el-select v-model="value" placeholder="请选择" @change="materialGroupChange">
+                                        <el-select v-model="submissionForm.materialGroup" placeholder="请选择"
+                                                   @change="materialGroupChange">
                                             <el-option
                                                     v-for="group in materialGroups"
                                                     :key="group.id"
@@ -203,14 +206,16 @@
                                             <th>附件</th>
                                             <th>备注</th>
                                         </tr>
-                                        <tr v-for="fileType of this.fileGroupTypes">
+                                        <tr v-for="fileType of this.submissionForm.files">
                                             <td>
-                                                {{fileType.material.name}}
+                                                {{fileType.typeName}}
                                             </td>
                                             <td>
                                                 <el-upload
                                                         class="upload-demo"
-                                                        action="https://jsonplaceholder.typicode.com/posts/"
+                                                        action="noAction"
+                                                        :http-request="upload"
+                                                        :with-credentials="true"
                                                         :on-preview="handlePreview"
                                                         :on-remove="handleRemove"
                                                         :before-remove="beforeRemove"
@@ -221,12 +226,12 @@
                                                         :on-exceed="handleExceed"
                                                         :file-list="fileType.files">
                                                     <el-button size="small" type="primary" class="upload-btn"
-                                                               @click="toUpload(fileType.material.id)">点击上传
+                                                               @click="toUpload(fileType.typeId)">点击上传
                                                     </el-button>
                                                 </el-upload>
                                             </td>
                                             <td>
-                                                <el-input v-model="fileType.note"
+                                                <el-input v-model="fileType.typeNote"
                                                           placeholder="填写备注"></el-input>
                                             </td>
                                         </tr>
@@ -286,6 +291,7 @@
     import {Notification} from 'element-ui';
     import TableComponent from "./TableComponent";
     import MaterialFile from "../script/server/materialFile";
+    import Upload from "../script/server/upload"
 
     export default {
         name: "AuditSubmission",
@@ -339,6 +345,7 @@
                     auditReceiver: '',
                     submissionTel: '',
                     receiveDate: '',
+                    files: []
                 },
                 rules: {
                     projectName: [
@@ -361,7 +368,6 @@
                         {required: true, message: '请选择资料清单组', trigger: 'blur'},
                     ],
                 },
-                fileGroupTypes: [],
                 materialGroups: [{id: 1, name: '工程部'}, {id: 2, name: '技术部'}],
                 tableConfig: {
                     data: [],
@@ -388,8 +394,7 @@
                     ]
                 },
                 uploadParams: {
-                    fileType: '',
-                    insId: ''
+                    id: '',
                 }
             }
         },
@@ -397,6 +402,7 @@
             add: function () {
                 this.dialogVisible = true
                 this.$nextTick(() => {
+                    this.$refs['submissionForm'].resetFields();
                     $(".print-info").hide()
                 });
             },
@@ -465,20 +471,39 @@
             },
             afterUpload(response, file, fileList) {
                 let comp = this
-                comp.fileGroupTypes.filter(type => type.id === comp.currentFileType)[0]['files'] = fileList
+                //comp.fileGroupTypes.filter(type => type.id === comp.currentFileType)[0]['files'] = fileList
             },
             toPage: function (val) {
                 console.log('to page :' + val);
             },
             materialGroupChange: function (value) {
+                let comp = this
                 MaterialFile.getMaterialGroup({id: value}).then(res => {
-                    this.fileGroupTypes = res.materialGroup.details
+                    comp.submissionForm.files = []
+                    for (let fType of res.materialGroup.details) {
+                        comp.submissionForm.files.push({
+                            typeId: fType.material.id,
+                            typeName: fType.material.name,
+                            typeFiles: [],
+                            typeNote: ''
+                        })
+                    }
                 })
             },
             toUpload(typeId) {
-                this.uploadParams.fileType = typeId
-                this.uploadParams.formInsId = this.submissionForm.formInsId
-            }
+                this.uploadParams.id = typeId
+            },
+            upload(content) {
+                let comp = this
+                let fd = new FormData()
+                fd.append('file', content.file)
+                Upload.upload(comp.uploadParams.id, fd).then(res => {
+                    console.log(res)
+                    comp.submissionForm.files.filter(f => f.typeId === comp.uploadParams.id)[0].typeFiles.push(res.id)
+                })
+
+                console.log(comp.submissionForm.files)
+            },
         },
         components: {TableComponent}
     }
