@@ -59,7 +59,9 @@
                                 </td>
                                 <th>预算(万元)</th>
                                 <td>
-                                    <el-input v-model="submissionForm.budget" placeholder="填写预算"></el-input>
+                                    <el-form-item prop="budget">
+                                        <el-input v-model="submissionForm.budget" placeholder="填写预算"></el-input>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
@@ -208,7 +210,7 @@
                                         </tr>
                                         <tr v-for="fileType of this.submissionForm.files">
                                             <td>
-                                                {{fileType.typeName}}
+                                                {{fileType.mName}}
                                             </td>
                                             <td>
                                                 <el-upload
@@ -226,12 +228,12 @@
                                                         :on-exceed="handleExceed"
                                                         :file-list="fileType.files">
                                                     <el-button size="small" type="primary" class="upload-btn"
-                                                               @click="toUpload(fileType.typeId)">点击上传
+                                                               @click="toUpload(fileType.mId)">点击上传
                                                     </el-button>
                                                 </el-upload>
                                             </td>
                                             <td>
-                                                <el-input v-model="fileType.typeNote"
+                                                <el-input v-model="fileType.mNote"
                                                           placeholder="填写备注"></el-input>
                                             </td>
                                         </tr>
@@ -251,25 +253,21 @@
                             <tr class="print-info">
                                 <th>项目负责人</th>
                                 <td>
-                                    <el-input v-model="submissionForm.projectLeader" placeholder="填写项目负责人"></el-input>
+
                                 </td>
                                 <th>审计接收人</th>
                                 <td>
-                                    <el-input v-model="submissionForm.auditReceiver" placeholder="填写审计接收人"></el-input>
+
                                 </td>
                             </tr>
                             <tr class="print-info">
                                 <th>送审人联系电话</th>
                                 <td>
-                                    <el-input v-model="submissionForm.submissionTel" placeholder="填写送审人联系电话"></el-input>
+
                                 </td>
                                 <th>接收时间</th>
                                 <td>
-                                    <el-date-picker
-                                            v-model="receiveDate"
-                                            type="date"
-                                            placeholder="选择日期">
-                                    </el-date-picker>
+
                                 </td>
                             </tr>
                         </table>
@@ -302,8 +300,6 @@
             MaterialFile.getMaterialGroups().then(res => {
                 this.materialGroups = res.list
             })
-            //设置表单唯一性Id
-            this.submissionForm.formInsId = 0
         },
         watch: {
             dialogVisible: function (newVal, oldVal) {
@@ -317,7 +313,6 @@
                 dialogVisible: false,
                 projectName: '',
                 submissionForm: {
-                    formInsId: '',
                     itemCode: '',
                     auditNo: '',
                     contractNo: '',
@@ -329,6 +324,7 @@
                     endDate: '',
                     contractMoney: '',
                     constructMoney: '',
+                    installMoney: '',
                     constructionUnitApplyFee: '',
                     constructionUnitCheckFee: '',
                     constructionUnitTel: '',
@@ -341,10 +337,6 @@
                     content: '',
                     description: '',
                     materialGroup: '',
-                    projectLeader: '',
-                    auditReceiver: '',
-                    submissionTel: '',
-                    receiveDate: '',
                     files: []
                 },
                 rules: {
@@ -353,6 +345,10 @@
                     ],
                     constructionUnit: [
                         {required: true, message: '请输入施工单位名称', trigger: 'blur'},
+                    ],
+                    budget: [
+                        {required: true, message: '请填写预算', trigger: 'blur'},
+                        {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
                     ],
                     contractMoney: [
                         {required: true, message: '请填写中标或合同金额', trigger: 'blur'},
@@ -453,7 +449,7 @@
             print: function () {
                 $(".upload-btn").hide()
                 $(".print-info").show()
-                $(".test").printArea({
+                $(".form").printArea({
                     importCSS: false
                 })
             },
@@ -482,10 +478,10 @@
                     comp.submissionForm.files = []
                     for (let fType of res.materialGroup.details) {
                         comp.submissionForm.files.push({
-                            typeId: fType.material.id,
-                            typeName: fType.material.name,
-                            typeFiles: [],
-                            typeNote: ''
+                            mId: fType.material.id,
+                            mName: fType.material.name,
+                            mFiles: [],
+                            mNote: ''
                         })
                     }
                 })
@@ -497,12 +493,14 @@
                 let comp = this
                 let fd = new FormData()
                 fd.append('file', content.file)
-                Upload.upload(comp.uploadParams.id, fd).then(res => {
-                    console.log(res)
-                    comp.submissionForm.files.filter(f => f.typeId === comp.uploadParams.id)[0].typeFiles.push(res.id)
+                Upload.upload(comp.uploadParams.id, fd, (event) => {
+                    let num = event.loaded / event.total * 100 | 0;
+                    content.onProgress({percent: num})
+                }).then(res => {
+                    content.onSuccess()
+                    comp.submissionForm.files.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(res.id)
                 })
-
-                console.log(comp.submissionForm.files)
+                //console.log(comp.submissionForm.files)
             },
         },
         components: {TableComponent}

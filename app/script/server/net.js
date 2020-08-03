@@ -14,7 +14,7 @@ Vue.use(VueAxios, axios);
 //附件请求
 let axiosUpload = Vue.axios.create({
     baseURL: Env.baseURL,
-    headers: {"Content-Type": "multipart/form-data"}
+    headers: {"Content-Type": "multipart/form-data"},
 })
 
 export default {
@@ -24,19 +24,21 @@ export default {
     post(api, data) {
         return request(api, 'post', data);
     },
-    axiosUpload(api, data) {
-        return request(api, 'file', data);
+    axiosUpload(api, data, progress) {
+        return request(api, 'file', data, progress);
     }
 }
 
 
-let request = function (api, type, data) {
+let request = function (api, type, data, progress) {
 
     let axiosRequest;
     let fullURL = Env.baseURL + api;
 
     if (type === 'file') {
-        axiosRequest = axiosUpload.post(api, data);
+        axiosRequest = axiosUpload.post(fullURL, data, {
+            onUploadProgress: progress
+        });
     } else if (type === 'get') {
         axiosRequest = Vue.axios.get(fullURL, {
             params: data,
