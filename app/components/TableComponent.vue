@@ -26,9 +26,10 @@
                        class="page-nav"
                        background
                        :small="small"
+                       :current-page.sync="tableConfig.currentPage"
                        layout="prev, pager, next"
                        @current-change="handleCurrentChange"
-                       :total="100">
+                       :total="tableConfig.total">
         </el-pagination>
 
         <el-dialog

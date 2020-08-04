@@ -32,17 +32,23 @@
                             <tr>
                                 <th>立项代码</th>
                                 <td>
-                                    <el-input v-model="submissionForm.itemCode"></el-input>
+                                    <el-form-item prop="itemCode">
+                                        <el-input v-model="submissionForm.itemCode"></el-input>
+                                    </el-form-item>
                                 </td>
                                 <th>审计编号</th>
                                 <td>
-                                    <el-input v-model="submissionForm.auditNo"></el-input>
+                                    <el-form-item prop="auditNo">
+                                        <el-input v-model="submissionForm.auditNo"></el-input>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
                                 <th>合同编码</th>
                                 <td>
-                                    <el-input v-model="submissionForm.contractNo"></el-input>
+                                    <el-form-item prop="contractNo">
+                                        <el-input v-model="submissionForm.contractNo"></el-input>
+                                    </el-form-item>
                                 </td>
                                 <th>工程项目名称<span style="color: red; ">*</span></th>
                                 <td>
@@ -55,12 +61,14 @@
                             <tr>
                                 <th>经费来源</th>
                                 <td>
-                                    <el-input v-model="submissionForm.feeFrom" placeholder="填写经费来源"></el-input>
+                                    <el-form-item prop="feeFrom">
+                                        <el-input v-model="submissionForm.feeFrom" placeholder="填写经费来源"></el-input>
+                                    </el-form-item>
                                 </td>
                                 <th>预算(万元)</th>
                                 <td>
                                     <el-form-item prop="budget">
-                                        <el-input v-model="submissionForm.budget" placeholder="填写预算"></el-input>
+                                        <el-input v-model.number="submissionForm.budget" placeholder="填写预算"></el-input>
                                     </el-form-item>
                                 </td>
                             </tr>
@@ -79,6 +87,8 @@
                                     <el-form-item prop="startDate">
                                         <el-date-picker
                                                 v-model="submissionForm.startDate"
+                                                format="yyyy-MM-dd"
+                                                value-format="yyyy-MM-dd"
                                                 type="date"
                                                 placeholder="选择日期">
                                         </el-date-picker>
@@ -89,6 +99,8 @@
                                     <el-form-item prop="endDate">
                                         <el-date-picker
                                                 v-model="submissionForm.endDate"
+                                                format="yyyy-MM-dd"
+                                                value-format="yyyy-MM-dd"
                                                 type="date"
                                                 placeholder="选择日期">
                                         </el-date-picker>
@@ -107,12 +119,16 @@
                             <tr>
                                 <th>土建</th>
                                 <td>
-                                    <el-input v-model="submissionForm.constructMoney"
-                                              placeholder="填写土建金额"></el-input>
+                                    <el-form-item prop="constructMoney">
+                                        <el-input v-model="submissionForm.constructMoney"
+                                                  placeholder="填写土建金额"></el-input>
+                                    </el-form-item>
                                 </td>
                                 <th>安装</th>
                                 <td>
-                                    <el-input v-model="submissionForm.installMoney" placeholder="填写安装金额"></el-input>
+                                    <el-form-item prop="installMoney">
+                                        <el-input v-model="submissionForm.installMoney" placeholder="填写安装金额"></el-input>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
@@ -127,46 +143,64 @@
                                         <tr>
                                             <th>施工单位</th>
                                             <td>
-                                                <el-input v-model="submissionForm.constructionUnitApplyFee"
-                                                          placeholder="填写施工单位报审金额"></el-input>
+                                                <el-form-item prop="constructionUnitApplyFee">
+                                                    <el-input v-model="submissionForm.constructionUnitApplyFee"
+                                                              placeholder="填写施工单位报审金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.constructionUnitCheckFee"
-                                                          placeholder="填写施工单位核减金额"></el-input>
+                                                <el-form-item prop="constructionUnitCheckFee">
+                                                    <el-input v-model="submissionForm.constructionUnitCheckFee"
+                                                              placeholder="填写施工单位核减金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.constructionUnitTel"
-                                                          placeholder="施工单位联系电话"></el-input>
+                                                <el-form-item prop="constructionUnitTel">
+                                                    <el-input v-model="submissionForm.constructionUnitTel"
+                                                              placeholder="施工单位联系电话"></el-input>
+                                                </el-form-item>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>监理单位</th>
                                             <td>
-                                                <el-input v-model="submissionForm.inspectUnitApplyFee"
-                                                          placeholder="填写监理单位报审金额"></el-input>
+                                                <el-form-item prop="inspectUnitApplyFee">
+                                                    <el-input v-model="submissionForm.inspectUnitApplyFee"
+                                                              placeholder="填写监理单位报审金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.inspectUnitCheckFee"
-                                                          placeholder="填写监理单位核减金额"></el-input>
+                                                <el-form-item prop="inspectUnitCheckFee">
+                                                    <el-input v-model="submissionForm.inspectUnitCheckFee"
+                                                              placeholder="填写监理单位核减金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.inspectUnitTel"
-                                                          placeholder="填写监理单位联系电话"></el-input>
+                                                <el-form-item prop="inspectUnitTel">
+                                                    <el-input v-model="submissionForm.inspectUnitTel"
+                                                              placeholder="填写监理单位联系电话"></el-input>
+                                                </el-form-item>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>建设单位</th>
                                             <td>
-                                                <el-input v-model="submissionForm.buildUnitApplyFee"
-                                                          placeholder="填写建设单位报审金额"></el-input>
+                                                <el-form-item prop="buildUnitApplyFee">
+                                                    <el-input v-model="submissionForm.buildUnitApplyFee"
+                                                              placeholder="填写建设单位报审金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.buildUnitCheckFee"
-                                                          placeholder="填写建设单位报审金额"></el-input>
+                                                <el-form-item prop="buildUnitCheckFee">
+                                                    <el-input v-model="submissionForm.buildUnitCheckFee"
+                                                              placeholder="填写建设单位报审金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                             <td>
-                                                <el-input v-model="submissionForm.buildUnitTel"
-                                                          placeholder="填写建设单位报审金额"></el-input>
+                                                <el-form-item prop="buildUnitTel">
+                                                    <el-input v-model="submissionForm.buildUnitTel"
+                                                              placeholder="填写建设单位报审金额"></el-input>
+                                                </el-form-item>
                                             </td>
                                         </tr>
                                     </table>
@@ -175,13 +209,17 @@
                             <tr>
                                 <th>项目内容</th>
                                 <td colspan="3">
-                                    <el-input v-model="submissionForm.content" placeholder="填写项目内容"></el-input>
+                                    <el-form-item prop="content">
+                                        <el-input v-model="submissionForm.content" placeholder="填写项目内容"></el-input>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
                                 <th>项目概况</th>
                                 <td colspan="3">
-                                    <el-input v-model="submissionForm.description" placeholder="填写项目概况"></el-input>
+                                    <el-form-item prop="description">
+                                        <el-input v-model="submissionForm.description" placeholder="填写项目概况"></el-input>
+                                    </el-form-item>
                                 </td>
                             </tr>
                             <tr>
@@ -208,7 +246,7 @@
                                             <th>附件</th>
                                             <th>备注</th>
                                         </tr>
-                                        <tr v-for="fileType of this.submissionForm.files">
+                                        <tr v-for="fileType of this.submissionForm.details">
                                             <td>
                                                 {{fileType.mName}}
                                             </td>
@@ -226,7 +264,7 @@
                                                         multiple
                                                         :limit="3"
                                                         :on-exceed="handleExceed"
-                                                        :file-list="fileType.files">
+                                                        :file-list="fileType.mFiles">
                                                     <el-button size="small" type="primary" class="upload-btn"
                                                                @click="toUpload(fileType.mId)">点击上传
                                                     </el-button>
@@ -290,6 +328,7 @@
     import TableComponent from "./TableComponent";
     import MaterialFile from "../script/server/materialFile";
     import Upload from "../script/server/upload"
+    import Submission from "../script/server/submission";
 
     export default {
         name: "AuditSubmission",
@@ -297,9 +336,8 @@
 
         },
         mounted() {
-            MaterialFile.getMaterialGroups().then(res => {
-                this.materialGroups = res.list
-            })
+            this.list()
+            this.getMGroups()
         },
         watch: {
             dialogVisible: function (newVal, oldVal) {
@@ -313,31 +351,32 @@
                 dialogVisible: false,
                 projectName: '',
                 submissionForm: {
+                    id: '',
                     itemCode: '',
                     auditNo: '',
                     contractNo: '',
                     projectName: '',
                     feeFrom: '',
-                    budget: '',
+                    budget: 0,
                     constructionUnit: '',
                     startDate: '',
                     endDate: '',
-                    contractMoney: '',
-                    constructMoney: '',
-                    installMoney: '',
-                    constructionUnitApplyFee: '',
-                    constructionUnitCheckFee: '',
+                    contractMoney: 0,
+                    constructMoney: 0,
+                    installMoney: 0,
+                    constructionUnitApplyFee: 0,
+                    constructionUnitCheckFee: 0,
                     constructionUnitTel: '',
-                    inspectUnitApplyFee: '',
-                    inspectUnitCheckFee: '',
+                    inspectUnitApplyFee: 0,
+                    inspectUnitCheckFee: 0,
                     inspectUnitTel: '',
-                    buildUnitApplyFee: '',
-                    buildUnitCheckFee: '',
+                    buildUnitApplyFee: 0,
+                    buildUnitCheckFee: 0,
                     buildUnitTel: '',
                     content: '',
                     description: '',
                     materialGroup: '',
-                    files: []
+                    details: []
                 },
                 rules: {
                     projectName: [
@@ -355,19 +394,21 @@
                         {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
                     ],
                     startDate: [
-                        {type: 'date', required: true, message: '请选择开工时间', trigger: 'blur'}
+                        {required: true, message: '请选择开工时间', trigger: 'blur'}
                     ],
                     endDate: [
-                        {type: 'date', required: true, message: '请选择竣工时间', trigger: 'blur'}
+                        {required: true, message: '请选择竣工时间', trigger: 'blur'}
                     ],
                     materialGroup: [
                         {required: true, message: '请选择资料清单组', trigger: 'blur'},
                     ],
                 },
-                materialGroups: [{id: 1, name: '工程部'}, {id: 2, name: '技术部'}],
+                materialGroups: [],
                 tableConfig: {
                     data: [],
                     page: true,
+                    total: 0,
+                    currentPage: 1,
                     pageMethod: this.toPage,
                     cols: [
                         {prop: 'itemCode', label: '项目立项代码', width: '150'},
@@ -397,51 +438,95 @@
         methods: {
             add: function () {
                 this.dialogVisible = true
+                //清空
                 this.$nextTick(() => {
                     this.$refs['submissionForm'].resetFields();
+                    this.submissionForm.details = []
                     $(".print-info").hide()
                 });
             },
-            editRow: function () {
-
+            editRow: function (row) {
+                let comp = this
+                //清空
+                comp.submissionForm.details = []
+                comp.$nextTick(() => {
+                    $(".print-info").hide()
+                });
+                comp.dialogVisible = true
+                //加载form
+                Submission.getSubmission({id: row.id}).then(result => {
+                    comp.submissionForm = result.submission
+                    console.log(comp.submissionForm)
+                    //填充清单组元数据信息到附件清单
+                    MaterialFile.getMaterialGroup({id: comp.submissionForm.materialGroup}).then(res => {
+                        for (let fType of res.materialGroup.details) {
+                            let detail = comp.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
+                            if (detail) {
+                                detail.mRequired = fType.material.required
+                            } else {
+                                comp.submissionForm.details.push({
+                                    mRequired: fType.material.required,
+                                    mId: fType.material.id,
+                                    mName: fType.material.name,
+                                    mFiles: [],
+                                    mFileIds: '',
+                                    mNote: ''
+                                })
+                            }
+                        }
+                    })
+                })
             },
-            deleteRow: function () {
-
+            deleteRow: function (row) {
+                let comp = this
+                Submission.deleteSubmission({id: row.id}).then(result => {
+                    comp.$message({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    comp.list({page: 1})
+                })
             },
             commitSubmission: function () {
                 let comp = this
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
-
                         //验证附件上传情况
-                        for (let type of comp.fileGroupTypes) {
-                            if (type.required) {
-                                if ((!type.files || type.files.length === 0) && (!type.note || type.note.match(/^[ ]*$/))) {
+                        for (let type of comp.submissionForm.details) {
+                            if (type.mRequired) {
+                                if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
                                     Notification.error({
                                         title: '提交失败!',
-                                        message: type.name + '必须上传附件或填写备注！',
+                                        message: type.mName + '必须上传附件或填写备注！',
                                         duration: 5000
                                     })
                                     return
                                 }
                             }
                         }
-
-                        comp.dialogVisible = false
-                        Notification.success({
-                            title: '提交成功!',
-                            message: '',
-                            duration: 2000
+                        //附件列表转换为serverId字符串
+                        for (let types of comp.submissionForm.details) {
+                            let ids = ''
+                            for (let file of types.mFiles) {
+                                ids = ids + ',' + file.serverId
+                            }
+                            types.mFileIds = ids.substr(1)
+                        }
+                        //提交单据
+                        Submission.saveSubmission(comp.submissionForm).then(result => {
+                            comp.dialogVisible = false
+                            comp.$message({
+                                message: '提交成功',
+                                type: 'success'
+                            });
+                            comp.list({page: 1})
                         })
-
-                        comp.tableConfig.data.push(comp.submissionForm)
                     } else {
                         Notification.error({
                             title: '提交失败!',
                             message: '表单信息有误,请检查!',
                             duration: 2000
                         })
-                        console.log('error submit!!');
                         return false;
                     }
                 });
@@ -454,54 +539,85 @@
                 })
             },
             handleRemove(file, fileList) {
-                console.log(file, fileList);
+                //从附件列表中移除该文件
+                let comp = this
+                for (let types of comp.submissionForm.details) {
+                    let size = types.mFiles.length
+                    if (size !== 0) {
+                        types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
+                        if (types.mFiles.length < size) {
+                            break
+                        }
+                    }
+                }
             },
             handlePreview(file) {
                 window.open(file.url)
             },
-            handleExceed(files, fileList) {
-                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-            },
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${file.name}？`);
             },
-            afterUpload(response, file, fileList) {
-                let comp = this
-                //comp.fileGroupTypes.filter(type => type.id === comp.currentFileType)[0]['files'] = fileList
-            },
             toPage: function (val) {
-                console.log('to page :' + val);
+                this.list({page: val})
             },
             materialGroupChange: function (value) {
+                //根据选择的清单组，初始化附加列表
                 let comp = this
                 MaterialFile.getMaterialGroup({id: value}).then(res => {
-                    comp.submissionForm.files = []
+                    comp.submissionForm.details.length = []
                     for (let fType of res.materialGroup.details) {
-                        comp.submissionForm.files.push({
-                            mId: fType.material.id,
+                        comp.submissionForm.details.push({
+                            mRequired: fType.material.required,
+                            mId: fType.material.id,    //清单类型id
                             mName: fType.material.name,
-                            mFiles: [],
-                            mNote: ''
+                            mFiles: [], //上传的文件列表
+                            mFileIds: '',  //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
+                            mNote: ''  //上传文件的备注
                         })
                     }
                 })
             },
             toUpload(typeId) {
+                //上传之前暂存当前要上传文件所属的清单组Id
                 this.uploadParams.id = typeId
             },
             upload(content) {
+                //自定义附件上传
                 let comp = this
                 let fd = new FormData()
-                fd.append('file', content.file)
+                fd.append('formFile', content.file)
                 Upload.upload(comp.uploadParams.id, fd, (event) => {
                     let num = event.loaded / event.total * 100 | 0;
                     content.onProgress({percent: num})
                 }).then(res => {
                     content.onSuccess()
-                    comp.submissionForm.files.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(res.id)
+                    //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
+                    comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push({
+                        'serverId': res.id,
+                        'uid': content.file.uid,
+                        'name': content.file.name
+                    })
                 })
-                //console.log(comp.submissionForm.files)
             },
+            list(pageConfig) {
+                let data = {
+                    page: 1,
+                    pageSize: 10
+                }
+                for (let prop in pageConfig) {
+                    data[prop] = pageConfig[prop]
+                }
+                this.tableConfig.currentPage = data.page
+                Submission.getSubmissions(data).then(res => {
+                    this.tableConfig.data = res.list.content
+                    this.tableConfig.total = res.list.totalElements
+                })
+            },
+            getMGroups() {
+                MaterialFile.getMaterialGroups().then(res => {
+                    this.materialGroups = res.list
+                })
+            }
         },
         components: {TableComponent}
     }

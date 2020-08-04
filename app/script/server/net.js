@@ -21,6 +21,9 @@ export default {
     get(api, data) {
         return request(api, 'get', data);
     },
+    jsonPost(api, data) {
+        return request(api, 'json_post', data);
+    },
     post(api, data) {
         return request(api, 'post', data);
     },
@@ -43,6 +46,10 @@ let request = function (api, type, data, progress) {
         axiosRequest = Vue.axios.get(fullURL, {
             params: data,
         });
+    } else if (type === 'json_post') {
+        axiosRequest = Vue.axios.post(fullURL, data, {
+            headers: {'Content-Type': 'application/json'}
+        });
     } else {
         axiosRequest = Vue.axios.post(fullURL, null, {
             params: data,
@@ -60,7 +67,7 @@ let request = function (api, type, data, progress) {
             message: e.response.data.error_msg
         });
         if (res.error_code === 10000) {
-            window.location.href = App.loginPage
+            App.router.$router.push('sign');
         }
     })
 };
