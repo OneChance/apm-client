@@ -2,7 +2,6 @@ import Net from './net.js'
 
 export default {
     getUsers: function () {
-        //return Net.post('/signIn/', data);
         let users = []
         let userData = [{
             empcode: '0001',

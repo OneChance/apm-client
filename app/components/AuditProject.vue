@@ -1,12 +1,10 @@
 <template>
-    <div class="card-content">
-        <el-card class="box-card">
-            AuditProject
-        </el-card>
-    </div>
+    <audit-component v-bind:step="'project'"></audit-component>
 </template>
 
 <script>
+
+    import AuditComponent from "./AuditComponent";
 
     export default {
         name: "AuditProject",
@@ -19,6 +17,7 @@
             return {}
         },
         methods: {},
+        components: {AuditComponent}
     }
 </script>
 

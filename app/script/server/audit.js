@@ -12,5 +12,11 @@ export default {
     },
     deleteSubmission: function (data) {
         return Net.post('/submission/delete/', data);
+    },
+    saveAuditProject: function (data) {
+        return Net.jsonPost('/submission/project/approve/', data);
+    },
+    saveAuditProjects: function (data) {
+        return Net.post('/submission/project/approves/', data);
     }
 }

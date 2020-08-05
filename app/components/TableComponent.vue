@@ -4,7 +4,12 @@
                 :data="tableConfig.data"
                 border
                 style="width: 100%"
-                :max-height="maxHeight">
+                :max-height="maxHeight"
+                @selection-change="tableConfig.checkBoxChange">
+            <el-table-column v-if="tableConfig.checkable"
+                             type="selection"
+                             width="55">
+            </el-table-column>
             <el-table-column v-for="col in tableConfig.cols" :prop="col.prop" :label="col.label" :key="col.prop"
                              :formatter="col.formatter"
                              :width="col.width"></el-table-column>
@@ -49,7 +54,7 @@
 <script>
 
     import App from '../script/app.js'
-    import Size from "../script/server/size";
+    import Config from "../script/config";
 
     export default {
         data: function () {
@@ -79,8 +84,8 @@
                 this.tableConfig.pageMethod(val)
             },
             elementSize: function (width) {
-                this.small = width <= Size.pageNavSmallSize
-            }
+                this.small = width <= Config.size.pageNavSmallSize
+            },
         },
         mounted: function () {
             let comp = this

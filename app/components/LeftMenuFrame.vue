@@ -53,7 +53,9 @@
     import SysMaterialFileGroup from '../components/SysMaterialFileGroup.vue'
     import AuditSubmission from '../components/AuditSubmission.vue'
     import App from "../script/app";
-    import Size from "../script/server/size";
+    import Config from "../script/config";
+    import AuditProject from "./AuditProject";
+    import SysUser from "./SysUser";
 
     export default {
         name: "leftMenuFrame",
@@ -92,7 +94,7 @@
                 this.currentComponent = key
             },
             menuCollapse(size) {
-                this.isCollapse = size <= Size.leftMenuCollapseWidth
+                this.isCollapse = size <= Config.size.leftMenuCollapseWidth
             }
         },
         components: {
@@ -101,9 +103,11 @@
             SysRight,
             SysRole,
             AuditSubmission,
+            AuditProject,
             SysMenu,
             SysMaterialFile,
-            SysMaterialFileGroup
+            SysMaterialFileGroup,
+            SysUser,
         }
     }
 </script>

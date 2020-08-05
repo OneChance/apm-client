@@ -304,6 +304,10 @@ body {
   }
 }
 
+.el-input.is-disabled .el-input__inner {
+  color: #C0C4CC;
+}
+
 //适配小屏幕
 @media screen and (max-width: 480px) {
   body {
