@@ -4,7 +4,7 @@ export default {
     signIn: function (data) {
         return Net.post('/login/', data);
     },
-    getLoginUser:function () {
-        return Net.get('/user/info/');
+    getLoginUser: function () {
+        return Net.get('/user/get/');
     }
 }

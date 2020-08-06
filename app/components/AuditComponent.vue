@@ -8,14 +8,8 @@
                 <el-form-item>
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
-                <el-form-item v-if="step === 'project'">
-                    <el-button type="success" @click="batchAudit(1)">批量审核同意</el-button>
-                </el-form-item>
-                <el-form-item v-if="step === 'project'">
-                    <el-button type="danger" @click="batchAudit(0)">批量审核打回</el-button>
-                </el-form-item>
-                <el-form-item v-if="step === 'missionAlloc'">
-                    <el-button type="success" @click="batchAlloc()">分配</el-button>
+                <el-form-item v-for="oper in opers">
+                    <el-button :type="oper.color" @click="batchOper(oper.event)">{{ oper.name }}</el-button>
                 </el-form-item>
                 <i class="fa fa-plus-circle fa-2x right-fa primary-fa" aria-hidden="true" v-if="step==='submission'"
                    @click="add"></i>
@@ -338,7 +332,7 @@
                                 </td>
                             </tr>
 
-                            <tr class="project" v-if="step!=='submission'">
+                            <tr class="project" v-if="step==='project'">
                                 <th>审计意见</th>
                                 <td colspan="3">
                                     <el-input type="textarea" v-model="comment"></el-input>
@@ -381,53 +375,13 @@
             </template>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button v-if="step ==='submission'" type="primary" @click="commit(stepCode.submissionSave)">保存
-                </el-button>
-                <el-button v-if="step ==='submission'" type="success" @click="commit(stepCode.submissionCommit)">提交
-                </el-button>
-                <el-button v-if="step ==='project'" type="success" @click="commit(stepCode.auditProject)">审核</el-button>
-                <el-button v-if="step ==='project'" type="danger" @click="commit(stepCode.submissionSave)">打回修改
+                <el-button v-for="oper in formOpers" :type="oper.color" @click="commit(oper.event)">
+                    {{ oper.name }}
                 </el-button>
                 <el-button @click="dialogVisible = false;print()">打印</el-button>
             </div>
         </el-dialog>
 
-        <!--信息Dialog-->
-        <el-dialog title="分配"
-                   :visible.sync="missionAllocVisible"
-                   :close-on-click-modal="false">
-            <template>
-                <el-form ref="allocForm" :model="allocForm">
-                    <el-form-item prop="auditType">
-                        <el-radio v-model="allocForm.auditType" label="in" border @change="allocTypeChange">内审
-                        </el-radio>
-                        <el-radio v-model="allocForm.auditType" label="out" border @change="allocTypeChange">外审
-                        </el-radio>
-                    </el-form-item>
-                    <el-form-item prop="target">
-                        <el-select v-model="allocForm.target" filterable :placeholder="targetPlaceholder">
-                            <el-option
-                                v-for="target in targets"
-                                :key="target.value"
-                                :label="target.label"
-                                :value="target.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item prop="materialGroup">
-                        <el-input
-                            v-model="allocForm.tel"
-                            placeholder="审计人员联系方式"
-                            :disabled="true">
-                        </el-input>
-                    </el-form-item>
-                </el-form>
-            </template>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="missionAllocVisible = false">取 消</el-button>
-                <el-button type="primary" @click="missionAllocVisible=false;commit()">确 定</el-button>
-            </div>
-        </el-dialog>
     </div>
 </template>
 
@@ -444,21 +398,13 @@ import Config from "../script/config"
 
 export default {
     name: "AuditComponent",
+    props: ['step', 'opers', 'formOpers', 'customTableConfig', 'formRules'],
     data: function () {
         return {
             dialogVisible: false,
-            missionAllocVisible: false,
             query: {
                 projectName: '',
             },
-            auditType: '',
-            allocForm: {
-                auditType: '',
-                target: '',
-                tel: '',
-            },
-            targetPlaceholder: '请选择',
-            targets: [],
             submissionForm: {
                 id: '',
                 itemCode: '',
@@ -488,31 +434,7 @@ export default {
                 details: [],
                 status: 0,
             },
-            rules: {
-                projectName: [
-                    {required: true, message: '请输入工程项目名称', trigger: 'blur'},
-                ],
-                constructionUnit: [
-                    {required: true, message: '请输入施工单位名称', trigger: 'blur'},
-                ],
-                budget: [
-                    {required: true, message: '请填写预算', trigger: 'blur'},
-                    {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
-                ],
-                contractMoney: [
-                    {required: true, message: '请填写中标或合同金额', trigger: 'blur'},
-                    {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
-                ],
-                startDate: [
-                    {required: true, message: '请选择开工时间', trigger: 'blur'}
-                ],
-                endDate: [
-                    {required: true, message: '请选择竣工时间', trigger: 'blur'}
-                ],
-                materialGroup: [
-                    {required: true, message: '请选择资料清单组', trigger: 'blur'},
-                ],
-            },
+            rules: {},
             materialGroups: [],
             tableConfig: {
                 data: [],
@@ -549,35 +471,22 @@ export default {
     mounted() {
         this.list()
         this.getMGroups()
-        if (this.step === 'submission') {
-            this.tableConfig.checkable = false
-            this.tableConfig.oper = [
-                {
-                    class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
-                    tip: {content: '编辑', placement: 'top'},
-                    event: this.editRow,
-                },
-                {
-                    class: 'fa fa-trash-o fa-lg click-fa',
-                    tip: {content: '删除', placement: 'right'},
-                    event: this.deleteRow,
-                    check: true
-                }
-            ]
-        } else if (this.step === 'project') {
-            this.tableConfig.checkable = true
-            this.tableConfig.oper = [
-                {
-                    class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                    tip: {content: '审核', placement: 'top'},
-                    event: this.editRow,
-                },
-            ]
-        } else if (this.step === 'missionAlloc') {
-            this.tableConfig.checkable = true
+
+        //初始化表格属性
+        for (let prop in this.customTableConfig) {
+            this.tableConfig[prop] = this.customTableConfig[prop]
         }
+        //因为需要调用的方法在当前组件中,所以父组件只能传递字符串,根据字符串判定需要调用当前组件上的哪一个方法
+        for (let oper of this.tableConfig.oper) {
+            if (oper.event === 'edit') {
+                oper.event = this.editRow
+            } else if (oper.event === 'delete') {
+                oper.event = this.deleteRow
+            }
+        }
+        //初始化表单验证规则
+        this.rules = this.formRules
     },
-    props: ['step'],
     watch: {
         dialogVisible: function (newVal, oldVal) {
             if (newVal) {
@@ -586,25 +495,15 @@ export default {
         }
     },
     methods: {
-        allocTypeChange: function (val) {
-            if (val === 'in') {
-                this.targetPlaceholder = '请选择人员'
-                this.targets = [{
-                    value: '1',
-                    label: '张三'
-                }, {
-                    value: '2',
-                    label: '李四'
-                }]
+        batchOper: function (event) {
+            if (this.listChecks.length === 0) {
+                Notification.error({
+                    title: '操作失败!',
+                    message: '请先选择行！',
+                    duration: 3000
+                })
             } else {
-                this.targetPlaceholder = '请选择审计单位'
-                this.targets = [{
-                    value: '1',
-                    label: 'AAA'
-                }, {
-                    value: '2',
-                    label: 'BBB'
-                }]
+                event(this.listChecks, this.operSuccess, this)
             }
         },
         queryList: function () {
@@ -666,40 +565,14 @@ export default {
                 comp.list({page: 1})
             })
         },
-        commit: function (stepCode) {
+        commit: function (event) {
             let comp = this
             if (this.step === 'submission') {
                 //送审提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
-                        //验证附件上传情况
-                        for (let type of comp.submissionForm.details) {
-                            if (type.mRequired) {
-                                if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
-                                    Notification.error({
-                                        title: '提交失败!',
-                                        message: type.mName + '必须上传附件或填写备注！',
-                                        duration: 5000
-                                    })
-                                    return
-                                }
-                            }
-                        }
-                        //附件列表转换为serverId字符串
-                        for (let types of comp.submissionForm.details) {
-                            let ids = ''
-                            for (let file of types.mFiles) {
-                                ids = ids + ',' + file.id
-                            }
-                            types.mFileIds = ids.substr(1)
-                        }
-                        //设置状态
-                        comp.submissionForm.status = stepCode
-                        Audit.saveSubmission(comp.submissionForm).then(result => {
-                            if (result) {
-                                comp.operSuccess(comp)
-                            }
-                        })
+                        //自定义验证加提交
+                        event(this.operSuccess, this, this.submissionForm)
                     } else {
                         Notification.error({
                             title: '提交失败!',
@@ -709,18 +582,8 @@ export default {
                         return false;
                     }
                 });
-            } else if (this.step === 'project') {
-                let approve = (stepCode === this.stepCode.auditProject ? 1 : 0)
-                Audit.saveAuditProject({
-                    target: 'submission',
-                    type: approve,
-                    targetId: comp.submissionForm.id,
-                    content: this.comment,
-                }).then(result => {
-                    if (result) {
-                        comp.operSuccess(comp)
-                    }
-                })
+            } else {
+                event(this.operSuccess, this, this.comment, this.submissionForm.id)
             }
         },
         print: function () {
@@ -813,6 +676,9 @@ export default {
                 case 'project':
                     data['status'] = this.stepCode.submissionCommit
                     break
+                case 'missionAlloc':
+                    data['status'] = this.stepCode.auditProject
+                    break
             }
 
             this.tableConfig.currentPage = data.page
@@ -831,25 +697,10 @@ export default {
         checkBoxChange(val) {
             this.listChecks = val
         },
-        batchAudit(approve) {
-            let comp = this
-            Audit.saveAuditProjects({
-                type: approve,
-                targetIds: this.listChecks.map(form => form.id),
-                content: '',
-            }).then(result => {
-                if (result) {
-                    comp.operSuccess(comp)
-                }
-            })
-        },
-        batchAlloc() {
-            this.missionAllocVisible = true
-        },
         operSuccess(comp) {
             comp.dialogVisible = false
             comp.$message({
-                message: '提交成功',
+                message: '操作成功',
                 type: 'success'
             });
             comp.list({page: 1})

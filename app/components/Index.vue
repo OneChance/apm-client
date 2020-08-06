@@ -93,6 +93,7 @@
             })
 
             Account.getLoginUser().then(res => {
+                console.log()
                 this.userOper[0].name = res.user.name
             })
 

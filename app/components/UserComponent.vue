@@ -142,7 +142,6 @@ export default {
         add: function () {
             this.userInfoDialogVisible = true
             this.$nextTick(() => {
-                console.log(this.$refs['form'])
                 this.$refs['form'].resetFields();
             });
         },
