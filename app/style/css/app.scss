@@ -308,6 +308,15 @@ body {
   color: #C0C4CC;
 }
 
+//单选按钮
+.el-radio {
+  margin-right: 0 !important;
+}
+
+.el-radio.is-bordered + .el-radio.is-bordered {
+  margin-left: 0 !important;
+}
+
 //适配小屏幕
 @media screen and (max-width: 480px) {
   body {

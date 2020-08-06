@@ -14,6 +14,9 @@
                 <el-form-item v-if="step === 'project'">
                     <el-button type="danger" @click="batchAudit(0)">批量审核打回</el-button>
                 </el-form-item>
+                <el-form-item v-if="step === 'missionAlloc'">
+                    <el-button type="success" @click="batchAlloc()">分配</el-button>
+                </el-form-item>
                 <i class="fa fa-plus-circle fa-2x right-fa primary-fa" aria-hidden="true" v-if="step==='submission'"
                    @click="add"></i>
             </el-form>
@@ -98,11 +101,11 @@
                                 <td>
                                     <el-form-item prop="startDate">
                                         <el-date-picker
-                                                v-model="submissionForm.startDate" :disabled="step!=='submission'"
-                                                format="yyyy-MM-dd"
-                                                value-format="yyyy-MM-dd"
-                                                type="date"
-                                                placeholder="选择日期">
+                                            v-model="submissionForm.startDate" :disabled="step!=='submission'"
+                                            format="yyyy-MM-dd"
+                                            value-format="yyyy-MM-dd"
+                                            type="date"
+                                            placeholder="选择日期">
                                         </el-date-picker>
                                     </el-form-item>
                                 </td>
@@ -110,12 +113,12 @@
                                 <td>
                                     <el-form-item prop="endDate">
                                         <el-date-picker
-                                                v-model="submissionForm.endDate"
-                                                :disabled="step!=='submission'"
-                                                format="yyyy-MM-dd"
-                                                value-format="yyyy-MM-dd"
-                                                type="date"
-                                                placeholder="选择日期">
+                                            v-model="submissionForm.endDate"
+                                            :disabled="step!=='submission'"
+                                            format="yyyy-MM-dd"
+                                            value-format="yyyy-MM-dd"
+                                            type="date"
+                                            placeholder="选择日期">
                                         </el-date-picker>
                                     </el-form-item>
                                 </td>
@@ -257,10 +260,10 @@
                                                    :disabled="step!=='submission'"
                                                    @change="materialGroupChange">
                                             <el-option
-                                                    v-for="group in materialGroups"
-                                                    :key="group.id"
-                                                    :label="group.name"
-                                                    :value="group.id">
+                                                v-for="group in materialGroups"
+                                                :key="group.id"
+                                                :label="group.name"
+                                                :value="group.id">
                                             </el-option>
                                         </el-select>
                                     </el-form-item>
@@ -276,23 +279,23 @@
                                         </tr>
                                         <tr v-for="fileType of this.submissionForm.details">
                                             <td>
-                                                {{fileType.mName}}
+                                                {{ fileType.mName }}
                                             </td>
                                             <td>
                                                 <el-upload
-                                                        class="upload-demo"
-                                                        action="noAction"
-                                                        :http-request="upload"
-                                                        :with-credentials="true"
-                                                        :on-preview="handlePreview"
-                                                        :on-remove="handleRemove"
-                                                        :before-remove="beforeRemove"
-                                                        :on-success="afterUpload"
-                                                        :data="uploadParams"
-                                                        multiple
-                                                        :limit="3"
-                                                        :on-exceed="handleExceed"
-                                                        :file-list="fileType.mFiles">
+                                                    class="upload-demo"
+                                                    action="noAction"
+                                                    :http-request="upload"
+                                                    :with-credentials="true"
+                                                    :on-preview="handlePreview"
+                                                    :on-remove="handleRemove"
+                                                    :before-remove="beforeRemove"
+                                                    :on-success="afterUpload"
+                                                    :data="uploadParams"
+                                                    multiple
+                                                    :limit="3"
+                                                    :on-exceed="handleExceed"
+                                                    :file-list="fileType.mFiles">
                                                     <el-button size="small" type="primary" class="upload-btn"
                                                                v-if="step ==='submission'"
                                                                @click="toUpload(fileType.mId)">点击上传
@@ -319,16 +322,16 @@
                                         </tr>
                                         <tr v-for="comment of this.comments">
                                             <td>
-                                                {{comment.stageStr}}
+                                                {{ comment.stageStr }}
                                             </td>
                                             <td>
-                                                {{comment.creator.name}}
+                                                {{ comment.creator.name }}
                                             </td>
                                             <td>
-                                                {{comment.typeStr}}
+                                                {{ comment.typeStr }}
                                             </td>
                                             <td>
-                                                {{comment.content}}
+                                                {{ comment.content }}
                                             </td>
                                         </tr>
                                     </table>
@@ -388,399 +391,472 @@
                 <el-button @click="dialogVisible = false;print()">打印</el-button>
             </div>
         </el-dialog>
+
+        <!--信息Dialog-->
+        <el-dialog title="分配"
+                   :visible.sync="missionAllocVisible"
+                   :close-on-click-modal="false">
+            <template>
+                <el-form ref="allocForm" :model="allocForm">
+                    <el-form-item prop="auditType">
+                        <el-radio v-model="allocForm.auditType" label="in" border @change="allocTypeChange">内审
+                        </el-radio>
+                        <el-radio v-model="allocForm.auditType" label="out" border @change="allocTypeChange">外审
+                        </el-radio>
+                    </el-form-item>
+                    <el-form-item prop="target">
+                        <el-select v-model="allocForm.target" filterable :placeholder="targetPlaceholder">
+                            <el-option
+                                v-for="target in targets"
+                                :key="target.value"
+                                :label="target.label"
+                                :value="target.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="materialGroup">
+                        <el-input
+                            v-model="allocForm.tel"
+                            placeholder="审计人员联系方式"
+                            :disabled="true">
+                        </el-input>
+                    </el-form-item>
+                </el-form>
+            </template>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="missionAllocVisible = false">取 消</el-button>
+                <el-button type="primary" @click="missionAllocVisible=false;commit()">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 
 
-    import {Notification} from 'element-ui';
-    import TableComponent from "./TableComponent";
-    import MaterialFile from "../script/server/materialFile";
-    import Upload from "../script/server/upload"
-    import Audit from "../script/server/audit";
-    import Comment from "../script/server/comment";
-    import Config from "../script/config"
+import {Notification} from 'element-ui';
+import TableComponent from "./TableComponent";
+import MaterialFile from "../script/server/materialFile";
+import Upload from "../script/server/upload"
+import Audit from "../script/server/audit";
+import Comment from "../script/server/comment";
+import Config from "../script/config"
 
-    export default {
-        name: "AuditComponent",
-        data: function () {
-            return {
-                dialogVisible: false,
-                query: {
-                    projectName: '',
-                },
-                submissionForm: {
-                    id: '',
-                    itemCode: '',
-                    auditNo: '',
-                    contractNo: '',
-                    projectName: '',
-                    feeFrom: '',
-                    budget: 0,
-                    constructionUnit: '',
-                    startDate: '',
-                    endDate: '',
-                    contractMoney: 0,
-                    constructMoney: 0,
-                    installMoney: 0,
-                    constructionUnitApplyFee: 0,
-                    constructionUnitCheckFee: 0,
-                    constructionUnitTel: '',
-                    inspectUnitApplyFee: 0,
-                    inspectUnitCheckFee: 0,
-                    inspectUnitTel: '',
-                    buildUnitApplyFee: 0,
-                    buildUnitCheckFee: 0,
-                    buildUnitTel: '',
-                    content: '',
-                    description: '',
-                    materialGroup: '',
-                    details: [],
-                    status: 0,
-                },
-                rules: {
-                    projectName: [
-                        {required: true, message: '请输入工程项目名称', trigger: 'blur'},
-                    ],
-                    constructionUnit: [
-                        {required: true, message: '请输入施工单位名称', trigger: 'blur'},
-                    ],
-                    budget: [
-                        {required: true, message: '请填写预算', trigger: 'blur'},
-                        {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
-                    ],
-                    contractMoney: [
-                        {required: true, message: '请填写中标或合同金额', trigger: 'blur'},
-                        {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
-                    ],
-                    startDate: [
-                        {required: true, message: '请选择开工时间', trigger: 'blur'}
-                    ],
-                    endDate: [
-                        {required: true, message: '请选择竣工时间', trigger: 'blur'}
-                    ],
-                    materialGroup: [
-                        {required: true, message: '请选择资料清单组', trigger: 'blur'},
-                    ],
-                },
-                materialGroups: [],
-                tableConfig: {
-                    data: [],
-                    page: true,
-                    total: 0,
-                    currentPage: 1,
-                    pageMethod: this.toPage,
-                    checkBoxChange: this.checkBoxChange,
-                    checkable: false,
-                    cols: [
-                        {prop: 'itemCode', label: '项目立项代码', width: '150'},
-                        {prop: 'auditNo', label: '审计编号', width: '150'},
-                        {prop: 'projectName', label: '工程项目名称', width: '220'},
-                        {prop: 'constructionUnit', label: '施工单位名称', width: '220'},
-                    ],
-                    oper: []
-                },
-                uploadParams: {
-                    id: '',
-                },
-                listChecks: [],
-                comment: '',
-                comments: [],
-                stepCode: {
-                    submissionSave: -10,
-                    submissionCommit: 10,
-                    auditProject: 20
-                }
+export default {
+    name: "AuditComponent",
+    data: function () {
+        return {
+            dialogVisible: false,
+            missionAllocVisible: false,
+            query: {
+                projectName: '',
+            },
+            auditType: '',
+            allocForm: {
+                auditType: '',
+                target: '',
+                tel: '',
+            },
+            targetPlaceholder: '请选择',
+            targets: [],
+            submissionForm: {
+                id: '',
+                itemCode: '',
+                auditNo: '',
+                contractNo: '',
+                projectName: '',
+                feeFrom: '',
+                budget: 0,
+                constructionUnit: '',
+                startDate: '',
+                endDate: '',
+                contractMoney: 0,
+                constructMoney: 0,
+                installMoney: 0,
+                constructionUnitApplyFee: 0,
+                constructionUnitCheckFee: 0,
+                constructionUnitTel: '',
+                inspectUnitApplyFee: 0,
+                inspectUnitCheckFee: 0,
+                inspectUnitTel: '',
+                buildUnitApplyFee: 0,
+                buildUnitCheckFee: 0,
+                buildUnitTel: '',
+                content: '',
+                description: '',
+                materialGroup: '',
+                details: [],
+                status: 0,
+            },
+            rules: {
+                projectName: [
+                    {required: true, message: '请输入工程项目名称', trigger: 'blur'},
+                ],
+                constructionUnit: [
+                    {required: true, message: '请输入施工单位名称', trigger: 'blur'},
+                ],
+                budget: [
+                    {required: true, message: '请填写预算', trigger: 'blur'},
+                    {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
+                ],
+                contractMoney: [
+                    {required: true, message: '请填写中标或合同金额', trigger: 'blur'},
+                    {type: 'number', min: 0, message: '金额必须为正数', trigger: 'blur'}
+                ],
+                startDate: [
+                    {required: true, message: '请选择开工时间', trigger: 'blur'}
+                ],
+                endDate: [
+                    {required: true, message: '请选择竣工时间', trigger: 'blur'}
+                ],
+                materialGroup: [
+                    {required: true, message: '请选择资料清单组', trigger: 'blur'},
+                ],
+            },
+            materialGroups: [],
+            tableConfig: {
+                data: [],
+                page: true,
+                total: 0,
+                currentPage: 1,
+                pageMethod: this.toPage,
+                checkBoxChange: this.checkBoxChange,
+                checkable: false,
+                cols: [
+                    {prop: 'itemCode', label: '项目立项代码', width: '150'},
+                    {prop: 'auditNo', label: '审计编号', width: '150'},
+                    {prop: 'projectName', label: '工程项目名称', width: '220'},
+                    {prop: 'constructionUnit', label: '施工单位名称', width: '220'},
+                ],
+                oper: []
+            },
+            uploadParams: {
+                id: '',
+            },
+            listChecks: [],
+            comment: '',
+            comments: [],
+            stepCode: {
+                submissionSave: -10,
+                submissionCommit: 10,
+                auditProject: 20
             }
-        },
-        created: function () {
+        }
+    },
+    created: function () {
 
-        },
-        mounted() {
-            this.list()
-            this.getMGroups()
-            if (this.step === 'submission') {
-                this.tableConfig.checkable = false
-                this.tableConfig.oper = [
-                    {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
-                        tip: {content: '编辑', placement: 'top'},
-                        event: this.editRow,
-                    },
-                    {
-                        class: 'fa fa-trash-o fa-lg click-fa',
-                        tip: {content: '删除', placement: 'right'},
-                        event: this.deleteRow,
-                        check: true
-                    }
-                ]
-            } else if (this.step === 'project') {
-                this.tableConfig.checkable = true
-                this.tableConfig.oper = [
-                    {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '审核', placement: 'top'},
-                        event: this.editRow,
-                    },
-                ]
+    },
+    mounted() {
+        this.list()
+        this.getMGroups()
+        if (this.step === 'submission') {
+            this.tableConfig.checkable = false
+            this.tableConfig.oper = [
+                {
+                    class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                    tip: {content: '编辑', placement: 'top'},
+                    event: this.editRow,
+                },
+                {
+                    class: 'fa fa-trash-o fa-lg click-fa',
+                    tip: {content: '删除', placement: 'right'},
+                    event: this.deleteRow,
+                    check: true
+                }
+            ]
+        } else if (this.step === 'project') {
+            this.tableConfig.checkable = true
+            this.tableConfig.oper = [
+                {
+                    class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
+                    tip: {content: '审核', placement: 'top'},
+                    event: this.editRow,
+                },
+            ]
+        } else if (this.step === 'missionAlloc') {
+            this.tableConfig.checkable = true
+        }
+    },
+    props: ['step'],
+    watch: {
+        dialogVisible: function (newVal, oldVal) {
+            if (newVal) {
+                $(".upload-btn").show()
+            }
+        }
+    },
+    methods: {
+        allocTypeChange: function (val) {
+            if (val === 'in') {
+                this.targetPlaceholder = '请选择人员'
+                this.targets = [{
+                    value: '1',
+                    label: '张三'
+                }, {
+                    value: '2',
+                    label: '李四'
+                }]
+            } else {
+                this.targetPlaceholder = '请选择审计单位'
+                this.targets = [{
+                    value: '1',
+                    label: 'AAA'
+                }, {
+                    value: '2',
+                    label: 'BBB'
+                }]
             }
         },
-        props: ['step'],
-        watch: {
-            dialogVisible: function (newVal, oldVal) {
-                if (newVal) {
-                    $(".upload-btn").show()
-                }
-            }
+        queryList: function () {
+            this.list(this.query)
         },
-        methods: {
-            queryList: function () {
-                this.list(this.query)
-            },
-            add: function () {
-                this.dialogVisible = true
-                //清空
-                this.$nextTick(() => {
-                    this.$refs['submissionForm'].resetFields();
-                    this.submissionForm.details = []
-                    $(".print-info").hide()
-                    $(".comment").hide()
-                });
-            },
-            editRow: function (row) {
-                let comp = this
-                //清空
-                comp.submissionForm.details = []
-                comp.$nextTick(() => {
-                    $(".print-info").hide()
-                });
-                comp.dialogVisible = true
-                //加载form
-                Audit.getSubmission({id: row.id}).then(result => {
-                    comp.submissionForm = result.submission
-                    //填充清单组元数据信息到附件清单
-                    MaterialFile.getMaterialGroup({id: comp.submissionForm.materialGroup}).then(res => {
-                        for (let fType of res.materialGroup.details) {
-                            let detail = comp.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
-                            if (detail) {
-                                detail.mRequired = fType.material.required
-                            } else {
-                                comp.submissionForm.details.push({
-                                    mRequired: fType.material.required,
-                                    mId: fType.material.id,
-                                    mName: fType.material.name,
-                                    mFiles: [],
-                                    mFileIds: '',
-                                    mNote: ''
-                                })
-                            }
-                        }
-                    })
-                    //获取意见
-                    this.comments = []
-                    Comment.getComment({target: 'submission', targetId: comp.submissionForm.id}).then(res => {
-                        this.comments = res.list
-                    })
-                })
-            },
-            deleteRow: function (row) {
-                let comp = this
-                Audit.deleteSubmission({id: row.id}).then(result => {
-                    comp.$message({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                    comp.list({page: 1})
-                })
-            },
-            commit: function (stepCode) {
-                let comp = this
-                if (this.step === 'submission') {
-                    //送审提交
-                    this.$refs['submissionForm'].validate((valid) => {
-                        if (valid) {
-                            //验证附件上传情况
-                            for (let type of comp.submissionForm.details) {
-                                if (type.mRequired) {
-                                    if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
-                                        Notification.error({
-                                            title: '提交失败!',
-                                            message: type.mName + '必须上传附件或填写备注！',
-                                            duration: 5000
-                                        })
-                                        return
-                                    }
-                                }
-                            }
-                            //附件列表转换为serverId字符串
-                            for (let types of comp.submissionForm.details) {
-                                let ids = ''
-                                for (let file of types.mFiles) {
-                                    ids = ids + ',' + file.id
-                                }
-                                types.mFileIds = ids.substr(1)
-                            }
-                            //设置状态
-                            comp.submissionForm.status = stepCode
-                            Audit.saveSubmission(comp.submissionForm).then(result => {
-                                if (result) {
-                                    comp.operSuccess(comp)
-                                }
-                            })
-                        } else {
-                            Notification.error({
-                                title: '提交失败!',
-                                message: '表单信息有误,请检查!',
-                                duration: 2000
-                            })
-                            return false;
-                        }
-                    });
-                } else if (this.step === 'project') {
-                    let approve = (stepCode === this.stepCode.auditProject ? 1 : 0)
-                    Audit.saveAuditProject({
-                        target: 'submission',
-                        type: approve,
-                        targetId: comp.submissionForm.id,
-                        content: this.comment,
-                    }).then(result => {
-                        if (result) {
-                            comp.operSuccess(comp)
-                        }
-                    })
-                }
-            },
-            print: function () {
-                $(".upload-btn").hide()
-                $(".print-info").show()
-                $(".form").printArea({
-                    importCSS: false
-                })
-            },
-            handleRemove(file, fileList) {
-                //从附件列表中移除该文件
-                let comp = this
-                for (let types of comp.submissionForm.details) {
-                    let size = types.mFiles.length
-                    if (size !== 0) {
-                        types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
-                        if (types.mFiles.length < size) {
-                            break
-                        }
-                    }
-                }
-            },
-            handlePreview(file) {
-                window.open(file.url)
-            },
-            beforeRemove(file, fileList) {
-                if (this.step !== 'submission') {
-                    Notification.error({
-                        title: '操作失败!',
-                        message: '当前阶段不可移除附件!',
-                        duration: 2000
-                    })
-                    return false;
-                }
-                return this.$confirm(`确定移除 ${file.name}？`);
-            },
-            toPage: function (val) {
-                this.list({page: val})
-            },
-            materialGroupChange: function (value) {
-                //根据选择的清单组，初始化附加列表
-                let comp = this
-                MaterialFile.getMaterialGroup({id: value}).then(res => {
-                    comp.submissionForm.details.length = []
+        add: function () {
+            this.dialogVisible = true
+            //清空
+            this.$nextTick(() => {
+                this.$refs['submissionForm'].resetFields();
+                this.submissionForm.details = []
+                $(".print-info").hide()
+                $(".comment").hide()
+            });
+        },
+        editRow: function (row) {
+            let comp = this
+            //清空
+            comp.submissionForm.details = []
+            comp.$nextTick(() => {
+                $(".print-info").hide()
+            });
+            comp.dialogVisible = true
+            //加载form
+            Audit.getSubmission({id: row.id}).then(result => {
+                comp.submissionForm = result.submission
+                //填充清单组元数据信息到附件清单
+                MaterialFile.getMaterialGroup({id: comp.submissionForm.materialGroup}).then(res => {
                     for (let fType of res.materialGroup.details) {
-                        comp.submissionForm.details.push({
-                            mRequired: fType.material.required,
-                            mId: fType.material.id,    //清单类型id
-                            mName: fType.material.name,
-                            mFiles: [], //上传的文件列表
-                            mFileIds: '',  //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
-                            mNote: ''  //上传文件的备注
-                        })
+                        let detail = comp.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
+                        if (detail) {
+                            detail.mRequired = fType.material.required
+                        } else {
+                            comp.submissionForm.details.push({
+                                mRequired: fType.material.required,
+                                mId: fType.material.id,
+                                mName: fType.material.name,
+                                mFiles: [],
+                                mFileIds: '',
+                                mNote: ''
+                            })
+                        }
                     }
                 })
-            },
-            toUpload(typeId) {
-                //上传之前暂存当前要上传文件所属的清单组Id
-                this.uploadParams.id = typeId
-            },
-            upload(content) {
-                //自定义附件上传
-                let comp = this
-                let fd = new FormData()
-                fd.append('formFile', content.file)
-                Upload.upload(comp.uploadParams.id, fd, (event) => {
-                    let num = event.loaded / event.total * 100 | 0;
-                    content.onProgress({percent: num})
-                }).then(res => {
-                    content.onSuccess()
-                    //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
-                    comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push({
-                        'id': res.id,
-                        'uid': content.file.uid,
-                        'name': content.file.name
-                    })
+                //获取意见
+                this.comments = []
+                Comment.getComment({target: 'submission', targetId: comp.submissionForm.id}).then(res => {
+                    this.comments = res.list
                 })
-            },
-            list(config) {
-                let data = Config.page
-                for (let prop in config) {
-                    data[prop] = config[prop]
-                }
-                //根据审计阶段,设置状态过滤条件
-                switch (this.step) {
-                    case 'submission':
-                        data['status'] = this.stepCode.submissionSave
-                        break
-                    case 'project':
-                        data['status'] = this.stepCode.submissionCommit
-                        break
-                }
-
-                this.tableConfig.currentPage = data.page
-                Audit.getSubmissions(data).then(res => {
-                    //如果以后多选框,清除所选数据
-                    this.listChecks = []
-                    this.tableConfig.data = res.list.content
-                    this.tableConfig.total = res.list.totalElements
-                })
-            },
-            getMGroups() {
-                MaterialFile.getMaterialGroups().then(res => {
-                    this.materialGroups = res.list
-                })
-            },
-            checkBoxChange(val) {
-                this.listChecks = val
-            },
-            batchAudit(approve) {
-                let comp = this
-                Audit.saveAuditProjects({
+            })
+        },
+        deleteRow: function (row) {
+            let comp = this
+            Audit.deleteSubmission({id: row.id}).then(result => {
+                comp.$message({
+                    message: '删除成功',
+                    type: 'success'
+                });
+                comp.list({page: 1})
+            })
+        },
+        commit: function (stepCode) {
+            let comp = this
+            if (this.step === 'submission') {
+                //送审提交
+                this.$refs['submissionForm'].validate((valid) => {
+                    if (valid) {
+                        //验证附件上传情况
+                        for (let type of comp.submissionForm.details) {
+                            if (type.mRequired) {
+                                if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
+                                    Notification.error({
+                                        title: '提交失败!',
+                                        message: type.mName + '必须上传附件或填写备注！',
+                                        duration: 5000
+                                    })
+                                    return
+                                }
+                            }
+                        }
+                        //附件列表转换为serverId字符串
+                        for (let types of comp.submissionForm.details) {
+                            let ids = ''
+                            for (let file of types.mFiles) {
+                                ids = ids + ',' + file.id
+                            }
+                            types.mFileIds = ids.substr(1)
+                        }
+                        //设置状态
+                        comp.submissionForm.status = stepCode
+                        Audit.saveSubmission(comp.submissionForm).then(result => {
+                            if (result) {
+                                comp.operSuccess(comp)
+                            }
+                        })
+                    } else {
+                        Notification.error({
+                            title: '提交失败!',
+                            message: '表单信息有误,请检查!',
+                            duration: 2000
+                        })
+                        return false;
+                    }
+                });
+            } else if (this.step === 'project') {
+                let approve = (stepCode === this.stepCode.auditProject ? 1 : 0)
+                Audit.saveAuditProject({
+                    target: 'submission',
                     type: approve,
-                    targetIds: this.listChecks.map(form => form.id),
-                    content: '',
+                    targetId: comp.submissionForm.id,
+                    content: this.comment,
                 }).then(result => {
                     if (result) {
                         comp.operSuccess(comp)
                     }
                 })
-            },
-            operSuccess(comp) {
-                comp.dialogVisible = false
-                comp.$message({
-                    message: '提交成功',
-                    type: 'success'
-                });
-                comp.list({page: 1})
             }
         },
-        components: {TableComponent}
-    }
+        print: function () {
+            $(".upload-btn").hide()
+            $(".print-info").show()
+            $(".form").printArea({
+                importCSS: false
+            })
+        },
+        handleRemove(file, fileList) {
+            //从附件列表中移除该文件
+            let comp = this
+            for (let types of comp.submissionForm.details) {
+                let size = types.mFiles.length
+                if (size !== 0) {
+                    types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
+                    if (types.mFiles.length < size) {
+                        break
+                    }
+                }
+            }
+        },
+        handlePreview(file) {
+            window.open(file.url)
+        },
+        beforeRemove(file, fileList) {
+            if (this.step !== 'submission') {
+                Notification.error({
+                    title: '操作失败!',
+                    message: '当前阶段不可移除附件!',
+                    duration: 2000
+                })
+                return false;
+            }
+            return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        toPage: function (val) {
+            this.list({page: val})
+        },
+        materialGroupChange: function (value) {
+            //根据选择的清单组，初始化附加列表
+            let comp = this
+            MaterialFile.getMaterialGroup({id: value}).then(res => {
+                comp.submissionForm.details.length = []
+                for (let fType of res.materialGroup.details) {
+                    comp.submissionForm.details.push({
+                        mRequired: fType.material.required,
+                        mId: fType.material.id,    //清单类型id
+                        mName: fType.material.name,
+                        mFiles: [], //上传的文件列表
+                        mFileIds: '',  //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
+                        mNote: ''  //上传文件的备注
+                    })
+                }
+            })
+        },
+        toUpload(typeId) {
+            //上传之前暂存当前要上传文件所属的清单组Id
+            this.uploadParams.id = typeId
+        },
+        upload(content) {
+            //自定义附件上传
+            let comp = this
+            let fd = new FormData()
+            fd.append('formFile', content.file)
+            Upload.upload(comp.uploadParams.id, fd, (event) => {
+                let num = event.loaded / event.total * 100 | 0;
+                content.onProgress({percent: num})
+            }).then(res => {
+                content.onSuccess()
+                //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
+                comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push({
+                    'id': res.id,
+                    'uid': content.file.uid,
+                    'name': content.file.name
+                })
+            })
+        },
+        list(config) {
+            let data = {...Config.page}
+
+            for (let prop in config) {
+                data[prop] = config[prop]
+            }
+            //根据审计阶段,设置状态过滤条件
+            switch (this.step) {
+                case 'submission':
+                    data['status'] = this.stepCode.submissionSave
+                    break
+                case 'project':
+                    data['status'] = this.stepCode.submissionCommit
+                    break
+            }
+
+            this.tableConfig.currentPage = data.page
+            Audit.getSubmissions(data).then(res => {
+                //如果以后多选框,清除所选数据
+                this.listChecks = []
+                this.tableConfig.data = res.list.content
+                this.tableConfig.total = res.list.totalElements
+            })
+        },
+        getMGroups() {
+            MaterialFile.getMaterialGroups().then(res => {
+                this.materialGroups = res.list
+            })
+        },
+        checkBoxChange(val) {
+            this.listChecks = val
+        },
+        batchAudit(approve) {
+            let comp = this
+            Audit.saveAuditProjects({
+                type: approve,
+                targetIds: this.listChecks.map(form => form.id),
+                content: '',
+            }).then(result => {
+                if (result) {
+                    comp.operSuccess(comp)
+                }
+            })
+        },
+        batchAlloc() {
+            this.missionAllocVisible = true
+        },
+        operSuccess(comp) {
+            comp.dialogVisible = false
+            comp.$message({
+                message: '提交成功',
+                type: 'success'
+            });
+            comp.list({page: 1})
+        }
+    },
+    components: {TableComponent}
+}
 </script>
 
 <style scoped>

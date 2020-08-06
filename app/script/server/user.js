@@ -1,28 +1,16 @@
 import Net from './net.js'
 
 export default {
-    getUsers: function () {
-        let users = []
-        let userData = [{
-            empcode: '0001',
-            name: '张三',
-            org: '绿化科'
-        }, {
-            empcode: '0002',
-            name: '李四',
-            org: '水电科'
-        }, {
-            empcode: '0003',
-            name: '王五',
-            org: '用户服务科'
-        }, {
-            empcode: '0004',
-            name: '赵六',
-            org: '规划科'
-        }]
-        for (let user of userData) {
-            users.push(user.empcode + '-' + user.name + '-' + user.org)
-        }
-        return users
+    saveUser: function (data) {
+        return Net.jsonPost('/user/addOrUpdate/', data);
+    },
+    getUsers: function (data) {
+        return Net.get('/user/list/', data);
+    },
+    getUser: function (data) {
+        return Net.get('/user/get/', data);
+    },
+    deleteUser: function (data) {
+        return Net.post('/user/delete/', data);
     }
 }

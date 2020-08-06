@@ -1,5 +1,5 @@
 <template>
-    <user-component v-bind:type="'sysuser'"></user-component>
+    <user-component v-bind:type="'intermediary'"></user-component>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
 import UserComponent from "./UserComponent";
 
 export default {
-    name: "SysUser",
+    name: "SysIntermediary",
     data: function () {
         return {}
     },
@@ -15,9 +15,7 @@ export default {
 
     },
     methods: {},
-    components: {
-        UserComponent
-    }
+    components: {UserComponent}
 }
 </script>
 

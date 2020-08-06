@@ -56,6 +56,8 @@
     import Config from "../script/config";
     import AuditProject from "./AuditProject";
     import SysUser from "./SysUser";
+    import SysIntermediary from "./SysIntermediary";
+    import MissionAlloc from "./MissionAlloc";
 
     export default {
         name: "leftMenuFrame",
@@ -104,10 +106,12 @@
             SysRole,
             AuditSubmission,
             AuditProject,
+            MissionAlloc,
             SysMenu,
             SysMaterialFile,
             SysMaterialFileGroup,
             SysUser,
+            SysIntermediary,
         }
     }
 </script>
