@@ -9,6 +9,7 @@
 
 import AuditComponent from "./AuditComponent";
 import Audit from "../script/server/audit";
+import ClientCall from "../script/client/clientCall"
 
 export default {
     name: "AuditProject",
@@ -40,40 +41,23 @@ export default {
         }
     },
     methods: {
-        auditAgree(operSuccess, comp, comment, formId) {
-            this.audit(1, operSuccess, comp, comment, formId)
+        auditAgree(comp, comment, formId) {
+            this.audit(1, comp, comment, formId)
         },
-        auditReject(operSuccess, comp, comment, formId) {
-            this.audit(0, operSuccess, comp, comment, formId)
+        auditReject(comp, comment, formId) {
+            this.audit(0, comp, comment, formId)
         },
-        audit(approve, operSuccess, comp, comment, formId) {
-            Audit.saveAuditProject({
-                target: 'submission',
-                type: approve,
-                targetId: formId,
-                content: comment,
-            }).then(result => {
-                if (result) {
-                    comp.operSuccess(comp)
-                }
-            })
+        audit(approve, comp, comment, formId) {
+            ClientCall.audit(approve, comp, comment, formId)
         },
-        batchAuditAgree(checks, operSuccess, comp) {
-            this.batchAudit(1, checks, operSuccess, comp)
+        batchAuditAgree(checks, comp) {
+            this.batchAudit(1, checks, comp)
         },
-        batchAuditReject(checks, operSuccess, comp) {
-            this.batchAudit(0, checks, operSuccess, comp)
+        batchAuditReject(checks, comp) {
+            this.batchAudit(0, checks, comp)
         },
-        batchAudit(approve, checks, operSuccess, comp) {
-            Audit.saveAuditProjects({
-                type: approve,
-                targetIds: checks.map(form => form.id),
-                content: '',
-            }).then(result => {
-                if (result) {
-                    operSuccess(comp)
-                }
-            })
+        batchAudit(approve, checks, comp) {
+            ClientCall.batchAudit(approve, checks, comp)
         },
     },
     components: {AuditComponent}
