@@ -34,6 +34,8 @@ import SubmissionForm from "./SubmissionForm";
 import ClientCall from "../script/client/clientCall"
 import Config from "../script/config";
 import Audit from "../script/server/audit";
+import ProjectAudit from "../script/client/projectOper"
+
 import {Notification} from "element-ui";
 
 export default {
@@ -43,6 +45,8 @@ export default {
     },
     mounted() {
         this.list()
+        ProjectAudit.comp = this
+        this.formOpers = ProjectAudit.buttons
     },
     data: function () {
         return {
@@ -50,10 +54,7 @@ export default {
             query: {
                 projectName: '',
             },
-            formOpers: [
-                {name: '审核', color: 'success', event: this.auditAgree},
-                {name: '打回修改', color: 'danger', event: this.auditReject}
-            ],
+            formOpers: [],
             tableConfig: {
                 data: [],
                 page: true,
@@ -81,19 +82,6 @@ export default {
         }
     },
     methods: {
-        auditAgree(comment, formId) {
-            this.audit(1, comment, formId)
-        },
-        auditReject(comment, formId) {
-            this.audit(0, comment, formId)
-        },
-        audit(approve, comment, formId) {
-            ClientCall.audit(approve, comment, formId).then(result => {
-                if (result) {
-                    this.operSuccess()
-                }
-            })
-        },
         checkBoxChange(val) {
             this.listChecks = val
         },

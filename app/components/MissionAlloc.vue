@@ -22,9 +22,7 @@
                          v-bind:formId="formId">
         </submission-form>
         <alloc-form v-bind:visible="allocFormVisible"
-                    v-bind:checks="checks"
-                    v-bind:commitCallback="commitCallback"
-                    v-bind:listComp="listComp">
+                    v-bind:commitCallback="commitCallback">
         </alloc-form>
     </div>
 </template>
@@ -86,7 +84,6 @@ export default {
             this.listChecks = val
         },
         commitCallback(form) {
-            console.log(form)
             this.operSuccess()
         },
         batchAlloc() {

@@ -58,6 +58,7 @@ import AuditProject from "./AuditProject";
 import SysUser from "./SysUser";
 import SysIntermediary from "./SysIntermediary";
 import MissionAlloc from "./MissionAlloc";
+import WillDo from "./WillDo";
 
 export default {
     name: "leftMenuFrame",
@@ -75,6 +76,8 @@ export default {
         menus: function (newVal, oldVal) {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
+            this.leftActiveIndex = newVal[0].value
+            this.currentComponent = newVal[0].value
         }
     },
     mounted: function () {
@@ -110,6 +113,7 @@ export default {
         SysMaterialFileGroup,
         SysUser,
         SysIntermediary,
+        WillDo,
     }
 }
 </script>

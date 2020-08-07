@@ -1,4 +1,5 @@
 import Audit from "../server/audit";
+import Workitem from "../server/workitem"
 
 export default {
     //审计立项
@@ -18,4 +19,8 @@ export default {
             content: '',
         })
     },
+    //获得待办
+    getWillDo(data) {
+        return Workitem.getWillDo(data)
+    }
 }
