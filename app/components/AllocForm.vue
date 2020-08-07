@@ -43,7 +43,7 @@ import User from "../script/server/user";
 
 export default {
     name: "AllocForm",
-    props: ['visible', 'listComp'],
+    props: ['visible', 'commitCallback'],
     watch: {
         visible: function (newVal) {
             if (newVal) {
@@ -79,8 +79,7 @@ export default {
         allocCommit: function () {
             this.$refs['allocForm'].validate((valid) => {
                 if (valid) {
-                    this.visible = false;
-                    this.listComp.operSuccess(this.listComp)
+                    this.commitCallback(this.allocForm)
                 }
             })
         },

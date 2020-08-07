@@ -372,7 +372,7 @@ import Comment from "../script/server/comment";
 
 export default {
     name: "SubmissionForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'operSuccess', 'parentComp', 'formId'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId'],
     watch: {
         visible: function (newVal) {
             if (newVal) {
@@ -471,7 +471,7 @@ export default {
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
                         //自定义验证加提交
-                        event(this.operSuccess, this.parentComp, this.submissionForm)
+                        event(this.submissionForm)
                     } else {
                         Notification.error({
                             title: '提交失败!',
@@ -482,7 +482,7 @@ export default {
                     }
                 });
             } else {
-                event(this.parentComp, this.comment, this.submissionForm.id)
+                event(this.comment, this.submissionForm.id)
             }
         },
         print: function () {
