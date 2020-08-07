@@ -66,9 +66,9 @@ export default {
         return {
             oneLevelMenu: [],
             MultiLevelMenu: [],
-            leftActiveIndex: 'willDo',
+            leftActiveIndex: '',
             isCollapse: false,
-            currentComponent: 'willDo'
+            currentComponent: ''
         }
     },
     props: ['menus'],
@@ -76,8 +76,13 @@ export default {
         menus: function (newVal, oldVal) {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
-            this.leftActiveIndex = newVal[0].value
-            this.currentComponent = newVal[0].value
+            if (newVal.length === 4) {
+                this.leftActiveIndex = 'willDo'
+                this.currentComponent = 'willDo'
+            }else{
+                this.leftActiveIndex = newVal[0].value
+                this.currentComponent = newVal[0].value
+            }
         }
     },
     mounted: function () {

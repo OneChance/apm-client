@@ -9,7 +9,7 @@
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="batchOper(1)">批量同意</el-button>
+                    <el-button type="success" @click="batchOper(1)">批量处理</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="batchOper(0)">批量打回</el-button>
@@ -25,7 +25,7 @@
                          v-bind:formId="formId">
         </submission-form>
         <alloc-form v-bind:visible="forms.alloc.visible"
-                    v-bind:commitCallback="commitCallback">
+                    v-bind:commitCallback="allocCallback">
         </alloc-form>
     </div>
 </template>
@@ -48,7 +48,6 @@ export default {
     mounted() {
         this.list()
         ProjectAudit.comp = this
-        this.forms.submission.formOpers = ProjectAudit.buttons
     },
     data: function () {
         return {
@@ -91,7 +90,8 @@ export default {
         }
     },
     methods: {
-        commitCallback(form) {
+        allocCallback(form) {
+            ClientCall.batchAlloc(form, this.listChecks)
             this.operSuccess()
         },
         checkBoxChange(val) {
@@ -123,16 +123,26 @@ export default {
                                 this.operSuccess()
                             }
                         })
+                    } else if (stage === 'distribution') {
+                        this.forms.submission.visible = false
+                        this.forms.alloc.visible = false
+                        this.forms.alloc.visible = true
                     }
                 }
             }
         },
         editRow: function (row) {
-            //根据待办类型判断显示哪一个form,目前只有submissionForm
+            //根据待办类型生成form
+            this.forms.alloc.visible = false
             this.forms.submission.visible = false
             this.forms.submission.visible = true
             this.forms.submission.step = row.stage
-            this.formId = row.id
+            if (row.stage === 'project') {
+                this.forms.submission.formOpers = ProjectAudit.buttons
+            } else {
+                this.forms.submission.formOpers = []
+            }
+            this.formId = row.targetId
         },
         queryList: function () {
             this.list(this.query)

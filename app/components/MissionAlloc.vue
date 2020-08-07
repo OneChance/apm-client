@@ -34,6 +34,7 @@ import SubmissionForm from "./SubmissionForm";
 import Config from "../script/config";
 import Audit from "../script/server/audit";
 import {Notification} from "element-ui";
+import ClientCall from "../script/client/clientCall";
 
 export default {
     name: "MissionAlloc",
@@ -84,6 +85,7 @@ export default {
             this.listChecks = val
         },
         commitCallback(form) {
+            ClientCall.batchAlloc(form, this.listChecks)
             this.operSuccess()
         },
         batchAlloc() {
@@ -94,11 +96,13 @@ export default {
                     duration: 3000
                 })
             } else {
+                this.submissionFormVisible = false
                 this.allocFormVisible = false
                 this.allocFormVisible = true
             }
         },
         editRow: function (row) {
+            this.allocFormVisible = false
             this.submissionFormVisible = false
             this.submissionFormVisible = true
             this.formId = row.id
