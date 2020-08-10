@@ -9,7 +9,10 @@
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="batchAlloc">分配</el-button>
+                    <el-button type="success" @click="batchAlloc(1)">分配</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="danger" @click="batchAlloc(0)">打回</el-button>
                 </el-form-item>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">
@@ -85,10 +88,11 @@ export default {
             this.listChecks = val
         },
         commitCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks)
-            this.operSuccess()
+            ClientCall.batchAlloc(form, this.listChecks.map(form => form.id), 1).then(result => {
+                this.operSuccess()
+            })
         },
-        batchAlloc() {
+        batchAlloc(approve) {
             if (this.listChecks.length === 0) {
                 Notification.error({
                     title: '操作失败!',
@@ -96,9 +100,15 @@ export default {
                     duration: 3000
                 })
             } else {
-                this.submissionFormVisible = false
-                this.allocFormVisible = false
-                this.allocFormVisible = true
+                if (approve === 1) {
+                    this.submissionFormVisible = false
+                    this.allocFormVisible = false
+                    this.allocFormVisible = true
+                } else {
+                    ClientCall.batchAlloc(null, this.listChecks.map(form => form.id), 0).then(result => {
+                        this.operSuccess()
+                    })
+                }
             }
         },
         editRow: function (row) {

@@ -29,119 +29,121 @@
 
 <script>
 
-    import Account from '../script/server/account.js'
-    import App from '../script/app.js'
-    import md5 from 'js-md5';
+import Account from '../script/server/account.js'
+import App from '../script/app.js'
+import md5 from 'js-md5';
 
-    export default {
-        data: function () {
-            return {
-                name: '',
-                password: ''
+export default {
+    data: function () {
+        return {
+            name: '',
+            password: ''
+        }
+    },
+    watch: {
+        name: function () {
+            this.checkInput();
+        },
+        password: function () {
+            this.checkInput();
+        }
+    },
+    methods: {
+        checkInput: function () {
+            if (this.password && this.name) {
+                $(".sign-local-btn").removeAttr("disabled").removeClass("is-disabled")
+            } else {
+                $(".sign-local-btn").attr("disabled", "disabled").addClass("is-disabled")
             }
         },
-        watch: {
-            name: function () {
-                this.checkInput();
-            },
-            password: function () {
-                this.checkInput();
-            }
+        signIn: function () {
+            Account.signIn({
+                username: this.name,
+                password: md5(this.password)
+            }).then(this.signCallback);
         },
-        methods: {
-            checkInput: function () {
-                if (this.password && this.name) {
-                    $(".sign-local-btn").removeAttr("disabled").removeClass("is-disabled")
-                } else {
-                    $(".sign-local-btn").attr("disabled", "disabled").addClass("is-disabled")
-                }
-            },
-            signIn: function () {
-                Account.signIn({
-                    username: this.name,
-                    password: md5(this.password)
-                }).then(this.signCallback).catch(this.serverErrorCallback);
-            },
-            authCenter: function () {
-                window.location.href = "https://uaaap.yzu.edu.cn/cas/login?service=http%3a%2f%2fwxgl.yzu.edu.cn/sys/index.page";
-            },
-            signCallback: function (res) {
+        authCenter: function () {
+            window.location.href = "https://uaaap.yzu.edu.cn/cas/login?service=http%3a%2f%2fwxgl.yzu.edu.cn/sys/index.page";
+        },
+        signCallback: function (res) {
+            if (res) {
                 App.router.$router.push('index')
-            },
+            }
         },
-        mounted: function () {
-            let comp = this
-            $(document).on('keydown', (e) => {
-                if (e.keyCode === 13) {
-                    if (comp.password && comp.name) {
-                        comp.signIn();
-                    }
+    },
+    mounted: function () {
+        let comp = this
+        $(document).on('keydown', (e) => {
+            if (e.keyCode === 13) {
+                if (comp.password && comp.name) {
+                    comp.signIn();
                 }
-            });
-        },
-    }
+            }
+        });
+    },
+}
 </script>
 
 <style scoped>
 
-    .login-card {
-        width: 350px;
-        height: 350px;
-        margin-top: 160px;
-    }
+.login-card {
+    width: 350px;
+    height: 350px;
+    margin-top: 160px;
+}
 
-    .sign-title {
-        font-size: x-large;
-        color: #e1184a;
-        font-weight: 700;
-    }
+.sign-title {
+    font-size: x-large;
+    color: #e1184a;
+    font-weight: 700;
+}
 
-    .header {
-        text-align: center;
-    }
+.header {
+    text-align: center;
+}
 
-    .clearfix:after {
-        visibility: hidden;
-        display: block;
-        font-size: 0;
-        content: " ";
-        clear: both;
-        height: 0;
-    }
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
 
-    .sign-btn {
-        width: 100%;
-    }
+.sign-btn {
+    width: 100%;
+}
 
-    .center {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        background-color: #f7f3f3;
-        display: flex;
-        justify-content: center;
-    }
+.center {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-color: #f7f3f3;
+    display: flex;
+    justify-content: center;
+}
 
-    .logo img {
-        vertical-align: middle;
-        padding-right: 10px;
-    }
+.logo img {
+    vertical-align: middle;
+    padding-right: 10px;
+}
 
-    .logo span {
-        border-left: 1px solid #b9bfcf;
-        padding-left: 10px;
-    }
+.logo span {
+    border-left: 1px solid #b9bfcf;
+    padding-left: 10px;
+}
 
-    .foot {
-        text-align: center;
-        margin-top: 40px;
-        font-size: 12px;
-        position: absolute;
-        bottom: 30px;
-        left: calc(50% - 55px);
-        color: #e1184a;
-    }
+.foot {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    position: absolute;
+    bottom: 30px;
+    left: calc(50% - 55px);
+    color: #e1184a;
+}
 </style>

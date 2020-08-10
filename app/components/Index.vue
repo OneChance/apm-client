@@ -16,7 +16,7 @@
                          active-text-color="#fff"
                          @select="handleSelect">
                     <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value">
-                        {{menu.label }}
+                        {{ menu.label }}
                     </el-menu-item>
                 </el-menu>
             </el-col>
@@ -29,7 +29,7 @@
                     <el-submenu :index="menu.index" v-for="menu in userOper" :key="menu.value">
                         <template slot="title">{{ menu.name }}</template>
                         <el-menu-item :index="m.index" v-for="m in menu.sub" :key="m.value">
-                            {{m.name}}
+                            {{ m.name }}
                         </el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -38,15 +38,15 @@
 
         <!-- 小屏幕菜单 -->
         <el-menu
-                default-active="personal"
-                class="el-menu-vertical-demo small-menu"
-                text-color="#303133"
-                active-text-color="#e1184a"
-                @select="handleSelect">
+            default-active="personal"
+            class="el-menu-vertical-demo small-menu"
+            text-color="#303133"
+            active-text-color="#e1184a"
+            @select="handleSelect">
             <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value">
                 <i :class="'fa '+menu.icon+' fa-lg fa-inverse'"></i>
                 <span slot="title">
-                        {{menu.label}}
+                        {{ menu.label }}
                 </span>
             </el-menu-item>
         </el-menu>
@@ -59,78 +59,79 @@
 </template>
 
 <script>
-    require('../style/css/anim.scss');
-    import Menu from '../script/server/menu.js'
-    import Account from '../script/server/account.js'
-    import App from '../script/app.js'
-    import LeftMenuFrame from '../components/LeftMenuFrame.vue'
+require('../style/css/anim.scss');
+import Menu from '../script/server/menu.js'
+import Account from '../script/server/account.js'
+import App from '../script/app.js'
+import LeftMenuFrame from '../components/LeftMenuFrame.vue'
 
-    export default {
-        created: function () {
+export default {
+    created: function () {
 
-        },
-        data: function () {
-            return {
-                img: require("../assets/images/header.jpg"),
-                menus: [],
-                leftMenus: [],
-                activeMenuIndex: 'my',
-                userOper: [
-                    {
-                        index: 'userOper', name: '管理员', sub: [
-                            {index: 'sign', name: '退出'},
-                        ]
-                    }
-                ],
-                currentComponent: 'leftMenuFrame'   //默认加载左边为菜单的组件
-            }
-        },
-        mounted: function () {
-            let comp = this;
-            Menu.getMenu().then(res => {
-                comp.menus = res.menus
-                comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
-            })
-
-            Account.getLoginUser().then(res => {
-                console.log()
-                this.userOper[0].name = res.user.name
-            })
-
-            this.$nextTick(() => {
-                $('.small-menu-bar').on('click', function (e) {
-                    e.preventDefault();
-                    $('.small-menu')[0].style.webkitTransform = "translate(0px,0px)";
-                })
-            });
-
-            window.onresize = () => {
-                return (() => {
-                    App.hub.$emit('windowResize', document.body.clientWidth)
-                })();
-            };
-        },
-        methods: {
-            signOut: function () {
-                App.router.$router.push('sign');
-                /*Account.signOut().then(() => {
-                    App.router.$router.push('sign');
-                })*/
-            },
-            handleSelect(key, keyPath) {
-                if (key === 'sign') {
-                    this.signOut()
-                } else {
-                    $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
-                    //如果非左边菜单架构，替换当前组件
-                    //this.currentComponent = key
-                    //否则，替换组件数据
-                    this.leftMenus = this.menus.filter(menu => menu.value === key)[0].children
+    },
+    data: function () {
+        return {
+            img: require("../assets/images/header.jpg"),
+            menus: [],
+            leftMenus: [],
+            activeMenuIndex: 'my',
+            userOper: [
+                {
+                    index: 'userOper', name: '管理员', sub: [
+                        {index: 'sign', name: '退出'},
+                    ]
                 }
-            }
+            ],
+            currentComponent: 'leftMenuFrame'   //默认加载左边为菜单的组件
+        }
+    },
+    mounted: function () {
+        let comp = this;
+        Menu.getMenu().then(res => {
+            comp.menus = res.menus
+            comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
+        })
+
+        Account.getLoginUser().then(res => {
+            console.log()
+            this.userOper[0].name = res.user.name
+        })
+
+        this.$nextTick(() => {
+            $('.small-menu-bar').on('click', function (e) {
+                e.preventDefault();
+                $('.small-menu')[0].style.webkitTransform = "translate(0px,0px)";
+            })
+        });
+
+        window.onresize = () => {
+            return (() => {
+                App.hub.$emit('windowResize', document.body.clientWidth)
+            })();
+        };
+    },
+    methods: {
+        signOut: function () {
+            Account.logOut().then(result => {
+                App.router.$router.push('sign');
+            })
+            $.cookie('apm_token', null, {path: '/'});
+            $.cookie('apm_user', null, {path: '/'});
         },
-        components: {LeftMenuFrame},
-    }
+        handleSelect(key, keyPath) {
+            if (key === 'sign') {
+                this.signOut()
+            } else {
+                $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
+                //如果非左边菜单架构，替换当前组件
+                //this.currentComponent = key
+                //否则，替换组件数据
+                this.leftMenus = this.menus.filter(menu => menu.value === key)[0].children
+            }
+        }
+    },
+    components: {LeftMenuFrame},
+}
 </script>
 
 <style scoped>

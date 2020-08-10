@@ -2,8 +2,13 @@
 
 import Audit from "../server/audit";
 import Workitem from "../server/workitem"
+import Net from "../server/net";
 
 export default {
+    //保存送审
+    saveSubmission: function (data) {
+        return Audit.saveSubmission(data)
+    },
     //审计立项
     audit(approve, comment, formId) {
         return Audit.saveAuditProject({
@@ -17,7 +22,7 @@ export default {
     batchAudit(approve, checks) {
         return Audit.saveAuditProjects({
             type: approve,
-            targetIds: checks.map(form => form.id),
+            targetIds: checks,
             content: '',
         })
     },
@@ -26,7 +31,22 @@ export default {
         return Workitem.getWillDo(data)
     },
     //批量分配
-    batchAlloc(form, checks) {
-        console.log(checks)
+    batchAlloc(form, checks, approve) {
+        let data = {
+            type: approve,
+            targetIds: checks,
+        }
+        if (form) {
+            data.assignedId = form.target
+        }
+        return Audit.allocMissions(data)
+    },
+    //批量审核分配
+    batchAllocApprove(comment, checks, approve) {
+        return Audit.allocApprove({
+            type: approve,
+            targetIds: checks,
+            comment: comment,
+        })
     }
 }

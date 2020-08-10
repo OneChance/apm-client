@@ -39,6 +39,8 @@ import ClientCall from "../script/client/clientCall"
 import Config from "../script/config";
 import {Notification} from "element-ui";
 import ProjectAudit from "../script/client/projectOper"
+import AllocApprove from "../script/client/allocApproveOper"
+import RejectedOper from "../script/client/rejectedOper"
 
 export default {
     name: "WillDo",
@@ -47,7 +49,6 @@ export default {
     },
     mounted() {
         this.list()
-        ProjectAudit.comp = this
     },
     data: function () {
         return {
@@ -91,8 +92,9 @@ export default {
     },
     methods: {
         allocCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks)
-            this.operSuccess()
+            ClientCall.batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(result => {
+                this.operSuccess()
+            })
         },
         checkBoxChange(val) {
             this.listChecks = val
@@ -117,16 +119,32 @@ export default {
                     })
                 } else {
                     let stage = this.listChecks[0].stage
-                    if (stage === 'project') {
-                        ClientCall.batchAudit(approve, this.listChecks).then(result => {
+                    if (stage === 'project') {//批量审核立项
+                        ClientCall.batchAudit(approve, this.listChecks.map(form => form.targetId)).then(result => {
                             if (result) {
                                 this.operSuccess()
                             }
                         })
-                    } else if (stage === 'distribution') {
-                        this.forms.submission.visible = false
-                        this.forms.alloc.visible = false
-                        this.forms.alloc.visible = true
+                    } else if (stage === 'distribution') {//批量分配
+                        if (approve === 1) {
+                            this.forms.submission.visible = false
+                            this.forms.alloc.visible = false
+                            this.forms.alloc.visible = true
+                        } else {
+                            ClientCall.batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(result => {
+                                this.operSuccess()
+                            })
+                        }
+                    } else if (stage === 'assigned') {//批量审核分配
+                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(result => {
+                            this.operSuccess()
+                        })
+                    } else if (stage === 'reject') {
+                        Notification.error({
+                            title: '操作失败!',
+                            message: '当前阶段不可批量操作！',
+                            duration: 3000
+                        })
                     }
                 }
             }
@@ -138,7 +156,14 @@ export default {
             this.forms.submission.visible = true
             this.forms.submission.step = row.stage
             if (row.stage === 'project') {
+                ProjectAudit.comp = this //设置当前组件,用于回调刷新列表方法
                 this.forms.submission.formOpers = ProjectAudit.buttons
+            } else if (row.stage === 'assigned') {
+                AllocApprove.comp = this
+                this.forms.submission.formOpers = AllocApprove.buttons
+            } else if (row.stage === 'reject') {
+                RejectedOper.comp = this
+                this.forms.submission.formOpers = RejectedOper.buttons
             } else {
                 this.forms.submission.formOpers = []
             }

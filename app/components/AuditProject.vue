@@ -93,7 +93,7 @@ export default {
                     duration: 3000
                 })
             } else {
-                ClientCall.batchAudit(approve, this.listChecks).then(result => {
+                ClientCall.batchAudit(approve, this.listChecks.map(form => form.id)).then(result => {
                     if (result) {
                         this.operSuccess()
                     }

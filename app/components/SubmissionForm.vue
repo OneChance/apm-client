@@ -17,7 +17,7 @@
                             <td>
                                 <el-form-item prop="itemCode">
                                     <el-input v-model="submissionForm.itemCode"
-                                              :disabled="step!=='submission'"></el-input>
+                                              :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
                             <th>审计编号</th>
@@ -32,14 +32,14 @@
                             <td>
                                 <el-form-item prop="contractNo">
                                     <el-input v-model="submissionForm.contractNo"
-                                              :disabled="step!=='submission'"></el-input>
+                                              :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
                             <th>工程项目名称<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="projectName">
                                     <el-input v-model="submissionForm.projectName"
-                                              :disabled="step!=='submission'"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写工程项目名称"></el-input>
                                 </el-form-item>
                             </td>
@@ -48,14 +48,16 @@
                             <th>经费来源</th>
                             <td>
                                 <el-form-item prop="feeFrom">
-                                    <el-input v-model="submissionForm.feeFrom" :disabled="step!=='submission'"
+                                    <el-input v-model="submissionForm.feeFrom"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写经费来源"></el-input>
                                 </el-form-item>
                             </td>
                             <th>预算(万元)</th>
                             <td>
                                 <el-form-item prop="budget">
-                                    <el-input v-model.number="submissionForm.budget" :disabled="step!=='submission'"
+                                    <el-input v-model.number="submissionForm.budget"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写预算"></el-input>
                                 </el-form-item>
                             </td>
@@ -65,7 +67,7 @@
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
                                     <el-input v-model="submissionForm.constructionUnit"
-                                              :disabled="step!=='submission'"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写施工单位名称"></el-input>
                                 </el-form-item>
                             </td>
@@ -75,7 +77,8 @@
                             <td>
                                 <el-form-item prop="startDate">
                                     <el-date-picker
-                                        v-model="submissionForm.startDate" :disabled="step!=='submission'"
+                                        v-model="submissionForm.startDate"
+                                        :disabled="step!=='submission' && step!=='reject'"
                                         format="yyyy-MM-dd"
                                         value-format="yyyy-MM-dd"
                                         type="date"
@@ -88,7 +91,7 @@
                                 <el-form-item prop="endDate">
                                     <el-date-picker
                                         v-model="submissionForm.endDate"
-                                        :disabled="step!=='submission'"
+                                        :disabled="step!=='submission' && step!=='reject'"
                                         format="yyyy-MM-dd"
                                         value-format="yyyy-MM-dd"
                                         type="date"
@@ -102,7 +105,7 @@
                             <td colspan="3">
                                 <el-form-item prop="contractMoney">
                                     <el-input v-model.number="submissionForm.contractMoney"
-                                              :disabled="step!=='submission'"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写中标合同金额"></el-input>
                                 </el-form-item>
                             </td>
@@ -112,14 +115,15 @@
                             <td>
                                 <el-form-item prop="constructMoney">
                                     <el-input v-model="submissionForm.constructMoney"
-                                              :disabled="step!=='submission'"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写土建金额"></el-input>
                                 </el-form-item>
                             </td>
                             <th>安装</th>
                             <td>
                                 <el-form-item prop="installMoney">
-                                    <el-input v-model="submissionForm.installMoney" :disabled="step!=='submission'"
+                                    <el-input v-model="submissionForm.installMoney"
+                                              :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写安装金额"></el-input>
                                 </el-form-item>
                             </td>
@@ -138,21 +142,21 @@
                                         <td>
                                             <el-form-item prop="constructionUnitApplyFee">
                                                 <el-input v-model="submissionForm.constructionUnitApplyFee"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写施工单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="constructionUnitCheckFee">
                                                 <el-input v-model="submissionForm.constructionUnitCheckFee"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写施工单位核减金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="constructionUnitTel">
                                                 <el-input v-model="submissionForm.constructionUnitTel"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="施工单位联系电话"></el-input>
                                             </el-form-item>
                                         </td>
@@ -162,21 +166,21 @@
                                         <td>
                                             <el-form-item prop="inspectUnitApplyFee">
                                                 <el-input v-model="submissionForm.inspectUnitApplyFee"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写监理单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="inspectUnitCheckFee">
                                                 <el-input v-model="submissionForm.inspectUnitCheckFee"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写监理单位核减金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="inspectUnitTel">
                                                 <el-input v-model="submissionForm.inspectUnitTel"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写监理单位联系电话"></el-input>
                                             </el-form-item>
                                         </td>
@@ -186,21 +190,21 @@
                                         <td>
                                             <el-form-item prop="buildUnitApplyFee">
                                                 <el-input v-model="submissionForm.buildUnitApplyFee"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写建设单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="buildUnitCheckFee">
                                                 <el-input v-model="submissionForm.buildUnitCheckFee"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写建设单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="buildUnitTel">
                                                 <el-input v-model="submissionForm.buildUnitTel"
-                                                          :disabled="step!=='submission'"
+                                                          :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写建设单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
@@ -213,7 +217,7 @@
                             <td colspan="3">
                                 <el-form-item prop="content">
                                     <el-input v-model="submissionForm.content" placeholder="填写项目内容"
-                                              :disabled="step!=='submission'"></el-input>
+                                              :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -222,7 +226,7 @@
                             <td colspan="3">
                                 <el-form-item prop="description">
                                     <el-input v-model="submissionForm.description" placeholder="填写项目概况"
-                                              :disabled="step!=='submission'"></el-input>
+                                              :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -231,7 +235,7 @@
                             <td colspan="3">
                                 <el-form-item prop="materialGroup">
                                     <el-select v-model="submissionForm.materialGroup" placeholder="请选择"
-                                               :disabled="step!=='submission'"
+                                               :disabled="step!=='submission' && step!=='reject'"
                                                @change="materialGroupChange">
                                         <el-option
                                             v-for="group in materialGroups"
@@ -271,17 +275,24 @@
                                                 :on-exceed="handleExceed"
                                                 :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
-                                                           v-if="step ==='submission'"
+                                                           v-if="step ==='submission' || step ==='reject'"
                                                            @click="toUpload(fileType.mId)">点击上传
                                                 </el-button>
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='submission'"
+                                            <el-input v-model="fileType.mNote"
+                                                      :disabled="step!=='submission' && step!=='reject'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
                                 </table>
+                            </td>
+                        </tr>
+                        <tr class="allocMan" v-if="step==='assigned'">
+                            <th>分配审计人员</th>
+                            <td colspan="3">
+                                <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
@@ -310,14 +321,12 @@
                                 </table>
                             </td>
                         </tr>
-
-                        <tr class="project" v-if="step==='project'">
+                        <tr class="comment" v-if="step==='project' || step === 'assigned'">
                             <th>审计意见</th>
                             <td colspan="3">
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
-
                         <tr class="print-info">
                             <th>送审部门盖章</th>
                             <td style="height: 100px;">
@@ -453,6 +462,9 @@ export default {
                 materialGroup: '',
                 details: [],
                 status: 0,
+                assigned: {
+                    name: ''
+                }
             },
             rules: {},
             materialGroups: [],
@@ -466,11 +478,32 @@ export default {
     methods: {
         commit: function (event) {
             let comp = this
-            if (this.step === 'submission') {
+            if (this.step === 'submission' || this.step === 'reject') {
                 //送审提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
-                        //自定义验证加提交
+                        //验证附件上传情况
+                        for (let type of this.submissionForm.details) {
+                            if (type.mRequired) {
+                                if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
+                                    Notification.error({
+                                        title: '提交失败!',
+                                        message: type.mName + '必须上传附件或填写备注！',
+                                        duration: 5000
+                                    })
+                                    return
+                                }
+                            }
+                        }
+                        //附件列表转换为serverId字符串
+                        for (let types of this.submissionForm.details) {
+                            let ids = ''
+                            for (let file of types.mFiles) {
+                                ids = ids + ',' + file.id
+                            }
+                            types.mFileIds = ids.substr(1)
+                        }
+                        //提交
                         event(this.submissionForm)
                     } else {
                         Notification.error({
@@ -509,7 +542,7 @@ export default {
             window.open(file.url)
         },
         beforeRemove(file, fileList) {
-            if (this.step !== 'submission') {
+            if (this.step !== 'submission' && this.step !== 'reject') {
                 Notification.error({
                     title: '操作失败!',
                     message: '当前阶段不可移除附件!',

@@ -6,5 +6,8 @@ export default {
     },
     getLoginUser: function () {
         return Net.get('/user/get/');
+    },
+    logOut: function () {
+        return Net.get('/logout/');
     }
 }

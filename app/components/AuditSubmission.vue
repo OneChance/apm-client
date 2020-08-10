@@ -137,27 +137,6 @@ export default {
             this.commitForm(10, form)
         },
         commitForm(code, form) {
-            //验证附件上传情况
-            for (let type of form.details) {
-                if (type.mRequired) {
-                    if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
-                        Notification.error({
-                            title: '提交失败!',
-                            message: type.mName + '必须上传附件或填写备注！',
-                            duration: 5000
-                        })
-                        return
-                    }
-                }
-            }
-            //附件列表转换为serverId字符串
-            for (let types of form.details) {
-                let ids = ''
-                for (let file of types.mFiles) {
-                    ids = ids + ',' + file.id
-                }
-                types.mFileIds = ids.substr(1)
-            }
             //设置状态
             form.status = code
             Audit.saveSubmission(form).then(result => {
