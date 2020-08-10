@@ -61,6 +61,7 @@ import MissionAlloc from "./MissionAlloc";
 import WillDo from "./WillDo";
 import SurveyPrepare from "./SurveyPrepare"
 import Survey from "./Survey"
+import AuditComplete from "./AuditComplete";
 
 export default {
     name: "leftMenuFrame",
@@ -122,7 +123,8 @@ export default {
         SysIntermediary,
         WillDo,
         SurveyPrepare,
-        Survey
+        Survey,
+        AuditComplete
     }
 }
 </script>
