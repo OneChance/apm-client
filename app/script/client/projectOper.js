@@ -1,4 +1,4 @@
-/*审计立项表单按钮和方法,独立出来用于传递给submission表单*/
+/*审计立项表单操作*/
 import ClientCall from "./clientCall";
 
 const oper = {

@@ -48,5 +48,9 @@ export default {
             targetIds: checks,
             comment: comment,
         })
+    },
+    //提交勘察准备
+    commitSurveyPrepare(form) {
+        return Audit.commitSurveyPrepare(form)
     }
 }

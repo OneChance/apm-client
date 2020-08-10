@@ -327,6 +327,78 @@
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
+                        <tr class="comment" v-if="step==='surveyPrepare'">
+                            <th>约看现场时间</th>
+                            <td>
+                                <el-form-item prop="prepareViewDate">
+                                    <el-date-picker
+                                        v-model="submissionForm.prepareViewDate"
+                                        :disabled="step!=='surveyPrepare'"
+                                        format="yyyy-MM-dd HH:mm:ss"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        type="datetime"
+                                        placeholder="选择日期">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </td>
+                            <th>现场查看时间</th>
+                            <td>
+                                <el-form-item prop="viewDate">
+                                    <el-date-picker
+                                        v-model="submissionForm.viewDate"
+                                        :disabled="step!=='surveyPrepare'"
+                                        format="yyyy-MM-dd HH:mm:ss"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                        type="datetime"
+                                        placeholder="选择日期">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr class="comment" v-if="step==='surveyPrepare'">
+                            <th>现场查看人员</th>
+                            <td colspan="3">
+                                <el-form-item prop="viewPeoples">
+                                    <el-input type="text" v-model="submissionForm.viewPeoples"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr v-if="step ==='survey'">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:33%">现场勘察资料</th>
+                                        <th>附件</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.submissionForm.surveyFiles">
+                                        <td>
+                                            {{ fileType.name }}
+                                        </td>
+                                        <td>
+                                            <el-upload
+                                                class="upload-demo"
+                                                action="noAction"
+                                                :http-request="upload"
+                                                :with-credentials="true"
+                                                :on-preview="handlePreview"
+                                                :on-remove="handleRemoveSurvey"
+                                                :before-remove="beforeRemoveSurvey"
+                                                :on-success="afterUpload"
+                                                multiple
+                                                :limit="3"
+                                                :on-exceed="handleExceed"
+                                                :file-list="fileType.files">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="step ==='survey'"
+                                                           @click="toUpload(fileType.tId)">点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
                         <tr class="print-info">
                             <th>送审部门盖章</th>
                             <td style="height: 100px;">
@@ -417,6 +489,13 @@ export default {
                             Comment.getComment({target: 'submission', targetId: this.submissionForm.id}).then(res => {
                                 this.comments = res.list
                             })
+                            //加载现场勘察资料
+                            if (!this.submissionForm.surveyFiles || this.submissionForm.surveyFiles.length === 0) {
+                                this.submissionForm.surveyFiles = [
+                                    {tId: '22', name: '勘察记录', files: [], fileIds: ''},
+                                    {tId: '23', name: '勘察照片', files: [], fileIds: ''}
+                                ]
+                            }
                         })
                     }
                     $(".print-info").hide()
@@ -460,11 +539,15 @@ export default {
                 content: '',
                 description: '',
                 materialGroup: '',
-                details: [],
+                details: [],//资料清单信息
                 status: 0,
                 assigned: {
                     name: ''
-                }
+                },
+                prepareViewDate: '',
+                viewDate: '',
+                viewPeoples: '',
+                surveyFiles: [],
             },
             rules: {},
             materialGroups: [],
@@ -478,33 +561,43 @@ export default {
     methods: {
         commit: function (event) {
             let comp = this
-            if (this.step === 'submission' || this.step === 'reject') {
-                //送审提交
+            if (this.step === 'submission' || this.step === 'reject' || this.step === 'surveyPrepare') {
+                //需要验证表单的提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
-                        //验证附件上传情况
-                        for (let type of this.submissionForm.details) {
-                            if (type.mRequired) {
-                                if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
-                                    Notification.error({
-                                        title: '提交失败!',
-                                        message: type.mName + '必须上传附件或填写备注！',
-                                        duration: 5000
-                                    })
-                                    return
+                        if (this.step === 'submission' || this.step === 'reject') {
+                            //验证资料组清单附件上传情况
+                            for (let type of this.submissionForm.details) {
+                                if (type.mRequired) {
+                                    if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
+                                        Notification.error({
+                                            title: '提交失败!',
+                                            message: type.mName + '必须上传附件或填写备注！',
+                                            duration: 5000
+                                        })
+                                        return
+                                    }
                                 }
                             }
-                        }
-                        //附件列表转换为serverId字符串
-                        for (let types of this.submissionForm.details) {
-                            let ids = ''
-                            for (let file of types.mFiles) {
-                                ids = ids + ',' + file.id
+                            //附件列表转换为serverId字符串
+                            for (let types of this.submissionForm.details) {
+                                let ids = ''
+                                for (let file of types.mFiles) {
+                                    ids = ids + ',' + file.id
+                                }
+                                types.mFileIds = ids.substr(1)
                             }
-                            types.mFileIds = ids.substr(1)
+
+                            event(this.submissionForm)
+
+                        } else if (this.step === 'surveyPrepare') {
+                            event({
+                                formId: this.submissionForm.id,
+                                prepareViewDate: this.submissionForm.prepareViewDate,
+                                viewDate: this.submissionForm.viewDate,
+                                viewPeoples: this.submissionForm.viewPeoples
+                            })
                         }
-                        //提交
-                        event(this.submissionForm)
                     } else {
                         Notification.error({
                             title: '提交失败!',
@@ -515,7 +608,33 @@ export default {
                     }
                 });
             } else {
-                event(this.comment, this.submissionForm.id)
+                if (this.step === 'survey') {
+                    //验证现场勘察附件上传情况
+                    for (let type of this.submissionForm.surveyFiles) {
+                        if (!type.files || type.files.length === 0) {
+                            Notification.error({
+                                title: '提交失败!',
+                                message: type.name + '必须上传附件！',
+                                duration: 5000
+                            })
+                            return
+                        }
+                    }
+                    //附件列表转换为serverId字符串
+                    for (let types of this.submissionForm.surveyFiles) {
+                        let ids = ''
+                        for (let file of types.files) {
+                            ids = ids + ',' + file.id
+                        }
+                        types.fileIds = ids.substr(1)
+                    }
+                    event({
+                        id: this.submissionForm.id,
+                        surveyFiles: this.submissionForm.surveyFiles
+                    })
+                } else {
+                    event(this.comment, this.submissionForm.id)
+                }
             }
         },
         print: function () {
@@ -525,6 +644,7 @@ export default {
                 importCSS: false
             })
         },
+        //资料清单移除方法-----------------------------------------------------------------------
         handleRemove(file, fileList) {
             //从附件列表中移除该文件
             let comp = this
@@ -538,19 +658,46 @@ export default {
                 }
             }
         },
-        handlePreview(file) {
-            window.open(file.url)
-        },
         beforeRemove(file, fileList) {
             if (this.step !== 'submission' && this.step !== 'reject') {
                 Notification.error({
                     title: '操作失败!',
-                    message: '当前阶段不可移除附件!',
+                    message: '当前阶段不可移除资料清单附件!',
                     duration: 2000
                 })
                 return false;
             }
             return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        //-------------------------------------------------------------------------------------------------------------
+        //现场勘察资料移除方法------------------------------------------------------------------------------------------
+        handleRemoveSurvey(file, fileList) {
+            //从附件列表中移除该文件
+            let comp = this
+            for (let types of comp.submissionForm.surveyFiles) {
+                let size = types.files.length
+                if (size !== 0) {
+                    types.files = types.files.filter(f => f.uid !== file.uid)
+                    if (types.files.length < size) {
+                        break
+                    }
+                }
+            }
+        },
+        beforeRemoveSurvey(file, fileList) {
+            if (this.step !== 'survey') {
+                Notification.error({
+                    title: '操作失败!',
+                    message: '当前阶段不可移除现场勘察资料附件!',
+                    duration: 2000
+                })
+                return false;
+            }
+            return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        //-------------------------------------------------------------------------------------------------------------
+        handlePreview(file) {
+            window.open(file.url)
         },
         materialGroupChange: function (value) {
             //根据选择的清单组，初始化附加列表
@@ -574,7 +721,6 @@ export default {
             this.uploadParams.id = typeId
         },
         upload(content) {
-            //自定义附件上传
             let comp = this
             let fd = new FormData()
             fd.append('formFile', content.file)
@@ -584,11 +730,21 @@ export default {
             }).then(res => {
                 content.onSuccess()
                 //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
-                comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push({
-                    'id': res.id,
-                    'uid': content.file.uid,
-                    'name': content.file.name
-                })
+                if (comp.step === 'survey') {
+                    //现场勘察阶段上传的勘察资料
+                    comp.submissionForm.surveyFiles.filter(f => f.tId === comp.uploadParams.id)[0].files.push({
+                        'id': res.id,
+                        'uid': content.file.uid,
+                        'name': content.file.name
+                    })
+                } else {
+                    //送审阶段上传的资料清单
+                    comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push({
+                        'id': res.id,
+                        'uid': content.file.uid,
+                        'name': content.file.name
+                    })
+                }
             })
         },
     },

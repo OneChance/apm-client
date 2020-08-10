@@ -1,7 +1,7 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-form :inline="true" class="demo-form-inline">
                 <el-form-item>
                     <el-input v-model="query.workitemName" placeholder="待办名称"></el-input>
                 </el-form-item>
@@ -9,7 +9,7 @@
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="batchOper(1)">批量处理</el-button>
+                    <el-button type="success" @click="batchOper(1)">批量审核通过</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="batchOper(0)">批量打回</el-button>
@@ -99,7 +99,7 @@ export default {
         checkBoxChange(val) {
             this.listChecks = val
         },
-        batchOper(approve) {
+        batchOper(approve) {//待办的批量处理
             if (this.listChecks.length === 0) {
                 Notification.error({
                     title: '操作失败!',
@@ -149,7 +149,7 @@ export default {
                 }
             }
         },
-        editRow: function (row) {
+        editRow: function (row) {//待办的单据处理
             //根据待办类型生成form
             this.forms.alloc.visible = false
             this.forms.submission.visible = false

@@ -59,6 +59,8 @@ import SysUser from "./SysUser";
 import SysIntermediary from "./SysIntermediary";
 import MissionAlloc from "./MissionAlloc";
 import WillDo from "./WillDo";
+import SurveyPrepare from "./SurveyPrepare"
+import Survey from "./Survey"
 
 export default {
     name: "leftMenuFrame",
@@ -79,7 +81,7 @@ export default {
             if (newVal.length === 4) {
                 this.leftActiveIndex = 'willDo'
                 this.currentComponent = 'willDo'
-            }else{
+            } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
             }
@@ -119,6 +121,8 @@ export default {
         SysUser,
         SysIntermediary,
         WillDo,
+        SurveyPrepare,
+        Survey
     }
 }
 </script>

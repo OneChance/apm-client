@@ -9,10 +9,10 @@
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="batchAudit(1)">批量审核同意</el-button>
+                    <el-button type="success" @click="batchAudit(1)">批量审核通过</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="danger" @click="batchAudit(0)">批量审核打回</el-button>
+                    <el-button type="danger" @click="batchAudit(0)">批量打回</el-button>
                 </el-form-item>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">

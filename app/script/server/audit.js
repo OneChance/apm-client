@@ -29,4 +29,8 @@ export default {
     allocApprove: function (data) {
         return Net.post('/submission/assigned/approves/', data);
     },
+    //分配审核
+    commitSurveyPrepare: function (data) {
+        return Net.post('/submission/assigned/approves/', data);
+    },
 }
