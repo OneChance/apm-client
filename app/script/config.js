@@ -16,6 +16,7 @@ export default {
         viewPrepared: 40, //上传现场勘察资料
         auditFirst: 40, //初审阶段
         auditSecond: 40, //复审阶段
-        auditArc: 40,
+        auditComplete: 40, //完成阶段
+        auditArc: 40, //归档阶段
     }
 }

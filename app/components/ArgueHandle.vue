@@ -14,25 +14,27 @@
         </el-card>
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
-                         v-bind:step="'auditArc'"
+                         v-bind:formOpers="formOpers"
+                         v-bind:step="'argueHandle'"
                          v-bind:formId="formId">
         </submission-form>
-        <audit-note-form v-bind:visible="noteFormVisible"></audit-note-form>
     </div>
 </template>
 
 <script>
 
-import AuditNoteForm from './AuditNoteForm'
+import Argue from '../script/client/argue'
 import Config from "../script/config";
 import Audit from "../script/server/audit";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
+import FormValidator from '../script/client/formValidator'
 
 export default {
-    name: "AuditComplete",
+    name: "ArgueHandle",
     mounted: function () {
-
+        Argue.comp = this
+        this.list()
     },
     data: function () {
         return {
@@ -40,7 +42,7 @@ export default {
                 projectName: '',
             },
             dialogVisible: false,
-            noteFormVisible: false,
+            formOpers: Argue.buttons,
             tableConfig: {
                 data: [],
                 page: true,
@@ -56,28 +58,24 @@ export default {
                 ],
                 oper: [
                     {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '查看', placement: 'top'},
+                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                        tip: {content: '编辑', placement: 'top'},
                         event: this.editRow,
                     },
-                    {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa primary-fa',
-                        tip: {content: '生成通知单', placement: 'right'},
-                        event: this.genNoteForm,
-                    },
                 ]
+            },
+            rules: {
+                submissionPrice: [
+                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
+                ],
+                firstAuditPrice: [
+                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
+                ],
             },
         }
     },
     methods: {
-        genNoteForm() {
-            this.noteFormVisible = false
-            this.dialogVisible = false
-            this.noteFormVisible = true
-            this.formId = row.id
-        },
         editRow: function (row) {
-            this.noteFormVisible = false
             this.dialogVisible = false
             this.dialogVisible = true
             this.formId = row.id
@@ -93,7 +91,7 @@ export default {
             for (let prop in config) {
                 data[prop] = config[prop]
             }
-            data['status'] = Config.stepCode.auditComplete
+            data['status'] = Config.stepCode.auditFirst
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
                 //如果以后多选框,清除所选数据
@@ -103,7 +101,6 @@ export default {
         },
         operSuccess() {
             this.dialogVisible = false
-            this.noteFormVisible = false;
             this.$message({
                 message: '操作成功',
                 type: 'success'
@@ -112,7 +109,6 @@ export default {
         }
     },
     components: {
-        AuditNoteForm,
         TableComponent,
         SubmissionForm
     }

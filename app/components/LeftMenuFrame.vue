@@ -65,6 +65,7 @@ import AuditComplete from "./AuditComplete";
 import AuditFirst from "./AuditFirst";
 import AuditSecond from "./AuditSecond";
 import AuditArc from "./AuditArc";
+import ArgueHandle from "./ArgueHandle";
 
 export default {
     name: "leftMenuFrame",
@@ -130,7 +131,8 @@ export default {
         AuditComplete,
         AuditFirst,
         AuditSecond,
-        AuditArc
+        AuditArc,
+        ArgueHandle
     }
 }
 </script>

@@ -2,7 +2,7 @@
 
 import Audit from "../server/audit";
 import Workitem from "../server/workitem"
-import Net from "../server/net";
+import User from "../server/user"
 
 export default {
     //保存送审
@@ -52,5 +52,13 @@ export default {
     //提交勘察准备
     commitSurveyPrepare(form) {
         return Audit.commitSurveyPrepare(form)
-    }
+    },
+    getEmps() {
+        let data = {
+            page: 1,
+            pageSize: 99999999,
+            thirdParty: false
+        }
+        return User.getUsers(data)
+    },
 }
