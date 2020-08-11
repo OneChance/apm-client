@@ -289,36 +289,10 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr class="allocMan" v-if="step==='assigned'">
+                        <tr class="allocMan" v-if="step==='assigned' || step === 'auditArc'">
                             <th>分配审计人员</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="comment compact-td">
-                                <table class="form-table">
-                                    <tr>
-                                        <th style="width:12%">审批阶段</th>
-                                        <th style="width:12%">审批人</th>
-                                        <th style="width:12%">审批意见</th>
-                                        <th>审批内容</th>
-                                    </tr>
-                                    <tr v-for="comment in comments" :key="comment.id">
-                                        <td>
-                                            {{ comment.stageStr }}
-                                        </td>
-                                        <td>
-                                            {{ comment.creator.name }}
-                                        </td>
-                                        <td>
-                                            {{ comment.typeStr }}
-                                        </td>
-                                        <td>
-                                            {{ comment.content }}
-                                        </td>
-                                    </tr>
-                                </table>
                             </td>
                         </tr>
                         <tr class="comment" v-if="step==='project' || step === 'assigned'">
@@ -327,7 +301,7 @@
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="step==='surveyPrepare'">
+                        <tr class="comment" v-if="step==='surveyPrepare' || step === 'auditArc' ">
                             <th>约看现场时间</th>
                             <td>
                                 <el-form-item prop="prepareViewDate">
@@ -355,15 +329,16 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="step==='surveyPrepare'">
+                        <tr class="comment" v-if="step==='surveyPrepare' || step === 'auditArc' ">
                             <th>现场查看人员</th>
                             <td colspan="3">
                                 <el-form-item prop="viewPeoples">
-                                    <el-input type="text" v-model="submissionForm.viewPeoples"></el-input>
+                                    <el-input type="text" v-model="submissionForm.viewPeoples"
+                                              :disabled="step!=='surveyPrepare'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr v-if="step ==='survey'">
+                        <tr v-if="step ==='survey' || step === 'auditArc' ">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -399,7 +374,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step === 'auditFirst'">
+                        <tr v-if="step === 'auditFirst' || step === 'auditArc' ">
                             <th>送审价</th>
                             <td>
                                 <el-form-item prop="submissionPrice">
@@ -418,7 +393,18 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step ==='auditFirst'">
+                        <tr v-if="step === 'auditSecond' || step === 'auditArc' ">
+                            <th>复审审定金额</th>
+                            <td colspan="3">
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="submissionForm.secondAuditPrice"
+                                              :disabled="step!=='auditSecond'"
+                                              placeholder="填写复审审定金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="step ==='auditFirst' || step === 'auditArc' ">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -448,6 +434,33 @@
                                                            @click="toUpload(fileType.tId)">点击上传
                                                 </el-button>
                                             </el-upload>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" class="comment compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:12%">审批阶段</th>
+                                        <th style="width:12%">审批人</th>
+                                        <th style="width:12%">审批意见</th>
+                                        <th>审批内容</th>
+                                    </tr>
+                                    <tr v-for="comment in comments" :key="comment.id">
+                                        <td>
+                                            {{ comment.stageStr }}
+                                        </td>
+                                        <td>
+                                            {{ comment.creator.name }}
+                                        </td>
+                                        <td>
+                                            {{ comment.typeStr }}
+                                        </td>
+                                        <td>
+                                            {{ comment.content }}
                                         </td>
                                     </tr>
                                 </table>
@@ -618,6 +631,8 @@ export default {
                 submissionPrice: 0,
                 firstAuditPrice: 0,
                 auditFirstFiles: [],
+                //审计复审
+                secondAuditPrice: 0,
             },
             materialGroups: [],
             uploadParams: {
@@ -629,9 +644,7 @@ export default {
     },
     methods: {
         commit: function (event) {
-            let comp = this
-
-            if (this.step === 'submission' || this.step === 'reject' || this.step === 'surveyPrepare' || this.step === 'auditFirst') {
+            if (this.step === 'submission' || this.step === 'reject' || this.step === 'surveyPrepare' || this.step === 'auditFirst' || this.step === 'auditSecond') {
                 //需要验证表单的提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
@@ -670,6 +683,11 @@ export default {
                                     auditFirstFiles: this.submissionForm.auditFirstFiles
                                 })
                             }
+                        } else if (this.step === 'auditSecond') {
+                            event({
+                                id: this.submissionForm.id,
+                                secondAuditPrice: this.submissionForm.secondAuditPrice,
+                            })
                         }
                     } else {
                         Notification.error({

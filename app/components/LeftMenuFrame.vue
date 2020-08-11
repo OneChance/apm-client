@@ -63,6 +63,8 @@ import SurveyPrepare from "./SurveyPrepare"
 import Survey from "./Survey"
 import AuditComplete from "./AuditComplete";
 import AuditFirst from "./AuditFirst";
+import AuditSecond from "./AuditSecond";
+import AuditArc from "./AuditArc";
 
 export default {
     name: "leftMenuFrame",
@@ -126,7 +128,9 @@ export default {
         SurveyPrepare,
         Survey,
         AuditComplete,
-        AuditFirst
+        AuditFirst,
+        AuditSecond,
+        AuditArc
     }
 }
 </script>

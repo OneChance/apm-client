@@ -153,9 +153,7 @@ export default {
         }
     },
     mounted: function () {
-        MaterialFile.getMaterialGroups().then(res => {
-            this.materialGroups = res.list
-        })
+
     },
     data: function () {
         return {
