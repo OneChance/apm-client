@@ -5,7 +5,7 @@
                :close-on-click-modal="false">
         <template>
             <div class="form">
-                <el-form :model="submissionForm" :rules="rules" ref="submissionForm">
+                <el-form :model="submissionForm" :rules="formRules" ref="submissionForm">
                     <table class="form-table">
                         <tr>
                             <th colspan="4">
@@ -56,7 +56,7 @@
                             <th>预算(万元)</th>
                             <td>
                                 <el-form-item prop="budget">
-                                    <el-input v-model.number="submissionForm.budget"
+                                    <el-input v-model="submissionForm.budget"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写预算"></el-input>
                                 </el-form-item>
@@ -104,7 +104,7 @@
                             <th>中标合同金额</th>
                             <td colspan="3">
                                 <el-form-item prop="contractMoney">
-                                    <el-input v-model.number="submissionForm.contractMoney"
+                                    <el-input v-model="submissionForm.contractMoney"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               placeholder="填写中标合同金额"></el-input>
                                 </el-form-item>
@@ -399,6 +399,61 @@
                             </td>
                         </tr>
 
+                        <tr v-if="step === 'auditFirst'">
+                            <th>送审价</th>
+                            <td>
+                                <el-form-item prop="submissionPrice">
+                                    <el-input v-model="submissionForm.submissionPrice"
+                                              :disabled="step!=='auditFirst'"
+                                              placeholder="填写送审价"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>初审审定金额</th>
+                            <td>
+                                <el-form-item prop="firstAuditPrice">
+                                    <el-input v-model="submissionForm.firstAuditPrice"
+                                              :disabled="step!=='auditFirst'"
+                                              placeholder="填写土建金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="step ==='auditFirst'">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:33%">初审资料</th>
+                                        <th>附件</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.submissionForm.auditFirstFiles">
+                                        <td>
+                                            {{ fileType.name }}
+                                        </td>
+                                        <td>
+                                            <el-upload
+                                                class="upload-demo"
+                                                action="noAction"
+                                                :http-request="upload"
+                                                :with-credentials="true"
+                                                :on-preview="handlePreview"
+                                                :on-remove="handleRemoveAuditFirst"
+                                                :before-remove="beforeRemoveAuditFirst"
+                                                :on-success="afterUpload"
+                                                multiple
+                                                :limit="3"
+                                                :on-exceed="handleExceed"
+                                                :file-list="fileType.files">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="step ==='auditFirst'"
+                                                           @click="toUpload(fileType.tId)">点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
                         <tr class="print-info">
                             <th>送审部门盖章</th>
                             <td style="height: 100px;">
@@ -453,7 +508,7 @@ import Comment from "../script/server/comment";
 
 export default {
     name: "SubmissionForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules'],
     watch: {
         visible: function (newVal) {
             if (newVal) {
@@ -494,6 +549,15 @@ export default {
                                 this.submissionForm.surveyFiles = [
                                     {tId: '22', name: '勘察记录', files: [], fileIds: ''},
                                     {tId: '23', name: '勘察照片', files: [], fileIds: ''}
+                                ]
+                            }
+                            //加载初审资料附件
+                            if (!this.submissionForm.auditFirstFiles || this.submissionForm.auditFirstFiles.length === 0) {
+                                this.submissionForm.auditFirstFiles = [
+                                    {tId: '24', name: '审定单', files: [], fileIds: ''},
+                                    {tId: '25', name: '初审报告', files: [], fileIds: ''},
+                                    {tId: '26', name: '审计工作底稿', files: [], fileIds: ''},
+                                    {tId: '27', name: '计价文本', files: [], fileIds: ''},
                                 ]
                             }
                         })
@@ -544,12 +608,17 @@ export default {
                 assigned: {
                     name: ''
                 },
+                //勘察准备-----------
                 prepareViewDate: '',
                 viewDate: '',
                 viewPeoples: '',
+                //现场勘察--------------
                 surveyFiles: [],
+                //审计初审--------------
+                submissionPrice: 0,
+                firstAuditPrice: 0,
+                auditFirstFiles: [],
             },
-            rules: {},
             materialGroups: [],
             uploadParams: {
                 id: '',
@@ -561,7 +630,8 @@ export default {
     methods: {
         commit: function (event) {
             let comp = this
-            if (this.step === 'submission' || this.step === 'reject' || this.step === 'surveyPrepare') {
+
+            if (this.step === 'submission' || this.step === 'reject' || this.step === 'surveyPrepare' || this.step === 'auditFirst') {
                 //需要验证表单的提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
@@ -579,17 +649,8 @@ export default {
                                     }
                                 }
                             }
-                            //附件列表转换为serverId字符串
-                            for (let types of this.submissionForm.details) {
-                                let ids = ''
-                                for (let file of types.mFiles) {
-                                    ids = ids + ',' + file.id
-                                }
-                                types.mFileIds = ids.substr(1)
-                            }
-
+                            this.fileIdsConstruct(this.submissionForm.details)
                             event(this.submissionForm)
-
                         } else if (this.step === 'surveyPrepare') {
                             event({
                                 formId: this.submissionForm.id,
@@ -597,6 +658,18 @@ export default {
                                 viewDate: this.submissionForm.viewDate,
                                 viewPeoples: this.submissionForm.viewPeoples
                             })
+                        } else if (this.step === 'auditFirst') {
+                            //验证现场勘察附件上传情况
+                            if (this.fileListCheck(this.submissionForm.auditFirstFiles)) {
+                                //附件列表转换为serverId字符串
+                                this.fileIdsConstruct(this.submissionForm.auditFirstFiles)
+                                event({
+                                    id: this.submissionForm.id,
+                                    submissionPrice: this.submissionForm.submissionPrice,
+                                    firstAuditPrice: this.submissionForm.firstAuditPrice,
+                                    auditFirstFiles: this.submissionForm.auditFirstFiles
+                                })
+                            }
                         }
                     } else {
                         Notification.error({
@@ -610,28 +683,14 @@ export default {
             } else {
                 if (this.step === 'survey') {
                     //验证现场勘察附件上传情况
-                    for (let type of this.submissionForm.surveyFiles) {
-                        if (!type.files || type.files.length === 0) {
-                            Notification.error({
-                                title: '提交失败!',
-                                message: type.name + '必须上传附件！',
-                                duration: 5000
-                            })
-                            return
-                        }
+                    if (this.fileListCheck(this.submissionForm.surveyFiles)) {
+                        //附件列表转换为serverId字符串
+                        this.fileIdsConstruct(this.submissionForm.surveyFiles)
+                        event({
+                            id: this.submissionForm.id,
+                            surveyFiles: this.submissionForm.surveyFiles
+                        })
                     }
-                    //附件列表转换为serverId字符串
-                    for (let types of this.submissionForm.surveyFiles) {
-                        let ids = ''
-                        for (let file of types.files) {
-                            ids = ids + ',' + file.id
-                        }
-                        types.fileIds = ids.substr(1)
-                    }
-                    event({
-                        id: this.submissionForm.id,
-                        surveyFiles: this.submissionForm.surveyFiles
-                    })
                 } else {
                     event(this.comment, this.submissionForm.id)
                 }
@@ -644,37 +703,66 @@ export default {
                 importCSS: false
             })
         },
-        //资料清单移除方法-----------------------------------------------------------------------
-        handleRemove(file, fileList) {
-            //从附件列表中移除该文件
-            let comp = this
-            for (let types of comp.submissionForm.details) {
-                let size = types.mFiles.length
-                if (size !== 0) {
-                    types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
-                    if (types.mFiles.length < size) {
-                        break
-                    }
+        //验证附件上传
+        fileListCheck(list) {
+            for (let type of list) {
+                if (!type.files || type.files.length === 0) {
+                    Notification.error({
+                        title: '提交失败!',
+                        message: type.name + '必须上传附件！',
+                        duration: 5000
+                    })
+                    return false
                 }
             }
+            return true
+        },
+        //拼接附件id
+        fileIdsConstruct(list) {
+            for (let types of list) {
+                let ids = ''
+                for (let file of types.files) {
+                    ids = ids + ',' + file.id
+                }
+                types.fileIds = ids.substr(1)
+            }
+        },
+        //资料清单移除方法
+        handleRemove(file, fileList) {
+            this.removeFileFromList(file, this.submissionForm.details)
         },
         beforeRemove(file, fileList) {
-            if (this.step !== 'submission' && this.step !== 'reject') {
+            return this.removeableConfirm(file, ['submission', 'reject'], '当前阶段不可移除资料清单附件!')
+        },
+        //初审资料移除方法
+        handleRemoveAuditFirst(file, fileList) {
+            this.removeFileFromList(file, this.submissionForm.auditFirstFiles)
+        },
+        beforeRemoveAuditFirst(file, fileList) {
+            return this.removeableConfirm(file, ['auditFirst'], '当前阶段不可移除初审资料附件!')
+        },
+        //现场勘察资料移除方法
+        handleRemoveSurvey(file, fileList) {
+            this.removeFileFromList(file, this.submissionForm.surveyFiles)
+        },
+        beforeRemoveSurvey(file, fileList) {
+            return this.removeableConfirm(file, ['survey'], '当前阶段不可移除现场勘察资料附件!')
+        },
+        removeableConfirm(file, steps, message) {
+            console.log(steps)
+            console.log(this.step)
+            if (steps.indexOf(this.step) < 0) {
                 Notification.error({
                     title: '操作失败!',
-                    message: '当前阶段不可移除资料清单附件!',
+                    message: message,
                     duration: 2000
                 })
                 return false;
             }
             return this.$confirm(`确定移除 ${file.name}？`);
         },
-        //-------------------------------------------------------------------------------------------------------------
-        //现场勘察资料移除方法------------------------------------------------------------------------------------------
-        handleRemoveSurvey(file, fileList) {
-            //从附件列表中移除该文件
-            let comp = this
-            for (let types of comp.submissionForm.surveyFiles) {
+        removeFileFromList(file, list) {
+            for (let types of list) {
                 let size = types.files.length
                 if (size !== 0) {
                     types.files = types.files.filter(f => f.uid !== file.uid)
@@ -684,18 +772,6 @@ export default {
                 }
             }
         },
-        beforeRemoveSurvey(file, fileList) {
-            if (this.step !== 'survey') {
-                Notification.error({
-                    title: '操作失败!',
-                    message: '当前阶段不可移除现场勘察资料附件!',
-                    duration: 2000
-                })
-                return false;
-            }
-            return this.$confirm(`确定移除 ${file.name}？`);
-        },
-        //-------------------------------------------------------------------------------------------------------------
         handlePreview(file) {
             window.open(file.url)
         },
@@ -730,20 +806,20 @@ export default {
             }).then(res => {
                 content.onSuccess()
                 //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
+                let fileData = {
+                    'id': res.id,
+                    'uid': content.file.uid,
+                    'name': content.file.name
+                }
                 if (comp.step === 'survey') {
                     //现场勘察阶段上传的勘察资料
-                    comp.submissionForm.surveyFiles.filter(f => f.tId === comp.uploadParams.id)[0].files.push({
-                        'id': res.id,
-                        'uid': content.file.uid,
-                        'name': content.file.name
-                    })
+                    comp.submissionForm.surveyFiles.filter(f => f.tId === comp.uploadParams.id)[0].files.push(fileData)
+                }
+                if (comp.step === 'auditFirst') {
+                    comp.submissionForm.auditFirstFiles.filter(f => f.tId === comp.uploadParams.id)[0].files.push(fileData)
                 } else {
                     //送审阶段上传的资料清单
-                    comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push({
-                        'id': res.id,
-                        'uid': content.file.uid,
-                        'name': content.file.name
-                    })
+                    comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
                 }
             })
         },

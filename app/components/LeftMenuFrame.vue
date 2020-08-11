@@ -62,6 +62,7 @@ import WillDo from "./WillDo";
 import SurveyPrepare from "./SurveyPrepare"
 import Survey from "./Survey"
 import AuditComplete from "./AuditComplete";
+import AuditFirst from "./AuditFirst";
 
 export default {
     name: "leftMenuFrame",
@@ -124,7 +125,8 @@ export default {
         WillDo,
         SurveyPrepare,
         Survey,
-        AuditComplete
+        AuditComplete,
+        AuditFirst
     }
 }
 </script>

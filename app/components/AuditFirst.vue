@@ -8,17 +8,15 @@
                 <el-form-item>
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
-                <i class="fa fa-plus-circle fa-2x right-fa primary-fa" aria-hidden="true"
-                   @click="add"></i>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
         <submission-form v-bind:visible="dialogVisible"
-                         v-bind:from="from"
+                         v-bind:from="'editform'"
                          v-bind:formRules="rules"
                          v-bind:formOpers="formOpers"
-                         v-bind:step="'submission'"
+                         v-bind:step="'auditFirst'"
                          v-bind:formId="formId">
         </submission-form>
     </div>
@@ -26,34 +24,26 @@
 
 <script>
 
+import AuditFirst from '../script/client/auditFirst'
+import Config from "../script/config";
+import Audit from "../script/server/audit";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import {Notification} from "element-ui";
-import Audit from "../script/server/audit";
-import Config from "../script/config";
-import FormValidator from "../script/client/formValidator";
+import FormValidator from '../script/client/formValidator'
 
 export default {
-    name: "AuditSubmission",
-    created: function () {
-
-    },
-    mounted() {
+    name: "AuditFirst",
+    mounted: function () {
+        AuditFirst.comp = this
         this.list()
     },
-    watch: {},
     data: function () {
         return {
             query: {
                 projectName: '',
             },
             dialogVisible: false,
-            from: '',
-            formId: -1,
-            formOpers: [
-                {name: '保存', color: 'primary', event: this.saveSubmission},
-                {name: '提交', color: 'success', event: this.commitSubmission}
-            ],
+            formOpers: AuditFirst.buttons,
             tableConfig: {
                 data: [],
                 page: true,
@@ -73,76 +63,23 @@ export default {
                         tip: {content: '编辑', placement: 'top'},
                         event: this.editRow,
                     },
-                    {
-                        class: 'fa fa-trash-o fa-lg click-fa',
-                        tip: {content: '删除', placement: 'right'},
-                        event: this.deleteRow,
-                        check: true
-                    }
                 ]
             },
             rules: {
-                projectName: [
-                    {required: true, message: '请输入工程项目名称', trigger: 'blur'},
-                ],
-                constructionUnit: [
-                    {required: true, message: '请输入施工单位名称', trigger: 'blur'},
-                ],
-                budget: [
+                submissionPrice: [
                     {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
                 ],
-                contractMoney: [
+                firstAuditPrice: [
                     {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
-                ],
-                startDate: [
-                    {required: true, message: '请选择开工时间', trigger: 'blur'}
-                ],
-                endDate: [
-                    {required: true, message: '请选择竣工时间', trigger: 'blur'}
-                ],
-                materialGroup: [
-                    {required: true, message: '请选择资料清单组', trigger: 'blur'},
                 ],
             },
         }
     },
     methods: {
-        add: function () {
-            //子组件关闭后visible值不能回传,所以在父组件里重置下,触发变化
-            this.dialogVisible = false
-            this.dialogVisible = true
-            this.from = 'addform'
-        },
         editRow: function (row) {
             this.dialogVisible = false
             this.dialogVisible = true
-            this.from = 'editform'
             this.formId = row.id
-        },
-        deleteRow: function (row) {
-            let comp = this
-            Audit.deleteSubmission({id: row.id}).then(result => {
-                comp.$message({
-                    message: '删除成功',
-                    type: 'success'
-                });
-                comp.list({page: 1})
-            })
-        },
-        saveSubmission: function (form) {
-            this.commitForm(-10, form)
-        },
-        commitSubmission: function (form) {
-            this.commitForm(10, form)
-        },
-        commitForm(code, form) {
-            //设置状态
-            form.status = code
-            Audit.saveSubmission(form).then(result => {
-                if (result) {
-                    this.operSuccess()
-                }
-            })
         },
         queryList: function () {
             this.list(this.query)
@@ -155,11 +92,10 @@ export default {
             for (let prop in config) {
                 data[prop] = config[prop]
             }
-            data['status'] = Config.stepCode.submissionSave
+            data['status'] = Config.stepCode.auditFirst
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
                 //如果以后多选框,清除所选数据
-                this.listChecks = []
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements
             })
@@ -173,7 +109,10 @@ export default {
             this.list({page: 1})
         }
     },
-    components: {TableComponent, SubmissionForm}
+    components: {
+        TableComponent,
+        SubmissionForm
+    }
 }
 </script>
 
