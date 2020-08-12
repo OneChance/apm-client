@@ -13,7 +13,7 @@ export default oper
 
 function recommit(data) {
     //设置状态为10
-    data.status = Config.stepCode.submissionCommit
+    data.status = Config.stepCode.auditProject
     ClientCall.saveSubmission(data).then(result => {
         if (result) {
             oper.comp.operSuccess()

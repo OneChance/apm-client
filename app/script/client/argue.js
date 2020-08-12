@@ -12,9 +12,9 @@ export default oper
 
 function commit(form) {
     console.log(form)
-    /*ClientCall.commitSurveyPrepare(form).then(result => {
+    ClientCall.commitArgue(form).then(result => {
         if (result) {
             oper.comp.operSuccess()
         }
-    })*/
+    })
 }

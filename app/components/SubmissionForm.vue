@@ -372,7 +372,7 @@
                                                 multiple
                                                 :limit="3"
                                                 :on-exceed="handleExceed"
-                                                :file-list="fileType.files">
+                                                :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='survey'"
                                                            @click="toUpload(fileType.mId)">点击上传
@@ -414,7 +414,7 @@
                                                 multiple
                                                 :limit="3"
                                                 :on-exceed="handleExceed"
-                                                :file-list="fileType.files">
+                                                :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='argueHandle'"
                                                            @click="toUpload(fileType.mId)">点击上传
@@ -486,7 +486,7 @@
                                                 multiple
                                                 :limit="3"
                                                 :on-exceed="handleExceed"
-                                                :file-list="fileType.files">
+                                                :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='auditFirst'"
                                                            @click="toUpload(fileType.mId)">点击上传
@@ -528,7 +528,7 @@
                                                 multiple
                                                 :limit="3"
                                                 :on-exceed="handleExceed"
-                                                :file-list="fileType.files">
+                                                :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='auditSecond'"
                                                            @click="toUpload(fileType.mId)">点击上传
@@ -809,10 +809,11 @@ export default {
                             event(this.submissionForm)
                         } else if (this.step === 'surveyPrepare') {
                             event({
-                                formId: this.submissionForm.id,
+                                targetId: this.submissionForm.id,
                                 prepareViewDate: this.submissionForm.prepareViewDate,
                                 viewDate: this.submissionForm.viewDate,
-                                viewPeopleIds: this.submissionForm.viewPeoples.toString()
+                                viewPeopleIds: this.submissionForm.viewPeoples.toString(),
+                                type: 2
                             })
                         } else if (this.step === 'auditFirst') {
                             //验证现场勘察附件上传情况
@@ -853,8 +854,9 @@ export default {
                         //附件列表转换为serverId字符串
                         this.fileIdsConstruct(this.submissionForm.surveyFiles)
                         event({
-                            id: this.submissionForm.id,
-                            surveyFiles: this.submissionForm.surveyFiles
+                            targetId: this.submissionForm.id,
+                            surveyFiles: this.submissionForm.surveyFiles,
+                            type: 2
                         })
                     }
                 } else if (this.step === 'argueHandle') {
@@ -935,8 +937,6 @@ export default {
             return this.removeableConfirm(file, ['auditSecond'], '当前阶段不可移除复审资料附件!')
         },
         removeableConfirm(file, steps, message) {
-            console.log(steps)
-            console.log(this.step)
             if (steps.indexOf(this.step) < 0) {
                 Notification.error({
                     title: '操作失败!',
@@ -949,10 +949,10 @@ export default {
         },
         removeFileFromList(file, list) {
             for (let types of list) {
-                let size = types.files.length
+                let size = types.mFiles.length
                 if (size !== 0) {
-                    types.files = types.files.filter(f => f.uid !== file.uid)
-                    if (types.files.length < size) {
+                    types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
+                    if (types.mFiles.length < size) {
                         break
                     }
                 }

@@ -32,7 +32,7 @@ import SubmissionForm from "./SubmissionForm";
 export default {
     name: "AuditComplete",
     mounted: function () {
-
+        this.list()
     },
     data: function () {
         return {

@@ -3,6 +3,7 @@
 import Audit from "../server/audit";
 import Workitem from "../server/workitem"
 import User from "../server/user"
+import Net from "../server/net";
 
 export default {
     //保存送审
@@ -52,6 +53,22 @@ export default {
     //提交勘察准备
     commitSurveyPrepare(form) {
         return Audit.commitSurveyPrepare(form)
+    },
+    //现场勘察
+    commitSurvey: function (form) {
+        return Audit.commitSurvey(form)
+    },
+    //争议处理
+    commitArgue: function (form) {
+        return Audit.commitArgue(form)
+    },
+    //初审
+    commitAuditFirst: function (form) {
+        return Audit.commitAuditFirst(form)
+    },
+    //复审
+    commitAuditSecond: function (form) {
+        return Audit.commitAuditSecond(form)
     },
     getEmps() {
         let data = {

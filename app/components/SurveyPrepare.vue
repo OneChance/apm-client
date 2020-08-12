@@ -103,7 +103,7 @@ export default {
             for (let prop in config) {
                 data[prop] = config[prop]
             }
-            data['status'] = Config.stepCode.allocApproved
+            data['status'] = Config.stepCode.surveyPrepare
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
                 //如果以后多选框,清除所选数据

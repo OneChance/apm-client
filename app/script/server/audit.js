@@ -27,10 +27,26 @@ export default {
     },
     //分配审核
     allocApprove: function (data) {
-        return Net.post('/submission/assigned/approves/', data);
+        return Net.post('/submission/check/approves/', data);
     },
-    //分配审核
+    //勘察准备
     commitSurveyPrepare: function (data) {
-        return Net.post('/submission/assigned/approves/', data);
+        return Net.post('/submission/survey/prepare/approve/', data);
+    },
+    //现场勘察
+    commitSurvey: function (data) {
+        return Net.jsonPost('/submission/survey/scene/approve/', data);
+    },
+    //争议处理
+    commitArgue: function (data) {
+        return Net.jsonPost('/submission/assigned/approves/', data);
+    },
+    //初审
+    commitAuditFirst: function (data) {
+        return Net.jsonPost('/submission/assigned/approves/', data);
+    },
+    //复审
+    commitAuditSecond: function (data) {
+        return Net.jsonPost('/submission/assigned/approves/', data);
     },
 }

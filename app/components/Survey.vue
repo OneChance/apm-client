@@ -88,7 +88,7 @@ export default {
             for (let prop in config) {
                 data[prop] = config[prop]
             }
-            data['status'] = Config.stepCode.viewPrepared
+            data['status'] = Config.stepCode.survey
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
                 //如果以后多选框,清除所选数据
