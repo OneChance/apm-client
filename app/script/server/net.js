@@ -36,22 +36,26 @@ export default {
 let request = function (api, type, data, progress) {
 
     let axiosRequest;
-    let fullURL = Env.baseURL + api;
+    let fullURL = Env.baseURL + '/api' + api;
+    let token = localStorage.getItem("apm_token")
 
     if (type === 'file') {
         axiosRequest = axiosUpload.post(fullURL, data, {
+            headers: {'Authorization': 'Bearer ' + token},
             onUploadProgress: progress
         });
     } else if (type === 'get') {
         axiosRequest = Vue.axios.get(fullURL, {
+            headers: {'Authorization': 'Bearer ' + token},
             params: data,
         });
     } else if (type === 'json_post') {
         axiosRequest = Vue.axios.post(fullURL, data, {
-            headers: {'Content-Type': 'application/json'}
+            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}
         });
     } else {
         axiosRequest = Vue.axios.post(fullURL, null, {
+            headers: {'Authorization': 'Bearer ' + token},
             params: data,
             paramsSerializer: function (params) {
                 return qs.stringify(params, {arrayFormat: 'repeat'})
@@ -60,6 +64,12 @@ let request = function (api, type, data, progress) {
     }
 
     return axiosRequest.then((response) => {
+        if (!response) {
+            Notification.error({
+                title: '错误',
+                message: '服务器响应超时'
+            });
+        }
         return response.data;
     }).catch(function (e) {
         Notification.error({

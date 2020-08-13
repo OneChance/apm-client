@@ -31,6 +31,7 @@
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import AllocForm from "./AllocForm";
+import Common from '../script/common'
 import ClientCall from "../script/client/clientCall"
 import Config from "../script/config";
 import {
@@ -225,9 +226,7 @@ export default {
             })
         },
         list(config) {
-            let data = {
-                ...Config.page
-            }
+            let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
             }

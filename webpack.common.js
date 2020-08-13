@@ -5,13 +5,11 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-    entry: {
-        index: path.resolve(__dirname, './app/index.js')
-    },
+    entry: './app/index.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[chunkhash].js',
-        publicPath: 'http://192.168.1.200:8888/',
+        publicPath: 'http://192.168.1.200:8888/',   //http://192.168.1.200:8888/
         chunkFilename: '[name].[chunkhash].js'
     },
     module: {

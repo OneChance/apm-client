@@ -113,10 +113,9 @@ export default {
     methods: {
         signOut: function () {
             Account.logOut().then(result => {
-                App.router.$router.push('sign');
+                App.router.$router.push('sign').catch(err => err);
             })
-            $.cookie('apm_token', null, {path: '/'});
-            $.cookie('apm_user', null, {path: '/'});
+            localStorage.removeItem("apm_token");
         },
         handleSelect(key, keyPath) {
             if (key === 'sign') {

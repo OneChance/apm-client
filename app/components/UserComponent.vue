@@ -53,6 +53,7 @@
 import User from "../script/server/user";
 import TableComponent from "./TableComponent";
 import Config from "../script/config";
+import Common from '../script/common'
 import md5 from 'js-md5';
 
 export default {
@@ -165,7 +166,7 @@ export default {
             comp.list({page: 1})
         },
         list(config) {
-            let data = {...Config.page}
+            let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
             }

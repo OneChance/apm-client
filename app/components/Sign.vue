@@ -67,7 +67,9 @@ export default {
         },
         signCallback: function (res) {
             if (res) {
-                App.router.$router.push('index')
+                //保存token
+                localStorage.setItem("apm_token", res.token);
+                App.router.$router.push('index').catch(err => err)
             }
         },
     },

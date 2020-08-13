@@ -28,6 +28,7 @@ import SubmissionForm from "./SubmissionForm";
 import Config from "../script/config";
 import Audit from "../script/server/audit";
 import Survey from "../script/client/survey"
+import Common from '../script/common'
 
 export default {
     name: "Survey",
@@ -84,7 +85,7 @@ export default {
             this.list({page: val})
         },
         list(config) {
-            let data = {...Config.page}
+            let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
             }

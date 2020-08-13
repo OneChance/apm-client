@@ -38,6 +38,7 @@ import Config from "../script/config";
 import Audit from "../script/server/audit";
 import {Notification} from "element-ui";
 import ClientCall from "../script/client/clientCall";
+import Common from '../script/common'
 
 export default {
     name: "MissionAlloc",
@@ -124,7 +125,7 @@ export default {
             this.list({page: val})
         },
         list(config) {
-            let data = {...Config.page}
+            let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
             }

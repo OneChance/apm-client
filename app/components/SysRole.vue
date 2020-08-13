@@ -41,11 +41,9 @@
 
 import Role from '../script/server/role'
 import User from '../script/server/user'
-import Right from '../script/server/right'
+import Common from '../script/common'
 import TableComponent from "./TableComponent";
-import App from "../script/app";
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 
 export default {
     name: "SysRole",
@@ -137,7 +135,7 @@ export default {
             this.list({page: val})
         },
         list(config) {
-            let data = {...Config.page}
+            let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
             }
