@@ -23,12 +23,12 @@
             </el-form>
             <template>
                 <el-transfer
-                        filterable
-                        :filter-method="filterMethod"
-                        v-model="alloced"
-                        :titles="['待分配', '已分配']"
-                        @change="handleChange"
-                        :data="alloc">
+                    filterable
+                    :filter-method="filterMethod"
+                    v-model="alloced"
+                    :titles="['待分配', '已分配']"
+                    @change="handleChange"
+                    :data="alloc">
                 </el-transfer>
             </template>
 
@@ -42,129 +42,136 @@
 
 <script>
 
-    import MaterialFile from '../script/server/materialFile'
-    import TableComponent from "./TableComponent";
+import MaterialFile from '../script/server/materialFile'
+import TableComponent from "./TableComponent";
 
-    export default {
-        name: "SysMaterialFileGroup",
-        mounted: function () {
+export default {
+    name: "SysMaterialFileGroup",
+    mounted: function () {
+        let comp = this
+        comp.list()
+    },
+    data: function () {
+        return {
+            currentGroup: {},
+            submitGroup: {
+                id: '',
+                name: '',
+                materialId: []
+            },
+            alloc: [],    //待分配
+            alloced: [],  //已分配
+            groupDialogVisible: false,
+            tableConfig: {
+                data: [],
+                cols: [
+                    {prop: 'name', label: '资料组名称', width: '500'},
+                ],
+                oper: [
+                    {
+                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                        tip: {content: '编辑', placement: 'top'},
+                        event: this.editGroup,
+                    },
+                    {
+                        class: 'fa fa-trash-o fa-lg click-fa',
+                        tip: {content: '删除', placement: 'right'},
+                        event: this.deleteGroup,
+                        check: true
+                    }
+                ]
+            },
+        }
+    },
+    methods: {
+        addGroup() {
             let comp = this
-            comp.list()
+            comp.groupDialogVisible = true;
+            //数据清除
+            comp.clearData()
+            MaterialFile.getMaterialTypes().then(res => {
+                //初始化待分配资料类别
+                let search = res.list.map(type => type.name)
+                res.list.forEach((type, index) => {
+                    comp.alloc.push({
+                        label: type.name,
+                        key: type.id,
+                        search: search[index]
+                    });
+                });
+            })
         },
-        data: function () {
-            return {
-                currentGroup: {},
-                submitGroup: {
-                    id: '',
-                    name: '',
-                    materialId: []
-                },
-                alloc: [],    //待分配
-                alloced: [],  //已分配
-                groupDialogVisible: false,
-                tableConfig: {
-                    data: [],
-                    cols: [
-                        {prop: 'name', label: '资料组名称', width: '500'},
-                    ],
-                    oper: [
-                        {
-                            class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
-                            tip: {content: '编辑', placement: 'top'},
-                            event: this.editGroup,
-                        },
-                        {
-                            class: 'fa fa-trash-o fa-lg click-fa',
-                            tip: {content: '删除', placement: 'right'},
-                            event: this.deleteGroup,
-                            check: true
-                        }
-                    ]
-                },
+        commitAlloc() {
+            let comp = this
+            comp.submitGroup.name = comp.currentGroup.name
+            for (let a of comp.alloced) {
+                comp.submitGroup.materialId.push(a)
             }
+            MaterialFile.saveMaterialGroup(comp.submitGroup).then(res => {
+                comp.$message({
+                    message: '操作成功',
+                    type: 'success'
+                });
+                comp.list()
+            })
         },
-        methods: {
-            addGroup() {
-                let comp = this
-                comp.groupDialogVisible = true;
-                //数据清除
-                comp.clearData()
-                MaterialFile.getMaterialTypes().then(res => {
-                    //初始化待分配资料类别
-                    let search = res.list.map(type => type.name)
-                    res.list.forEach((type, index) => {
-                        comp.alloc.push({
-                            label: type.name,
-                            key: type.id,
-                            search: search[index]
-                        });
+        editGroup(row) {
+            let comp = this
+            //数据清除
+            comp.clearData()
+            comp.groupDialogVisible = true;
+            comp.currentGroup = row
+
+            MaterialFile.getMaterialTypes().then(res => {
+                //初始化待分配资料类别
+                let search = res.list.map(type => type.name)
+                res.list.forEach((type, index) => {
+                    comp.alloc.push({
+                        label: type.name,
+                        key: type.id,
+                        search: search[index]
                     });
-                })
-            },
-            commitAlloc() {
-                let comp = this
-                comp.submitGroup.name = comp.currentGroup.name
-                for (let a of comp.alloced) {
-                    comp.submitGroup.materialId.push(a)
-                }
-                MaterialFile.saveMaterialGroup(comp.submitGroup).then(res => {
-                    comp.$message({
-                        message: '操作成功',
-                        type: 'success'
-                    });
-                    comp.list()
-                })
-            },
-            editGroup(row) {
-                let comp = this
-                //数据清除
-                comp.clearData()
-                comp.groupDialogVisible = true;
-                comp.currentGroup = row
+                });
+
+                //加载已分配的资料
                 MaterialFile.getMaterialGroup({id: row.id}).then(res => {
                     comp.submitGroup.id = res.materialGroup.id
                     for (let detail of res.materialGroup.details) {
                         comp.alloced.push(detail.material.id);
                     }
-                    MaterialFile.getMaterialTypes().then(res => {
-                        //初始化待分配资料类别
-                        let search = res.list.map(type => type.name)
-                        res.list.forEach((type, index) => {
-                            comp.alloc.push({
-                                label: type.name,
-                                key: type.id,
-                                search: search[index]
-                            });
-                        });
-                    })
+                    console.log(comp.alloc)
+                    console.log(comp.alloced)
                 })
-            },
-            deleteGroup(row) {
-                let comp = this
-                MaterialFile.deleteMaterialGroup({id: row.id}).then(res => {
-                    comp.$message({
-                        message: '操作成功',
-                        type: 'success'
-                    });
-                    comp.list()
-                })
-            },
-            list() {
-                MaterialFile.getMaterialGroups().then(res => {
-                    this.tableConfig.data = res.list
-                })
-            },
-            clearData() {
-                this.currentGroup = {}
-                this.submitGroup.id = ''
-                this.submitGroup.name = ''
-                this.submitGroup.materialId = []
-                this.alloc = []
-                this.alloced = []
-            }
+            })
+
+
         },
-        components: {TableComponent}
-    }
+        deleteGroup(row) {
+            let comp = this
+            MaterialFile.deleteMaterialGroup({id: row.id}).then(res => {
+                comp.$message({
+                    message: '操作成功',
+                    type: 'success'
+                });
+                comp.list()
+            })
+        },
+        list() {
+            MaterialFile.getMaterialGroups().then(res => {
+                this.tableConfig.data = res.list
+            })
+        },
+        clearData() {
+            this.currentGroup = {}
+            this.submitGroup.id = ''
+            this.submitGroup.name = ''
+            this.submitGroup.materialId = []
+            this.alloc = []
+            this.alloced = []
+        }
+    },
+    components: {TableComponent}
+}
 </script>
 
 <style scoped>

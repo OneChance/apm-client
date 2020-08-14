@@ -140,7 +140,7 @@ export default {
 <style scoped>
 
 .el-menu-vertical-demo {
-    min-height: 900px;
+
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {

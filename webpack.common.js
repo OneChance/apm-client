@@ -11,7 +11,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[chunkhash].js',
-        publicPath: 'http://demo.ceeg.cn/', //192.168.1.200
+        publicPath: 'http://192.168.1.200:8888/', //192.168.1.200   //http://demo.ceeg.cn/
         chunkFilename: '[name].[chunkhash].js'
     },
     module: {

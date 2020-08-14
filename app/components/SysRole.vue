@@ -109,7 +109,6 @@ export default {
 
             //加载已分配的用户
             Role.getRole({id: row.id}).then(result => {
-                console.log(result)
                 result.role.users.forEach(u => {
                     this.alloced.push(u.user.id)
                 })
