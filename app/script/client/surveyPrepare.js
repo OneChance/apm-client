@@ -6,6 +6,17 @@ const oper = {
     buttons: [
         {name: '提交', color: 'success', event: commitSurveyPrepare},
     ],
+    rules: {
+        prepareViewDate: [
+            {required: true, message: '请选择约看现场时间', trigger: 'blur'}
+        ],
+        viewDate: [
+            {required: true, message: '请选择现场查看时间', trigger: 'blur'}
+        ],
+        viewPeoples: [
+            {required: true, message: '请填写现场查看人员', trigger: 'blur'},
+        ],
+    },
 }
 
 export default oper

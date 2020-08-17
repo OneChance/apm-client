@@ -31,6 +31,7 @@ import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import FormValidator from '../script/client/formValidator'
 import Common from '../script/common'
+import AuditFirst from "../script/client/auditFirst";
 
 export default {
     name: "AuditSecond",
@@ -66,11 +67,7 @@ export default {
                     },
                 ]
             },
-            rules: {
-                secondAuditPrice: [
-                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
-                ],
-            },
+            rules: AuditSecond.rules
         }
     },
     methods: {

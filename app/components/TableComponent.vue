@@ -15,6 +15,8 @@
                              :width="col.width"></el-table-column>
             <el-table-column
                 prop="roleOper"
+                fixed="right"
+                :width="tableConfig.operWidth"
                 label="操作">
                 <template slot-scope="scope">
                     <el-tooltip v-for="o in tableConfig.oper" class="item" effect="dark" :content="o.tip.content"

@@ -66,14 +66,7 @@ export default {
                     },
                 ]
             },
-            rules: {
-                submissionPrice: [
-                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
-                ],
-                firstAuditPrice: [
-                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
-                ],
-            },
+            rules: AuditFirst.rules
         }
     },
     methods: {

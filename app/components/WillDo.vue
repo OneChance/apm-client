@@ -20,6 +20,7 @@
         </el-card>
         <submission-form v-bind:visible="forms.submission.visible" v-bind:from="'editform'"
                          v-bind:formOpers="forms.submission.formOpers"
+                         v-bind:formRules="forms.submission.rules"
                          v-bind:step="forms.submission.step" v-bind:formId="formId">
         </submission-form>
         <alloc-form v-bind:visible="forms.alloc.visible" v-bind:commitCallback="allocCallback">
@@ -67,6 +68,7 @@ export default {
                     visible: false,
                     formOpers: [],
                     step: '',
+                    rules: [],
                 }
             },
             tableConfig: {
@@ -200,6 +202,7 @@ export default {
             } else if (step === 'surveyPrepare') {
                 SurveyPrepare.comp = this
                 this.forms.submission.formOpers = SurveyPrepare.buttons
+                this.forms.submission.rules = SurveyPrepare.rules
             } else if (step === 'survey') {
                 Survey.comp = this
                 this.forms.submission.formOpers = Survey.buttons
@@ -209,9 +212,11 @@ export default {
             } else if (step === 'auditFirst') {
                 AuditFirst.comp = this
                 this.forms.submission.formOpers = AuditFirst.buttons
+                this.forms.submission.rules = AuditFirst.rules
             } else if (step === 'auditSecond') {
                 AuditSecond.comp = this
                 this.forms.submission.formOpers = AuditSecond.buttons
+                this.forms.submission.rules = AuditSecond.rules
             } else {
                 this.forms.submission.formOpers = []
             }

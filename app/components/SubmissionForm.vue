@@ -829,6 +829,7 @@ export default {
     },
     methods: {
         commit: function (event) {
+            console.log(this.step)
             if ((this.step === 'submission' && event.name.indexOf('save') === -1) || this.step === 'reject' || this.step === 'surveyPrepare' || this.step ===
                 'auditFirst' || this.step === 'auditSecond') {
                 //需要验证表单的提交

@@ -28,6 +28,7 @@
                     v-model="alloced"
                     :titles="['待分配', '已分配']"
                     @change="handleChange"
+                    targetOrder="new"
                     :data="alloc">
                 </el-transfer>
             </template>
@@ -81,6 +82,7 @@ export default {
                     }
                 ]
             },
+            allocList: [],
         }
     },
     methods: {
@@ -121,30 +123,23 @@ export default {
             comp.clearData()
             comp.groupDialogVisible = true;
             comp.currentGroup = row
-
             MaterialFile.getMaterialTypes().then(res => {
                 //初始化待分配资料类别
                 let search = res.list.map(type => type.name)
-                res.list.forEach((type, index) => {
-                    comp.alloc.push({
-                        label: type.name,
-                        key: type.id,
-                        search: search[index]
-                    });
-                });
+                res.list.forEach((type, index) => this.alloc.push({
+                    label: type.name,
+                    key: type.id,
+                    search: search[index]
+                }));
 
                 //加载已分配的资料
                 MaterialFile.getMaterialGroup({id: row.id}).then(res => {
                     comp.submitGroup.id = res.materialGroup.id
                     for (let detail of res.materialGroup.details) {
-                        comp.alloced.push(detail.material.id);
+                        this.alloced.push(detail.material.id);
                     }
-                    console.log(comp.alloc)
-                    console.log(comp.alloced)
                 })
             })
-
-
         },
         deleteGroup(row) {
             let comp = this
