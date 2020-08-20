@@ -2,21 +2,35 @@
 import ClientCall from "./clientCall";
 
 const oper = {
-	comp: {},
-	buttons: [{
-		name: '提交',
-		color: 'success',
-		event: commit
-	}, ],
+    comp: {},
+    buttons: [
+        {
+            name: '争议处理',
+            color: 'danger',
+            event: argueDeal
+        },
+        {
+            name: '争议解决',
+            color: 'success',
+            event: argueResolve
+        },
+    ],
 }
 
 export default oper
 
-function commit(form) {
-	console.log(form)
-	ClientCall.commitArgue(form).then(result => {
-		if (result) {
-			oper.comp.operSuccess()
-		}
-	})
+function argueDeal(form) {
+    commit(form, 0)
+}
+
+function argueResolve(form) {
+    commit(form, 1)
+}
+
+function commit(form, status) {
+    ClientCall.commitArgue(form).then(result => {
+        if (result) {
+            oper.comp.operSuccess()
+        }
+    })
 }

@@ -2,6 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Sign from '../components/Sign.vue';
 import Index from '../components/Index.vue'
+import cookie from 'vue-cookie'
+
+//设置COOKIE工具
+Vue.prototype.$cookie = cookie;
 
 //局部打印插件
 import printArea from '../plugin/printarea/jquery.PrintArea'

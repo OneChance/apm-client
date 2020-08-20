@@ -63,9 +63,15 @@
                             <th>施工单位名称<span style="color: red; ">*</span></th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
-                                    <el-input v-model="submissionForm.constructionUnit"
-                                              :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写施工单位名称"></el-input>
+                                    <el-select v-model="submissionForm.constructionUnit" filterable
+                                               placeholder="填写施工单位名称" style="width: 220px;">
+                                        <el-option
+                                            v-for="unit in units"
+                                            :key="unit.value"
+                                            :label="unit.label"
+                                            :value="unit.value">
+                                        </el-option>
+                                    </el-select>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -270,7 +276,7 @@
                                                        :with-credentials="true" :on-preview="handlePreview"
                                                        :on-remove="handleRemove" :before-remove="beforeRemove"
                                                        :on-success="afterUpload" :data="uploadParams"
-                                                       multiple :limit="3" :on-exceed="handleExceed"
+                                                       multiple :on-exceed="handleExceed"
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='submission' || step ==='reject'"
@@ -352,8 +358,7 @@
                                                        :with-credentials="true" :on-preview="handlePreview"
                                                        :on-remove="handleRemoveSurvey"
                                                        :before-remove="beforeRemoveSurvey" :on-success="afterUpload"
-                                                       multiple
-                                                       :limit="3" :on-exceed="handleExceed"
+                                                       multiple :on-exceed="handleExceed"
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='survey'" @click="toUpload(fileType.mId)">点击上传
@@ -385,7 +390,7 @@
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
                                                        :with-credentials="true" :on-preview="handlePreview"
                                                        :on-remove="handleRemoveArgue" :before-remove="beforeRemoveArgue"
-                                                       :on-success="afterUpload" multiple :limit="3"
+                                                       :on-success="afterUpload" multiple
                                                        :on-exceed="handleExceed" :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='argueHandle'" @click="toUpload(fileType.mId)">
@@ -419,6 +424,44 @@
                             </td>
                         </tr>
 
+                        <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
+                            <th>约看现场时间(初审)</th>
+                            <td>
+                                <el-form-item prop="prepareViewDate">
+                                    <el-date-picker v-model="submissionForm.prepareViewDate2"
+                                                    :disabled="step!=='surveyPrepare'" format="yyyy-MM-dd HH:mm:ss"
+                                                    value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+                                                    placeholder="选择日期">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </td>
+                            <th>现场查看时间(初审)</th>
+                            <td>
+                                <el-form-item prop="viewDate">
+                                    <el-date-picker v-model="submissionForm.viewDate2"
+                                                    :disabled="step!=='surveyPrepare'"
+                                                    format="yyyy-MM-dd HH:mm:ss"
+                                                    value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+                                                    placeholder="选择日期">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
+                            <th>现场查看人员(初审)</th>
+                            <td colspan="3">
+                                <el-form-item prop="viewPeoples">
+                                    <el-select v-model="submissionForm.viewPeoples2" style="width:700px" filterable
+                                               multiple placeholder="请选择"
+                                               :disabled="step!=='surveyPrepare'">
+                                        <el-option v-for="item in users" :key="item.value" :label="item.label"
+                                                   :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
                         <tr v-if="step === 'auditSecond' || step === 'auditArc' ">
                             <th>复审审定金额</th>
                             <td colspan="3">
@@ -446,7 +489,7 @@
                                                        :with-credentials="true" :on-preview="handlePreview"
                                                        :on-remove="handleRemoveAuditFirst"
                                                        :before-remove="beforeRemoveAuditFirst" :on-success="afterUpload"
-                                                       multiple :limit="3" :on-exceed="handleExceed"
+                                                       multiple :on-exceed="handleExceed"
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='auditFirst'" @click="toUpload(fileType.mId)">
@@ -481,7 +524,42 @@
                                                        :on-remove="handleRemoveAuditSecond"
                                                        :before-remove="beforeRemoveAuditSecond"
                                                        :on-success="afterUpload"
-                                                       multiple :limit="3" :on-exceed="handleExceed"
+                                                       multiple :on-exceed="handleExceed"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="step ==='auditSecond'" @click="toUpload(fileType.mId)">
+                                                    点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditSecond'"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr v-if="step ==='argueDeal' || step === 'auditArc' ">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:20%">补充资料</th>
+                                        <th style="width:30%">附件</th>
+                                        <th style="width:50%">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.submissionForm.auditSecondFiles">
+                                        <td>
+                                            {{ fileType.mName }}
+                                        </td>
+                                        <td>
+                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
+                                                       :with-credentials="true" :on-preview="handlePreview"
+                                                       :on-remove="handleRemoveSupplement"
+                                                       :before-remove="beforeRemoveSupplement"
+                                                       :on-success="afterUpload"
+                                                       multiple :on-exceed="handleExceed"
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='auditSecond'" @click="toUpload(fileType.mId)">
@@ -578,6 +656,8 @@ import Upload from "../script/server/upload";
 import Audit from "../script/server/audit";
 import Comment from "../script/server/comment";
 import ClientCall from "../script/client/clientCall"
+import Env from "../script/server/env"
+import ConstructionUnit from "../script/server/constructionUnit";
 
 export default {
     name: "SubmissionForm",
@@ -700,7 +780,16 @@ export default {
                                     },
                                 ]
                             }
-
+                            //加载补充资料附件
+                            if (!result.submission.supplementFiles || result.submission.supplementFiles.length === 0) {
+                                result.submission.supplementFiles = [{
+                                    mId: '-12',
+                                    mName: '补充资料',
+                                    mFiles: [],
+                                    mFileIds: '',
+                                    mNote: ''
+                                }]
+                            }
                             this.submissionForm = result.submission
 
                             if (this.submissionForm.materialGroup) {
@@ -741,10 +830,12 @@ export default {
                                     this.submissionForm.viewPeoples.push(id - 0)
                                 })
                                 //加载分配人字段
-                                if (this.submissionForm.assigned.thirdParty) {
-                                    this.submissionForm.assignName = this.submissionForm.assigned.thirdPartyName
-                                } else {
-                                    this.submissionForm.assignName = this.submissionForm.assigned.name
+                                if (this.submissionForm.assigned) {
+                                    if (this.submissionForm.assigned.thirdParty) {
+                                        this.submissionForm.assignName = this.submissionForm.assigned.thirdPartyName
+                                    } else {
+                                        this.submissionForm.assignName = this.submissionForm.assigned.name
+                                    }
                                 }
                             } else if (this.step === 'auditSecond') {
                                 //将复审审定金额默认设置为初审审定金额
@@ -765,9 +856,22 @@ export default {
         MaterialFile.getMaterialGroups().then(res => {
             this.materialGroups = res.list
         })
+        ConstructionUnit.getConstructionUnits({
+            page: 1,
+            pageSize: 999999,
+        }).then(res => {
+            this.units = []
+            res.list.content.forEach(user => {
+                this.units.push({
+                    value: user.id,
+                    label: user.name
+                })
+            })
+        })
     },
     data: function () {
         return {
+            units: [],
             dialogVisible: false,
             submissionForm: {
                 id: '',
@@ -814,9 +918,15 @@ export default {
                 submissionPrice: 0,
                 firstAuditPrice: 0,
                 auditFirstFiles: [],
+                prepareViewDate2: '',
+                viewDate2: '',
+                viewPeoples2: [],
+                viewPeopleIds2: '',
                 //审计复审
                 secondAuditPrice: 0,
                 auditSecondFiles: [],
+                //争议处理，申请人补充上传资料
+                supplementFiles: [],
             },
             materialGroups: [],
             uploadParams: {
@@ -876,7 +986,10 @@ export default {
                                     type: 2,
                                     submissionPrice: this.submissionForm.submissionPrice,
                                     firstAuditPrice: this.submissionForm.firstAuditPrice,
-                                    auditFirstFiles: this.submissionForm.auditFirstFiles
+                                    auditFirstFiles: this.submissionForm.auditFirstFiles,
+                                    prepareViewDate2: this.submissionForm.prepareViewDate2,
+                                    viewDate2: this.submissionForm.viewDate2,
+                                    viewPeopleIds2: this.submissionForm.viewPeoples2.toString(),
                                 })
                             }
                         } else if (this.step === 'auditSecond') {
@@ -996,6 +1109,13 @@ export default {
         beforeRemoveAuditSecond(file, fileList) {
             return this.removeableConfirm(file, ['auditSecond'], '当前阶段不可移除复审资料附件!')
         },
+        //补充资料
+        handleRemoveSupplement(file, fileList) {
+            this.removeFileFromList(file, this.submissionForm.supplementFiles)
+        },
+        beforeRemoveSupplement(file, fileList) {
+            return this.removeableConfirm(file, ['argueDeal'], '当前阶段不可移除补充资料附件!')
+        },
         removeableConfirm(file, steps, message) {
             if (steps.indexOf(this.step) < 0) {
                 Notification.error({
@@ -1019,7 +1139,7 @@ export default {
             }
         },
         handlePreview(file) {
-            window.open(file.url)
+            window.open(Env.baseURL + file.url)
         },
         materialGroupChange: function (value) {
             //根据选择的清单组，初始化附加列表
@@ -1062,9 +1182,10 @@ export default {
                     'name': content.file.name
                 }
 
-                if (comp.step === 'survey') {
-                    //现场勘察阶段上传的勘察资料
+                if (comp.step === 'survey') {//现场勘察阶段上传的勘察资料
                     comp.submissionForm.surveyFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                } else if (comp.step === 'argueDeal') {
+                    comp.submissionForm.supplementFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
                 } else if (comp.step === 'argueHandle') {
                     comp.submissionForm.argueFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
                 } else if (comp.step === 'auditFirst') {

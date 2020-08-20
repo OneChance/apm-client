@@ -3,15 +3,21 @@
         <el-card class="box-card">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
                 <el-form-item>
-                    <el-input v-model="query.projectName" placeholder="工程项目名称"></el-input>
-                </el-form-item>
-                <el-form-item>
+                    <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
+                    <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
+                    <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
+                    <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
+                    <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
+                        <el-option
+                            v-for="unit in units"
+                            :key="unit.value"
+                            :label="unit.label"
+                            :value="unit.value">
+                        </el-option>
+                    </el-select>
+                    <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
                     <el-button type="primary" @click="queryList">查询</el-button>
-                </el-form-item>
-                <el-form-item>
                     <el-button type="success" @click="batchAudit(1)">批量审核通过</el-button>
-                </el-form-item>
-                <el-form-item>
                     <el-button type="danger" @click="batchAudit(0)">批量打回</el-button>
                 </el-form-item>
             </el-form>
@@ -38,6 +44,7 @@ import ProjectAudit from "../script/client/projectOper"
 import Common from '../script/common'
 
 import {Notification} from "element-ui";
+import ConstructionUnit from "../script/server/constructionUnit";
 
 export default {
     name: "AuditProject",
@@ -48,13 +55,31 @@ export default {
         this.list()
         ProjectAudit.comp = this
         this.formOpers = ProjectAudit.buttons
+        ConstructionUnit.getConstructionUnits({
+            page: 1,
+            pageSize: 999999,
+        }).then(res => {
+            this.units = []
+            res.list.content.forEach(user => {
+                this.units.push({
+                    value: user.id,
+                    label: user.name
+                })
+            })
+        })
     },
     data: function () {
         return {
             dialogVisible: false,
             query: {
                 projectName: '',
+                itemCode: '',
+                auditNo: '',
+                contractNo: '',
+                constructionUnit: '',
+                contractMoney: '',
             },
+            units: [],
             formOpers: [],
             tableConfig: {
                 data: [],
@@ -65,10 +90,12 @@ export default {
                 checkBoxChange: this.checkBoxChange,
                 checkable: true,
                 cols: [
-                    {prop: 'itemCode', label: '项目立项代码', width: '150'},
+                    {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
-                    {prop: 'projectName', label: '工程项目名称', width: '220'},
-                    {prop: 'constructionUnit', label: '施工单位名称', width: '220'},
+                    {prop: 'contractNo', label: '合同编码', width: '150'},
+                    {prop: 'projectName', label: '工程项目', width: '220'},
+                    {prop: 'constructionUnit', label: '施工单位', width: '220'},
+                    {prop: 'contractMoney', label: '中标或合同金额', width: '150'},
                 ],
                 oper: [
                     {

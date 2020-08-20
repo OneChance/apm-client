@@ -40,6 +40,9 @@
                             :value="aType.value">
                         </el-option>
                     </el-select>
+                    <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;"></el-input>
+                    <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
+                    <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
             </el-form>
@@ -47,12 +50,46 @@
             </table-component>
         </el-card>
         <submission-form v-bind:visible="dialogVisible"
-                         v-bind:from="'editform'"
+                         v-bind:from="from"
                          v-bind:formRules="rules"
                          v-bind:formOpers="formOpers"
-                         v-bind:step="'surveyPrepare'"
+                         v-bind:step="'auditArc'"
                          v-bind:formId="formId">
         </submission-form>
+        <el-dialog title="附件清单"
+                   class="files-down"
+                   :visible.sync="fileListVisible"
+                   :close-on-click-modal="false">
+            <template>
+                <el-table
+                    border
+                    ref="multipleTable"
+                    :data="downFiles"
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+                    <el-table-column
+                        type="selection"
+                        width="55">
+                    </el-table-column>
+                    <el-table-column
+                        prop="type"
+                        label="附件类型">
+                    </el-table-column>
+                    <el-table-column
+                        prop="name"
+                        label="文件">
+                        <template slot-scope="scope">
+                            <a :href="scope.row.url" target="_blank">{{ scope.row.name }}</a>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </template>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="fileListVisible = false">取 消</el-button>
+                <el-button type="primary" @click="downloadFiles()">下载</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -60,22 +97,19 @@
 
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import Config from "../script/config";
 import Audit from "../script/server/audit";
-import SurveyPrepare from "../script/client/surveyPrepare"
+import Config from "../script/config";
 import Common from '../script/common'
-import User from "../script/server/user";
 import ConstructionUnit from "../script/server/constructionUnit";
+import User from "../script/server/user";
 
 export default {
-    name: "SurveyPrepare",
+    name: "ListAll",
     created: function () {
 
     },
     mounted() {
         this.list()
-        SurveyPrepare.comp = this
-        this.formOpers = SurveyPrepare.buttons
         User.getUsers({
             page: 1,
             pageSize: 999999,
@@ -102,9 +136,9 @@ export default {
             })
         })
     },
+    watch: {},
     data: function () {
         return {
-            dialogVisible: false,
             query: {
                 projectName: '',
                 status: '',
@@ -115,6 +149,9 @@ export default {
                 contractMoney: '',
                 assignName: '',
                 auditType: '',
+                submissionPrice: '',
+                secondAuditPrice: '',
+                auditFee: '',
             },
             units: [],
             inters: [],
@@ -122,14 +159,32 @@ export default {
                 {value: 'in', label: '内审'},
                 {value: 'out', label: '外审'},
             ],
-            formOpers: [],
+            statusList: [
+                {value: -10, label: '送审保存'},
+                {value: -20, label: '送审打回'},
+                {value: 10, label: '审计立项'},
+                {value: 20, label: '审计分配'},
+                {value: 30, label: '分配审核'},
+                {value: 40, label: '勘察准备'},
+                {value: 50, label: '现场勘察'},
+                {value: 60, label: '争议处理'},
+                {value: 70, label: '初审'},
+                {value: 80, label: '复审'},
+                {value: 90, label: '完成'},
+            ],
+            dialogVisible: false,
+            fileListVisible: false,
+            from: '',
+            formId: -1,
             tableConfig: {
                 data: [],
                 page: true,
                 total: 0,
                 currentPage: 1,
                 pageMethod: this.toPage,
+                checkable: false,
                 cols: [
+                    {prop: 'status', label: '审计状态', width: '150'},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
                     {prop: 'contractNo', label: '合同编码', width: '150'},
@@ -138,26 +193,77 @@ export default {
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
                     {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
+                    {prop: 'submissionPrice', label: '送审金额', width: '150'},
+                    {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
+                    {prop: 'auditFee', label: '审计费用', width: '150'},
                 ],
                 oper: [
                     {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '编辑', placement: 'top'},
+                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                        tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },
+                    {
+                        class: 'fa fa-file-text-o  click-fa primary-fa',
+                        tip: {content: '附件清单', placement: 'top'},
+                        event: this.fileList,
+                    }
                 ],
+                operWidth: 100,
             },
-            listChecks: [],
-            formId: -1,
-            rules: SurveyPrepare.rules,
+            downFiles: [],
+            filesToDownload: [],
         }
     },
     methods: {
         editRow: function (row) {
             this.dialogVisible = false
+            this.fileListVisible = false
             this.dialogVisible = true
             this.from = 'editform'
             this.formId = row.id
+        },
+        fileList: function (row) {
+            this.dialogVisible = false
+            this.fileListVisible = false
+            this.fileListVisible = true
+
+            Audit.getSubmission({
+                id: row.id
+            }).then(result => {
+                this.downFiles = []
+                result.submission.details.forEach(fileType => this.addToFileList(fileType))
+                result.submission.surveyFiles.forEach(fileType => this.addToFileList(fileType))
+                result.submission.argueFiles.forEach(fileType => this.addToFileList(fileType))
+                result.submission.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
+                result.submission.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
+            })
+        },
+        addToFileList(fileType) {
+            fileType.mFiles.forEach(file => {
+                this.downFiles.push({
+                    type: fileType.mName,
+                    name: file.name,
+                    url: file.url
+                })
+            })
+        },
+        handleSelectionChange(val) {
+            this.filesToDownload = val;
+        },
+        download: function (name, href) {
+            let a = document.createElement("a"), //创建a标签
+                e = document.createEvent("MouseEvents"); //创建鼠标事件对象
+            e.initEvent("click", false, false); //初始化事件对象
+            a.href = href; //设置下载地址
+            a.target = "_blank"
+            a.download = name; //设置下载文件名
+            a.dispatchEvent(e); //给指定的元素，执行事件click事件
+        },
+        downloadFiles: function () {
+            this.filesToDownload.forEach(file => {
+                this.download(file.name, file.url)
+            })
         },
         queryList: function () {
             this.list(this.query)
@@ -170,10 +276,12 @@ export default {
             for (let prop in config) {
                 data[prop] = config[prop]
             }
-            data['status'] = Config.stepCode.surveyPrepare
+            data['status'] = 0
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
-                //如果以后多选框,清除所选数据
+                res.list.content.forEach(d => {
+                    d.status = this.statusList.filter(s => s.value === d.status)[0].label
+                })
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements
             })

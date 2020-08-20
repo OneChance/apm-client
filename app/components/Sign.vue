@@ -69,6 +69,7 @@ export default {
             if (res) {
                 //保存token
                 localStorage.setItem("apm_token", res.token);
+                this.$cookie.set('apm_token', res.token);
                 App.router.$router.push('index').catch(err => err)
             }
         },
@@ -147,5 +148,9 @@ export default {
     bottom: 30px;
     left: calc(50% - 55px);
     color: #e1184a;
+}
+
+.sign-local-btn {
+    margin-bottom: 10px;
 }
 </style>

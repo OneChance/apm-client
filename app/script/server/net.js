@@ -36,7 +36,7 @@ export default {
 let request = function (api, type, data, progress) {
 
     let axiosRequest;
-    let fullURL = Env.baseURL + '/api' + api;
+    let fullURL = Env.baseURL + api;
     let token = localStorage.getItem("apm_token")
 
     if (type === 'file') {

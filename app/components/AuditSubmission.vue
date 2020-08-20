@@ -2,14 +2,21 @@
     <div class="card-content">
         <el-card class="box-card">
             <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-form-item>
-                    <el-input v-model="query.projectName" placeholder="工程项目名称"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="queryList">查询</el-button>
-                </el-form-item>
-                <i class="fa fa-plus-circle fa-2x right-fa primary-fa" aria-hidden="true"
-                   @click="add"></i>
+                <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
+                <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
+                <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
+                <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
+                <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
+                    <el-option
+                        v-for="unit in units"
+                        :key="unit.value"
+                        :label="unit.label"
+                        :value="unit.value">
+                    </el-option>
+                </el-select>
+                <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
+                <el-button type="primary" @click="queryList">查询</el-button>
+                <el-button type="success" @click="add">新增</el-button>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
@@ -33,6 +40,7 @@ import Audit from "../script/server/audit";
 import Config from "../script/config";
 import FormValidator from "../script/client/formValidator";
 import Common from '../script/common'
+import ConstructionUnit from "../script/server/constructionUnit";
 
 export default {
     name: "AuditSubmission",
@@ -41,13 +49,31 @@ export default {
     },
     mounted() {
         this.list()
+        ConstructionUnit.getConstructionUnits({
+            page: 1,
+            pageSize: 999999,
+        }).then(res => {
+            this.units = []
+            res.list.content.forEach(user => {
+                this.units.push({
+                    value: user.id,
+                    label: user.name
+                })
+            })
+        })
     },
     watch: {},
     data: function () {
         return {
             query: {
                 projectName: '',
+                itemCode: '',
+                auditNo: '',
+                contractNo: '',
+                constructionUnit: '',
+                contractMoney: '',
             },
+            units: [],
             dialogVisible: false,
             from: '',
             formId: -1,
@@ -63,10 +89,12 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'itemCode', label: '项目立项代码', width: '150'},
+                    {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
-                    {prop: 'projectName', label: '工程项目名称', width: '220'},
-                    {prop: 'constructionUnit', label: '施工单位名称', width: '220'},
+                    {prop: 'contractNo', label: '合同编码', width: '150'},
+                    {prop: 'projectName', label: '工程项目', width: '220'},
+                    {prop: 'constructionUnit', label: '施工单位', width: '220'},
+                    {prop: 'contractMoney', label: '中标或合同金额', width: '150'},
                 ],
                 oper: [
                     {

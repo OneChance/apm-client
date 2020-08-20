@@ -115,6 +115,7 @@ export default {
             Account.logOut().then(result => {
                 App.router.$router.push('sign').catch(err => err);
             })
+            this.$cookie.delete('apm_token');
             localStorage.removeItem("apm_token");
         },
         handleSelect(key, keyPath) {

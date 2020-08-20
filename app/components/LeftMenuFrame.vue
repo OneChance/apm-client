@@ -25,9 +25,12 @@
                     <el-menu-item :index="m.value" v-for="m in menu.children" :key="m.value">
                         <template slot="title">
                             <i :class="'fa '+m.icon+' fa-lg fa-inverse'"></i>
-                            <span slot="title">
+                            <span slot="title" v-if="m.value!=='willDo'">
                                 {{ m.label }}
                             </span>
+                            <el-badge :value="willDoCount" class="item" v-if="m.value==='willDo'">
+                                {{ m.label }}
+                            </el-badge>
                         </template>
                     </el-menu-item>
                 </el-submenu>
@@ -66,6 +69,9 @@ import AuditFirst from "./AuditFirst";
 import AuditSecond from "./AuditSecond";
 import AuditArc from "./AuditArc";
 import ArgueHandle from "./ArgueHandle";
+import SysConstructionUnit from "./SysConstructionUnit";
+import ListAll from "./ListAll";
+import ClientCall from "../script/client/clientCall";
 
 export default {
     name: "leftMenuFrame",
@@ -75,7 +81,8 @@ export default {
             MultiLevelMenu: [],
             leftActiveIndex: '',
             isCollapse: false,
-            currentComponent: ''
+            currentComponent: '',
+            willDoCount: 0,
         }
     },
     props: ['menus'],
@@ -86,6 +93,14 @@ export default {
             if (newVal.length === 4) {
                 this.leftActiveIndex = 'willDo'
                 this.currentComponent = 'willDo'
+
+                ClientCall.getWillDo({
+                    page: 1,
+                    pageSize: 99999999
+                }).then(res => {
+                    this.willDoCount = res.list.totalElements
+                })
+
             } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
@@ -132,7 +147,9 @@ export default {
         AuditFirst,
         AuditSecond,
         AuditArc,
-        ArgueHandle
+        ArgueHandle,
+        SysConstructionUnit,
+        ListAll
     }
 }
 </script>

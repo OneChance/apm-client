@@ -12,6 +12,22 @@ body {
   user-select: none;
 }
 
+.box-card {
+  .el-input {
+    margin-bottom: 10px;
+  }
+
+  .el-form-item {
+    margin-bottom: 0 !important;
+  }
+}
+
+.files-down {
+  .el-dialog {
+    width: 80%;
+  }
+}
+
 .el-popup-parent--hidden {
   padding-right: 0 !important;
 }
@@ -28,7 +44,7 @@ body {
 }
 
 .box-card {
-  width: 90%;
+  width: 98%;
 }
 
 .tree-btn {
@@ -98,12 +114,9 @@ body {
   color: #909399 !important;
 }
 
-.el-badge {
-  cursor: pointer;
-}
-
 .el-badge__content {
-  top: 20px !important;
+  top: 15px !important;
+  right: 0 !important;
 }
 
 .header-bar {
