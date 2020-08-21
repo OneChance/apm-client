@@ -57,14 +57,18 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;"></el-input>
-                <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
-                <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
-                <el-button type="primary" @click="queryList">查询</el-button>
+                <el-form-item prop="submissionPrice">
+                    <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="secondAuditPrice">
+                    <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="auditFee">
+                    <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
+                </el-form-item>
 
-                <!--
+                <el-button type="primary" @click="queryList">查询</el-button>
                 <el-button @click="$refs['query'].resetFields()">重置</el-button>
-                -->
 
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">

@@ -1,23 +1,39 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
-                <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
-                <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
-                <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
-                <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
-                    <el-option
-                        v-for="unit in units"
-                        :key="unit.value"
-                        :label="unit.label"
-                        :value="unit.value">
-                    </el-option>
-                </el-select>
-                <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
+            <el-form :inline="true" :model='query' ref='query' class="demo-form-inline">
+                <el-form-item prop="itemCode">
+                    <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="auditNo">
+                    <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="contractNo">
+                    <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="projectName">
+                    <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="constructionUnit">
+                    <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
+                        <el-option
+                            v-for="unit in units"
+                            :key="unit.value"
+                            :label="unit.label"
+                            :value="unit.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item prop="contractMoney">
+                    <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
+                </el-form-item>
+
                 <el-button type="primary" @click="queryList">查询</el-button>
+                <el-button @click="$refs['query'].resetFields()">重置</el-button>
                 <el-button type="success" @click="add">新增</el-button>
+
             </el-form>
+
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
