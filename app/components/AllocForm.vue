@@ -5,9 +5,9 @@
         <template>
             <el-form ref="allocForm" :model="allocForm" :rules="allocRules">
                 <el-form-item prop="auditType">
-                    <el-radio v-model="allocForm.auditType" label="in" border @change="allocTypeChange">内审
+                    <el-radio v-model="allocForm.auditType" label="内审" border @change="allocTypeChange">内审
                     </el-radio>
-                    <el-radio v-model="allocForm.auditType" label="out" border @change="allocTypeChange">外审
+                    <el-radio v-model="allocForm.auditType" label="外审" border @change="allocTypeChange">外审
                     </el-radio>
                 </el-form-item>
                 <el-form-item prop="target">

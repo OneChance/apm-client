@@ -46,6 +46,7 @@ import Survey from "../script/client/survey.js"
 import Argue from "../script/client/argue.js"
 import AuditFirst from "../script/client/auditFirst.js"
 import AuditSecond from "../script/client/auditSecond.js"
+import ArgueResolve from "../script/client/argueResolve"
 
 export default {
     name: "WillDo",
@@ -186,6 +187,8 @@ export default {
                 step = 'auditFirst'
             } else if (row.stage === 'audit_second') {
                 step = 'auditSecond'
+            } else if (row.stage === 'argue_reject') {
+                step = 'argueDeal'
             }
 
             this.forms.submission.step = step
@@ -209,6 +212,9 @@ export default {
             } else if (step === 'argueHandle') {
                 Argue.comp = this
                 this.forms.submission.formOpers = Argue.buttons
+            } else if (step === 'argueDeal') {
+                ArgueResolve.comp = this
+                this.forms.submission.formOpers = ArgueResolve.buttons
             } else if (step === 'auditFirst') {
                 AuditFirst.comp = this
                 this.forms.submission.formOpers = AuditFirst.buttons

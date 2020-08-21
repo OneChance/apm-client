@@ -194,7 +194,6 @@
                     }
                 }
                 this.curPath = this.curPath.reverse()
-                console.log(this.curPath)
             },
             deleteRight() {
 

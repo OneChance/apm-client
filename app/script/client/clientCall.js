@@ -32,13 +32,14 @@ export default {
         return Workitem.getWillDo(data)
     },
     //批量分配
-    batchAlloc(form, checks, approve) {
+    batchAlloc(form, checks, approve, auditType) {
         let data = {
             type: approve,
             targetIds: checks,
         }
         if (form) {
             data.assignedId = form.target
+            data.auditType = form.auditType
         }
         return Audit.allocMissions(data)
     },
@@ -61,6 +62,10 @@ export default {
     //争议处理
     commitArgue: function (form) {
         return Audit.commitArgue(form)
+    },
+    //提交争议处理结果
+    commitArgueResolve: function (form) {
+        return Audit.commitArgueResolve(form)
     },
     //初审
     commitAuditFirst: function (form) {

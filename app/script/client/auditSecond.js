@@ -17,7 +17,6 @@ const oper = {
 export default oper
 
 function commit(form) {
-    console.log(form)
     ClientCall.commitAuditSecond(form).then(result => {
         if (result) {
             oper.comp.operSuccess()

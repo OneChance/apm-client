@@ -1,7 +1,7 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-form :inline="true" :model='query' ref='query' class="demo-form-inline">
                 <el-form-item>
                     <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 110px;">
                         <el-option
@@ -41,6 +41,7 @@
                         </el-option>
                     </el-select>
                     <el-button type="primary" @click="queryList">查询</el-button>
+
                 </el-form-item>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">
@@ -72,7 +73,7 @@ export default {
     name: "AuditFirst",
     mounted: function () {
         AuditFirst.comp = this
-        this.list()
+
         User.getUsers({
             page: 1,
             pageSize: 999999,
@@ -97,6 +98,7 @@ export default {
                     label: user.name
                 })
             })
+            this.list()
         })
     },
     data: function () {
@@ -115,8 +117,8 @@ export default {
             units: [],
             inters: [],
             auditTypes: [
-                {value: 'in', label: '内审'},
-                {value: 'out', label: '外审'},
+                {value: '内审', label: '内审'},
+                {value: '外审', label: '外审'},
             ],
             dialogVisible: false,
             formOpers: AuditFirst.buttons,
@@ -158,7 +160,11 @@ export default {
             this.list(this.query)
         },
         toPage: function (val) {
-            this.list({page: val})
+            let data = {page: val}
+            for (let op in this.query) {
+                data[op] = this.query[op]
+            }
+            this.list(data)
         },
         list(config) {
             let data = Common.copyObject(Config.page)
@@ -169,6 +175,10 @@ export default {
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
                 //如果以后多选框,清除所选数据
+                res.list.content.forEach(d => {
+                    let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
+                    d.constructionUnit = unit ? unit.label : ''
+                })
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements
             })

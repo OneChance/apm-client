@@ -3,6 +3,7 @@
         <el-table
             :data="tableConfig.data"
             border
+            stripe
             style="width: 100%"
             :max-height="maxHeight"
             @selection-change="tableConfig.checkBoxChange">
@@ -11,7 +12,7 @@
                              width="55">
             </el-table-column>
             <el-table-column v-for="col in tableConfig.cols" :prop="col.prop" :label="col.label" :key="col.prop"
-                             :formatter="col.formatter"
+                             :formatter="col.formatter" :sortable="col.sortable"
                              :width="col.width"></el-table-column>
             <el-table-column
                 prop="roleOper"

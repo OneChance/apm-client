@@ -54,14 +54,14 @@
                         <tr>
                             <th>核增</th>
                             <td>
-                                <el-form-item prop="submissionMoney">
-                                    <el-input v-model.number="auditNoteForm.sub"></el-input>
+                                <el-form-item prop="add">
+                                    <el-input v-model.number="auditNoteForm.add"></el-input>
                                 </el-form-item>
                             </td>
                             <th>核减</th>
                             <td>
-                                <el-form-item prop="auditMoney">
-                                    <el-input v-model.number="auditNoteForm.add"></el-input>
+                                <el-form-item prop="sub">
+                                    <el-input v-model.number="auditNoteForm.sub"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -154,9 +154,9 @@ export default {
                     let now = new Date();
                     this.auditNoteForm.auditNo = result.submission.auditNo
                     this.auditNoteForm.projectName = result.submission.projectName
-                    this.auditNoteForm.submissionMoney = result.submission.submissionPrice.toFixed(2);
-                    this.auditNoteForm.auditMoney = result.submission.secondAuditPrice.toFixed(2);
-                    this.auditNoteForm.sub = (this.auditNoteForm.submissionMoney - this.auditNoteForm.auditMoney).toFixed(2);
+                    this.auditNoteForm.submissionMoney = result.submission.submissionPrice
+                    this.auditNoteForm.auditMoney = result.submission.secondAuditPrice
+                    this.auditNoteForm.sub = result.submission.subtractPrice
                     this.auditNoteForm.auditInfo = "你单位送来的该工程，经审计，核定工程造价为" + this.auditNoteForm.auditMoney + "元。大写:" + Common.priceCN(
                         this.auditNoteForm.auditMoney) + "。\n" +
                         "请按审计结果办理结算手续。\n" +
@@ -164,14 +164,8 @@ export default {
                         "                                                                                  审计处\n" +
                         "                                                                                  " + now.getFullYear() +
                         "/" + (now.getMonth() + 1) + "/" + now.getDate();
-                    let temp = this.auditNoteForm.sub / this.auditNoteForm.submissionMoney
-                    if (temp < 0.05) {
-                        this.auditNoteForm.auditFee = 0
-                    } else if (temp >= 0.1) {
-                        this.auditNoteForm.auditFee = this.auditNoteForm.sub * 0.1
-                    } else {
-                        this.auditNoteForm.auditFee = this.auditNoteForm.sub * 0.05
-                    }
+
+                    this.auditNoteForm.auditFee = result.submission.auditFee
 
                     if (result.submission.assigned.thirdParty) {
                         this.auditNoteForm.auditUnit = result.submission.assigned.thirdPartyName

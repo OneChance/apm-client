@@ -53,7 +53,6 @@ export default {
 
     },
     mounted() {
-        this.list()
         ConstructionUnit.getConstructionUnits({
             page: 1,
             pageSize: 999999,
@@ -65,6 +64,7 @@ export default {
                     label: user.name
                 })
             })
+            this.list()
         })
     },
     data: function () {
@@ -149,7 +149,11 @@ export default {
             this.list(this.query)
         },
         toPage: function (val) {
-            this.list({page: val})
+            let data = {page: val}
+            for (let op in this.query) {
+                data[op] = this.query[op]
+            }
+            this.list(data)
         },
         list(config) {
             let data = Common.copyObject(Config.page)
@@ -161,6 +165,10 @@ export default {
             Audit.getSubmissions(data).then(res => {
                 //如果以后多选框,清除所选数据
                 this.listChecks = []
+                res.list.content.forEach(d => {
+                    let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
+                    d.constructionUnit = unit ? unit.label : ''
+                })
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements
             })

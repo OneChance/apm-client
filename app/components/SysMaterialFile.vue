@@ -114,7 +114,7 @@ export default {
             return row.required ? '是' : '否'
         },
         toPage: function (val) {
-            console.log('to page :' + val);
+
         },
         list: function () {
             MaterialFile.getMaterialTypes().then(res => {

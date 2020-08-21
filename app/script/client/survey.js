@@ -11,7 +11,6 @@ const oper = {
 export default oper
 
 function commitSurvey(form) {
-    console.log(form)
     ClientCall.commitSurvey(form).then(result => {
         if (result) {
             oper.comp.operSuccess()

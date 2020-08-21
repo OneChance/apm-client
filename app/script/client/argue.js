@@ -20,14 +20,16 @@ const oper = {
 export default oper
 
 function argueDeal(form) {
-    commit(form, 0)
+    form.type = 0
+    commit(form)
 }
 
 function argueResolve(form) {
-    commit(form, 1)
+    form.type = 1
+    commit(form)
 }
 
-function commit(form, status) {
+function commit(form) {
     ClientCall.commitArgue(form).then(result => {
         if (result) {
             oper.comp.operSuccess()

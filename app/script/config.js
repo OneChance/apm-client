@@ -8,6 +8,8 @@ export default {
         pageSize: 10
     },
     stepCode: {
+        argueDeal: -30,//争议处理中
+        reject: -20,
         submissionSave: -10, //送审保存
         auditProject: 10, //审计立项
         alloced: 20, //分配

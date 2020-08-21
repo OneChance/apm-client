@@ -374,7 +374,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step ==='argueHandle' || step === 'auditArc' ">
+                        <tr v-if="step ==='argueHandle' || step ==='argueDeal' || step === 'auditArc' ">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -427,9 +427,9 @@
                         <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
                             <th>约看现场时间(初审)</th>
                             <td>
-                                <el-form-item prop="prepareViewDate">
+                                <el-form-item prop="prepareViewDate2">
                                     <el-date-picker v-model="submissionForm.prepareViewDate2"
-                                                    :disabled="step!=='surveyPrepare'" format="yyyy-MM-dd HH:mm:ss"
+                                                    :disabled="step!=='auditFirst'" format="yyyy-MM-dd HH:mm:ss"
                                                     value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
                                                     placeholder="选择日期">
                                     </el-date-picker>
@@ -437,9 +437,9 @@
                             </td>
                             <th>现场查看时间(初审)</th>
                             <td>
-                                <el-form-item prop="viewDate">
+                                <el-form-item prop="viewDate2">
                                     <el-date-picker v-model="submissionForm.viewDate2"
-                                                    :disabled="step!=='surveyPrepare'"
+                                                    :disabled="step!=='auditFirst'"
                                                     format="yyyy-MM-dd HH:mm:ss"
                                                     value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
                                                     placeholder="选择日期">
@@ -450,10 +450,10 @@
                         <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
                             <th>现场查看人员(初审)</th>
                             <td colspan="3">
-                                <el-form-item prop="viewPeoples">
+                                <el-form-item prop="viewPeoples2">
                                     <el-select v-model="submissionForm.viewPeoples2" style="width:700px" filterable
                                                multiple placeholder="请选择"
-                                               :disabled="step!=='surveyPrepare'">
+                                               :disabled="step!=='auditFirst'">
                                         <el-option v-for="item in users" :key="item.value" :label="item.label"
                                                    :value="item.value">
                                         </el-option>
@@ -541,7 +541,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step ==='argueDeal' || step === 'auditArc' ">
+                        <tr v-if="step ==='argueHandle' || step ==='argueDeal' || step === 'auditArc' ">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -549,7 +549,7 @@
                                         <th style="width:30%">附件</th>
                                         <th style="width:50%">备注</th>
                                     </tr>
-                                    <tr v-for="fileType of this.submissionForm.auditSecondFiles">
+                                    <tr v-for="fileType of this.submissionForm.supplementFiles">
                                         <td>
                                             {{ fileType.mName }}
                                         </td>
@@ -562,13 +562,13 @@
                                                        multiple :on-exceed="handleExceed"
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
-                                                           v-if="step ==='auditSecond'" @click="toUpload(fileType.mId)">
+                                                           v-if="step ==='argueDeal'" @click="toUpload(fileType.mId)">
                                                     点击上传
                                                 </el-button>
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditSecond'"
+                                            <el-input v-model="fileType.mNote" :disabled="step!=='argueDeal'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
@@ -672,7 +672,7 @@ export default {
                         $(".comment").hide()
                     } else if (this.from === 'editform') {
 
-                        if (this.step === 'surveyPrepare' || this.step === 'auditArc') {
+                        if (this.step === 'surveyPrepare' || this.step === 'auditFirst' || this.step === 'auditArc') {
                             ClientCall.getEmps().then(result => {
                                 this.users = []
                                 result.list.content.forEach(user => {
@@ -718,13 +718,14 @@ export default {
                             }
                             //加载初审资料附件
                             if (!result.submission.auditFirstFiles || result.submission.auditFirstFiles.length === 0) {
-                                result.submission.auditFirstFiles = [{
-                                    mId: '-4',
-                                    mName: '审定单',
-                                    mFiles: [],
-                                    mFileIds: '',
-                                    mNote: ''
-                                },
+                                result.submission.auditFirstFiles = [
+                                    {
+                                        mId: '-4',
+                                        mName: '审定单',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
                                     {
                                         mId: '-5',
                                         mName: '初审报告',
@@ -750,13 +751,14 @@ export default {
                             }
                             //加载复审资料附件
                             if (!result.submission.auditSecondFiles || result.submission.auditSecondFiles.length === 0) {
-                                result.submission.auditSecondFiles = [{
-                                    mId: '-8',
-                                    mName: '审定单',
-                                    mFiles: [],
-                                    mFileIds: '',
-                                    mNote: ''
-                                },
+                                result.submission.auditSecondFiles = [
+                                    {
+                                        mId: '-8',
+                                        mName: '审定单',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
                                     {
                                         mId: '-9',
                                         mName: '初审报告',
@@ -790,7 +792,10 @@ export default {
                                     mNote: ''
                                 }]
                             }
-                            this.submissionForm = result.submission
+
+                            for (let p in result.submission) {
+                                this.submissionForm[p] = result.submission[p]
+                            }
 
                             if (this.submissionForm.materialGroup) {
                                 MaterialFile.getMaterialGroup({
@@ -829,6 +834,11 @@ export default {
                                 this.submissionForm.viewPeopleIds.split(',').forEach(id => {
                                     this.submissionForm.viewPeoples.push(id - 0)
                                 })
+                                //加载现场查看人员字段
+                                this.submissionForm.viewPeoples2 = []
+                                this.submissionForm.viewPeopleIds2.split(',').forEach(id => {
+                                    this.submissionForm.viewPeoples2.push(id - 0)
+                                })
                                 //加载分配人字段
                                 if (this.submissionForm.assigned) {
                                     if (this.submissionForm.assigned.thirdParty) {
@@ -837,6 +847,18 @@ export default {
                                         this.submissionForm.assignName = this.submissionForm.assigned.name
                                     }
                                 }
+                            } else if (this.step === 'auditFirst') {
+                                //初始化约看时间为勘察准备时期填写的值
+                                let prepareViewDate = this.submissionForm.prepareViewDate
+                                let vewDate = this.submissionForm.viewDate
+                                let viewPeopleIds = this.submissionForm.viewPeopleIds
+
+                                this.submissionForm.prepareViewDate2 = prepareViewDate
+                                this.submissionForm.viewDate2 = vewDate
+                                //this.submissionForm.viewPeoples2 = []
+                                viewPeopleIds.split(',').forEach(id => {
+                                    this.submissionForm.viewPeoples2.push(id - 0)
+                                })
                             } else if (this.step === 'auditSecond') {
                                 //将复审审定金额默认设置为初审审定金额
                                 if (!this.submissionForm.secondAuditPrice || this.submissionForm.secondAuditPrice === 0) {
@@ -939,7 +961,6 @@ export default {
     },
     methods: {
         commit: function (event) {
-            console.log(this.step)
             if ((this.step === 'submission' && event.name.indexOf('save') === -1) || this.step === 'reject' || this.step === 'surveyPrepare' || this.step ===
                 'auditFirst' || this.step === 'auditSecond') {
                 //需要验证表单的提交
@@ -1033,6 +1054,13 @@ export default {
                     event({
                         targetId: this.submissionForm.id,
                         argueFiles: this.submissionForm.argueFiles,
+                        type: 2
+                    })
+                } else if (this.step === 'argueDeal') {
+                    this.fileIdsConstruct(this.submissionForm.supplementFiles)
+                    event({
+                        targetId: this.submissionForm.id,
+                        supplementFiles: this.submissionForm.supplementFiles,
                         type: 2
                     })
                 } else {

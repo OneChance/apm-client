@@ -139,7 +139,6 @@ export default {
                 data[prop] = config[prop]
             }
             this.tableConfig.currentPage = data.page
-            console.log(data)
             Role.getRoles(data).then(res => {
                 //如果以后多选框,清除所选数据
                 this.tableConfig.data = res.list.content

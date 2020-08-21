@@ -120,7 +120,6 @@ export default {
     },
     methods: {
         handleSelect(key, keyPath) {
-            console.log('验证权限' + key)
             this.currentComponent = key
         },
         menuCollapse(size) {

@@ -1,8 +1,8 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model="formInline" class="demo-form-inline">
-                <el-form-item>
+            <el-form :inline="true" :model='query' ref='query' class="demo-form-inline">
+                <el-form-item prop="status">
                     <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 110px;">
                         <el-option
                             v-for="status in statusList"
@@ -11,10 +11,20 @@
                             :value="status.value">
                         </el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item prop="itemCode">
                     <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="auditNo">
                     <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="contractNo">
                     <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="projectName">
                     <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
+                </el-form-item>
+                <el-form-item prop="constructionUnit">
                     <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
                         <el-option
                             v-for="unit in units"
@@ -23,8 +33,12 @@
                             :value="unit.value">
                         </el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item prop="contractMoney">
                     <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
-                    <el-select v-model="query.assignName" filterable placeholder="中介机构" style="width: 200px;">
+                </el-form-item>
+                <el-form-item prop="assignedId">
+                    <el-select v-model="query.assignedId" filterable placeholder="中介机构" style="width: 200px;">
                         <el-option
                             v-for="inter in inters"
                             :key="inter.value"
@@ -32,6 +46,8 @@
                             :value="inter.value">
                         </el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item prop="auditType">
                     <el-select v-model="query.auditType" filterable placeholder="审计方式" style="width: 110px;">
                         <el-option
                             v-for="aType in auditTypes"
@@ -40,11 +56,16 @@
                             :value="aType.value">
                         </el-option>
                     </el-select>
-                    <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;"></el-input>
-                    <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
-                    <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
-                    <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
+                <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;"></el-input>
+                <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
+                <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
+                <el-button type="primary" @click="queryList">查询</el-button>
+
+                <!--
+                <el-button @click="$refs['query'].resetFields()">重置</el-button>
+                -->
+
             </el-form>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
@@ -102,6 +123,7 @@ import Config from "../script/config";
 import Common from '../script/common'
 import ConstructionUnit from "../script/server/constructionUnit";
 import User from "../script/server/user";
+import Env from "../script/server/env"
 
 export default {
     name: "ListAll",
@@ -147,7 +169,7 @@ export default {
                 contractNo: '',
                 constructionUnit: '',
                 contractMoney: '',
-                assignName: '',
+                assignedId: '',
                 auditType: '',
                 submissionPrice: '',
                 secondAuditPrice: '',
@@ -156,12 +178,14 @@ export default {
             units: [],
             inters: [],
             auditTypes: [
-                {value: 'in', label: '内审'},
-                {value: 'out', label: '外审'},
+                {value: '内审', label: '内审'},
+                {value: '外审', label: '外审'},
             ],
             statusList: [
+                {value: 0, label: '所有'},
                 {value: -10, label: '送审保存'},
                 {value: -20, label: '送审打回'},
+                {value: -30, label: '争议处理'},
                 {value: 10, label: '审计立项'},
                 {value: 20, label: '审计分配'},
                 {value: 30, label: '分配审核'},
@@ -193,8 +217,8 @@ export default {
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
                     {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
-                    {prop: 'submissionPrice', label: '送审金额', width: '150'},
-                    {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
+                    {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
+                    {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
                     {prop: 'auditFee', label: '审计费用', width: '150'},
                 ],
                 oper: [
@@ -244,7 +268,7 @@ export default {
                 this.downFiles.push({
                     type: fileType.mName,
                     name: file.name,
-                    url: file.url
+                    url: Env.baseURL + file.url
                 })
             })
         },
@@ -269,18 +293,28 @@ export default {
             this.list(this.query)
         },
         toPage: function (val) {
-            this.list({page: val})
+            let data = {page: val}
+            for (let op in this.query) {
+                data[op] = this.query[op]
+            }
+            this.list(data)
         },
         list(config) {
             let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
             }
-            data['status'] = 0
+            if (!data['status']) {
+                data['status'] = 0
+            }
             this.tableConfig.currentPage = data.page
             Audit.getSubmissions(data).then(res => {
                 res.list.content.forEach(d => {
                     d.status = this.statusList.filter(s => s.value === d.status)[0].label
+                })
+                res.list.content.forEach(d => {
+                    let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
+                    d.constructionUnit = unit ? unit.label : ''
                 })
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements
