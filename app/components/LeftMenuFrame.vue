@@ -1,6 +1,6 @@
 <template>
-    <el-row :gutter="24">
-        <el-col :span="4">
+    <el-container>
+        <el-aside>
             <el-menu
                 id="left-menu"
                 :default-active="leftActiveIndex"
@@ -34,15 +34,22 @@
                         </template>
                     </el-menu-item>
                 </el-submenu>
+                <el-menu-item index="collapse">
+                    <i class="fa fa-bars fa-lg fa-inverse"></i>
+                    <span slot="title">
+                        菜单缩放
+                    </span>
+                </el-menu-item>
             </el-menu>
-
-        </el-col>
-        <el-col :span="20">
+        </el-aside>
+        <el-main>
             <div class="main_right" id="main_right">
-                <component v-bind:is="currentComponent" class="tab"></component>
+                <component v-bind:is="currentComponent" class="tab">
+
+                </component>
             </div>
-        </el-col>
-    </el-row>
+        </el-main>
+    </el-container>
 </template>
 
 <script>
@@ -80,7 +87,7 @@ export default {
             oneLevelMenu: [],
             MultiLevelMenu: [],
             leftActiveIndex: '',
-            isCollapse: false,
+            isCollapse: true,
             currentComponent: '',
             willDoCount: 0,
         }
@@ -111,19 +118,24 @@ export default {
         let comp = this
 
         this.$nextTick(() => {
-            comp.menuCollapse(document.body.clientWidth)
+            //comp.menuCollapse(document.body.clientWidth)
         });
 
         App.hub.$on('windowResize', (size) => {
-            comp.menuCollapse(size)
+            //comp.menuCollapse(size)
         })
     },
     methods: {
         handleSelect(key, keyPath) {
-            this.currentComponent = key
+            console.log(key)
+            if (key === 'collapse') {
+                this.isCollapse = !this.isCollapse
+            } else {
+                this.currentComponent = key
+            }
         },
         menuCollapse(size) {
-            this.isCollapse = size <= Config.size.leftMenuCollapseWidth
+            //this.isCollapse = size <= Config.size.leftMenuCollapseWidth
         }
     },
     components: {

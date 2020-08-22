@@ -1,39 +1,11 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model='query' ref='query' class="demo-form-inline">
-                <el-form-item prop="itemCode">
-                    <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="auditNo">
-                    <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="contractNo">
-                    <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="projectName">
-                    <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="constructionUnit">
-                    <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
-                        <el-option
-                            v-for="unit in units"
-                            :key="unit.value"
-                            :label="unit.label"
-                            :value="unit.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="contractMoney">
-                    <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
-                </el-form-item>
-
-                <el-button type="primary" @click="queryList">查询</el-button>
-                <el-button @click="$refs['query'].resetFields()">重置</el-button>
-                <el-button type="success" @click="add">新增</el-button>
-
-            </el-form>
-
+            <submission-query ref="query"
+                              v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode"
+                              v-bind:buttons="buttons">
+            </submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -51,12 +23,11 @@
 
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import {Notification} from "element-ui";
 import Audit from "../script/server/audit";
 import Config from "../script/config";
 import FormValidator from "../script/client/formValidator";
 import Common from '../script/common'
-import ConstructionUnit from "../script/server/constructionUnit";
+import SubmissionQuery from "./SubmissionQuery";
 
 export default {
     name: "AuditSubmission",
@@ -64,38 +35,21 @@ export default {
 
     },
     mounted() {
-        ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        }).then(res => {
-            this.units = []
-            res.list.content.forEach(user => {
-                this.units.push({
-                    value: user.id,
-                    label: user.name
-                })
-            })
-            this.list()
-        })
+
     },
     watch: {},
     data: function () {
         return {
-            query: {
-                projectName: '',
-                itemCode: '',
-                auditNo: '',
-                contractNo: '',
-                constructionUnit: '',
-                contractMoney: '',
-            },
-            units: [],
+            stepCode: Config.stepCode.submissionSave,
             dialogVisible: false,
             from: '',
             formId: -1,
             formOpers: [
                 {name: '保存', color: 'primary', event: this.saveSubmission},
                 {name: '提交', color: 'success', event: this.commitSubmission}
+            ],
+            buttons:[
+                {name: '新增', color: 'success', event: this.add},
             ],
             tableConfig: {
                 data: [],
@@ -165,13 +119,12 @@ export default {
             this.formId = row.id
         },
         deleteRow: function (row) {
-            let comp = this
             Audit.deleteSubmission({id: row.id}).then(result => {
-                comp.$message({
+                this.$message({
                     message: '删除成功',
                     type: 'success'
                 });
-                comp.list({page: 1})
+                this.$refs.query.list({page: 1})
             })
         },
         saveSubmission: function (form) {
@@ -189,44 +142,19 @@ export default {
                 }
             })
         },
-        queryList: function () {
-            this.list(this.query)
-        },
-        toPage: function (val) {
-            let data = {page: val}
-            for (let op in this.query) {
-                data[op] = this.query[op]
-            }
-            this.list(data)
-        },
-        list(config) {
-            let data = Common.copyObject(Config.page)
-            for (let prop in config) {
-                data[prop] = config[prop]
-            }
-            data['status'] = Config.stepCode.submissionSave
-            this.tableConfig.currentPage = data.page
-            Audit.getSubmissions(data).then(res => {
-                //如果以后多选框,清除所选数据
-                this.listChecks = []
-                res.list.content.forEach(d => {
-                    let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
-                    d.constructionUnit = unit ? unit.label : ''
-                })
-                this.tableConfig.data = res.list.content
-                this.tableConfig.total = res.list.totalElements
-            })
-        },
         operSuccess() {
             this.dialogVisible = false
             this.$message({
                 message: '操作成功',
                 type: 'success'
             });
-            this.list({page: 1})
-        }
+            this.$refs.query.list({page: 1})
+        },
+        toPage: function (val) {
+            this.$refs.query.list({page: val})
+        },
     },
-    components: {TableComponent, SubmissionForm}
+    components: {TableComponent, SubmissionForm, SubmissionQuery}
 }
 </script>
 

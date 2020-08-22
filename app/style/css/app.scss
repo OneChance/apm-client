@@ -12,6 +12,14 @@ body {
   user-select: none;
 }
 
+.el-aside {
+  width: initial !important;
+}
+
+#left-menu {
+  min-height: 800px;
+}
+
 .box-card {
   .el-input {
     margin-bottom: 10px;
@@ -166,10 +174,6 @@ body {
 
 .header-bar-user {
   color: #fff !important;
-}
-
-.main_right {
-  margin-right: 20px;
 }
 
 #left-menu {

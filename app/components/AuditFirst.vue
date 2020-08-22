@@ -1,67 +1,8 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model='query' ref='query' class="demo-form-inline">
-                <el-form-item prop="status">
-                    <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 110px;">
-                        <el-option
-                            v-for="status in statusList"
-                            :key="status.value"
-                            :label="status.label"
-                            :value="status.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="itemCode">
-                    <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="auditNo">
-                    <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="contractNo">
-                    <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="projectName">
-                    <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="constructionUnit">
-                    <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
-                        <el-option
-                            v-for="unit in units"
-                            :key="unit.value"
-                            :label="unit.label"
-                            :value="unit.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="contractMoney">
-                    <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="assignedId">
-                    <el-select v-model="query.assignedId" filterable placeholder="中介机构" style="width: 200px;">
-                        <el-option
-                            v-for="inter in inters"
-                            :key="inter.value"
-                            :label="inter.label"
-                            :value="inter.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="auditType">
-                    <el-select v-model="query.auditType" filterable placeholder="审计方式" style="width: 110px;">
-                        <el-option
-                            v-for="aType in auditTypes"
-                            :key="aType.value"
-                            :label="aType.label"
-                            :value="aType.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-
-                <el-button type="primary" @click="queryList">查询</el-button>
-                <el-button @click="$refs['query'].resetFields()">重置</el-button>
-
-            </el-form>
+            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode"></submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -79,65 +20,18 @@
 
 import AuditFirst from '../script/client/auditFirst'
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import FormValidator from '../script/client/formValidator'
-import Common from '../script/common'
-import User from "../script/server/user";
-import ConstructionUnit from "../script/server/constructionUnit";
+import SubmissionQuery from "./SubmissionQuery";
 
 export default {
     name: "AuditFirst",
     mounted: function () {
         AuditFirst.comp = this
-
-        User.getUsers({
-            page: 1,
-            pageSize: 999999,
-            thirdParty: true
-        }).then(res => {
-            this.inters = []
-            res.list.content.forEach(user => {
-                this.inters.push({
-                    value: user.id,
-                    label: user.thirdPartyName
-                })
-            })
-        })
-        ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        }).then(res => {
-            this.units = []
-            res.list.content.forEach(user => {
-                this.units.push({
-                    value: user.id,
-                    label: user.name
-                })
-            })
-            this.list()
-        })
     },
     data: function () {
         return {
-            query: {
-                projectName: '',
-                status: '',
-                itemCode: '',
-                auditNo: '',
-                contractNo: '',
-                constructionUnit: '',
-                contractMoney: '',
-                assignName: '',
-                auditType: '',
-            },
-            units: [],
-            inters: [],
-            auditTypes: [
-                {value: '内审', label: '内审'},
-                {value: '外审', label: '外审'},
-            ],
+            stepCode: Config.stepCode.auditFirst,
             dialogVisible: false,
             formOpers: AuditFirst.buttons,
             tableConfig: {
@@ -174,45 +68,21 @@ export default {
             this.dialogVisible = true
             this.formId = row.id
         },
-        queryList: function () {
-            this.list(this.query)
-        },
-        toPage: function (val) {
-            let data = {page: val}
-            for (let op in this.query) {
-                data[op] = this.query[op]
-            }
-            this.list(data)
-        },
-        list(config) {
-            let data = Common.copyObject(Config.page)
-            for (let prop in config) {
-                data[prop] = config[prop]
-            }
-            data['status'] = Config.stepCode.auditFirst
-            this.tableConfig.currentPage = data.page
-            Audit.getSubmissions(data).then(res => {
-                //如果以后多选框,清除所选数据
-                res.list.content.forEach(d => {
-                    let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
-                    d.constructionUnit = unit ? unit.label : ''
-                })
-                this.tableConfig.data = res.list.content
-                this.tableConfig.total = res.list.totalElements
-            })
-        },
         operSuccess() {
             this.dialogVisible = false
             this.$message({
                 message: '操作成功',
                 type: 'success'
             });
-            this.list({page: 1})
-        }
+            this.$refs.query.list({page: 1})
+        },
+        toPage: function (val) {
+            this.$refs.query.list({page: val})
+        },
     },
     components: {
         TableComponent,
-        SubmissionForm
+        SubmissionForm, SubmissionQuery
     }
 }
 </script>

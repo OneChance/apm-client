@@ -1,50 +1,12 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" :model='query' ref='query' class="demo-form-inline">
-                <el-form-item prop="status">
-                    <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 110px;">
-                        <el-option
-                            v-for="status in statusList"
-                            :key="status.value"
-                            :label="status.label"
-                            :value="status.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="itemCode">
-                    <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="auditNo">
-                    <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="contractNo">
-                    <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="projectName">
-                    <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
-                </el-form-item>
-                <el-form-item prop="constructionUnit">
-                    <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
-                        <el-option
-                            v-for="unit in units"
-                            :key="unit.value"
-                            :label="unit.label"
-                            :value="unit.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="contractMoney">
-                    <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
-                </el-form-item>
-
-                <el-button type="primary" @click="queryList">查询</el-button>
-                <el-button @click="$refs['query'].resetFields()">重置</el-button>
-                <el-button type="success" @click="batchAudit(1)">批量审核通过</el-button>
-                <el-button type="danger" @click="batchAudit(0)">批量打回</el-button>
-
-
-            </el-form>
+            <submission-query ref="query"
+                              v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode"
+                              v-bind:buttons="buttons"
+                              v-bind:checkedList="listChecks">
+            </submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -63,12 +25,9 @@ import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import ClientCall from "../script/client/clientCall"
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 import ProjectAudit from "../script/client/projectOper"
-import Common from '../script/common'
-
+import SubmissionQuery from "./SubmissionQuery";
 import {Notification} from "element-ui";
-import ConstructionUnit from "../script/server/constructionUnit";
 
 export default {
     name: "AuditProject",
@@ -78,32 +37,15 @@ export default {
     mounted() {
         ProjectAudit.comp = this
         this.formOpers = ProjectAudit.buttons
-        ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        }).then(res => {
-            this.units = []
-            res.list.content.forEach(user => {
-                this.units.push({
-                    value: user.id,
-                    label: user.name
-                })
-            })
-            this.list()
-        })
     },
     data: function () {
         return {
+            stepCode: Config.stepCode.auditProject,
             dialogVisible: false,
-            query: {
-                projectName: '',
-                itemCode: '',
-                auditNo: '',
-                contractNo: '',
-                constructionUnit: '',
-                contractMoney: '',
-            },
-            units: [],
+            buttons: [
+                {name: '批量审核通过', color: 'success', event: this.batchAuditAgree},
+                {name: '批量打回', color: 'danger', event: this.batchAuditReject},
+            ],
             formOpers: [],
             tableConfig: {
                 data: [],
@@ -134,6 +76,12 @@ export default {
         }
     },
     methods: {
+        batchAuditAgree() {
+            this.batchAudit(1)
+        },
+        batchAuditReject() {
+            this.batchAudit(0)
+        },
         checkBoxChange(val) {
             this.listChecks = val
         },
@@ -158,46 +106,19 @@ export default {
             this.from = 'editform'
             this.formId = row.id
         },
-        queryList: function () {
-            this.list(this.query)
-        },
-        toPage: function (val) {
-            let data = {page: val}
-            for (let op in this.query) {
-                data[op] = this.query[op]
-            }
-            this.list(data)
-        },
-        list(config) {
-            let data = Common.copyObject(Config.page)
-            for (let prop in config) {
-                data[prop] = config[prop]
-            }
-            data['status'] = Config.stepCode.auditProject
-            this.tableConfig.currentPage = data.page
-            Audit.getSubmissions(data).then(res => {
-                //如果以后多选框,清除所选数据
-                this.listChecks = []
-                res.list.content.forEach(d => {
-                    console.log(d.constructionUnit)
-                    console.log(this.units)
-                    let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
-                    d.constructionUnit = unit ? unit.label : ''
-                })
-                this.tableConfig.data = res.list.content
-                this.tableConfig.total = res.list.totalElements
-            })
-        },
         operSuccess() {
             this.dialogVisible = false
             this.$message({
                 message: '操作成功',
                 type: 'success'
             });
-            this.list({page: 1})
-        }
+            this.$refs.query.list({page: 1})
+        },
+        toPage: function (val) {
+            this.$refs.query.list({page: val})
+        },
     },
-    components: {TableComponent, SubmissionForm}
+    components: {TableComponent, SubmissionForm, SubmissionQuery}
 }
 </script>
 
