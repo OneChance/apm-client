@@ -29,6 +29,9 @@ export default {
     },
     axiosUpload(api, data, progress) {
         return request(api, 'file', data, progress);
+    },
+    download(url) {
+        return request(url, 'download');
     }
 }
 
@@ -39,7 +42,12 @@ let request = function (api, type, data, progress) {
     let fullURL = Env.baseURL + api;
     let token = localStorage.getItem("apm_token")
 
-    if (type === 'file') {
+    if (type === 'download') {
+        axiosRequest = Vue.axios.get(api, {
+            headers: {'Authorization': 'Bearer ' + token},
+            responseType: 'blob',
+        });
+    } else if (type === 'file') {
         axiosRequest = axiosUpload.post(fullURL, data, {
             headers: {'Authorization': 'Bearer ' + token},
             onUploadProgress: progress

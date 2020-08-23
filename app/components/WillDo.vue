@@ -9,7 +9,7 @@
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="batchOper(1)">批量审核通过</el-button>
+                    <el-button type="success" @click="batchOper(1)">批量操作</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="batchOper(0)">批量打回</el-button>

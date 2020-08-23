@@ -1,7 +1,8 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query" v-bind:tableConfigObject="tableConfig" v-bind:stepCode="stepCode"></submission-query>
+            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode"></submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -54,10 +55,11 @@
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import Audit from "../script/server/audit";
-import Config from "../script/config";
-import Common from '../script/common'
 import Env from "../script/server/env"
 import SubmissionQuery from "./SubmissionQuery";
+import JSZip from 'jszip'
+import FileSaver from 'file-saver'
+import Download from "../script/server/download"
 
 export default {
     name: "ListAll",
@@ -70,7 +72,7 @@ export default {
     watch: {},
     data: function () {
         return {
-            stepCode:0,
+            stepCode: 0,
             dialogVisible: false,
             fileListVisible: false,
             from: '',
@@ -150,19 +152,36 @@ export default {
         handleSelectionChange(val) {
             this.filesToDownload = val;
         },
-        download: function (name, href) {
-            let a = document.createElement("a"), //创建a标签
-                e = document.createEvent("MouseEvents"); //创建鼠标事件对象
-            e.initEvent("click", false, false); //初始化事件对象
-            a.href = href; //设置下载地址
-            a.target = "_blank"
-            a.download = name; //设置下载文件名
-            a.dispatchEvent(e); //给指定的元素，执行事件click事件
-        },
         downloadFiles: function () {
-            this.filesToDownload.forEach(file => {
-                this.download(file.name, file.url)
-            })
+            this.filesToRar(this.filesToDownload, '文件')
+        },
+        filesToRar(files, filename) {
+            let _this = this;
+            let zip = new JSZip();
+            let cache = {};
+            let promises = [];
+            _this.title = '正在加载压缩文件';
+
+            for (let item of files) {
+                const promise = _this.getImgArrayBuffer(item.url).then(data => {
+                    // 下载文件, 并存成ArrayBuffer对象(blob)
+                    zip.file(item.name, data, {binary: true}); // 逐个添加文件
+                    cache[item.name] = data;
+                });
+                promises.push(promise);
+            }
+
+            Promise.all(promises).then(() => {
+                zip.generateAsync({type: "blob"}).then(content => {
+                    FileSaver.saveAs(content, filename); // 利用file-saver保存文件  自定义文件名
+                });
+            }).catch(res => {
+                _this.$message.error('文件压缩失败');
+            });
+        },
+        //获取文件blob
+        getImgArrayBuffer(url) {
+            return Download.download(url)
         },
         operSuccess() {
             this.dialogVisible = false

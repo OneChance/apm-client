@@ -87,7 +87,7 @@ export default {
             this.allocForm.target = ''
             this.allocForm.tel = ''
             let thirdParty = false
-            if (val === 'in') {
+            if (val === '内审') {
                 this.targetPlaceholder = '请选择人员'
             } else {
                 this.targetPlaceholder = '请选择审计单位'
