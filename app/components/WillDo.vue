@@ -91,7 +91,7 @@ export default {
                         width: '150'
                     },
                     {
-                        prop: 'creator.createTime',
+                        prop: 'createTime',
                         label: '送审时间',
                         width: '250'
                     },
