@@ -162,11 +162,11 @@
                                             </el-form-item>
                                         </td>
                                         <td>
-                                            <el-form-item prop="constructionUnitCheckFee">
+                                            <!--<el-form-item prop="constructionUnitCheckFee">
                                                 <el-input v-model="submissionForm.constructionUnitCheckFee"
                                                           :disabled="step!=='submission' && step!=='reject'"
                                                           placeholder="填写施工单位核减金额"></el-input>
-                                            </el-form-item>
+                                            </el-form-item>-->
                                         </td>
                                         <td>
                                             <el-form-item prop="constructionUnitTel">
