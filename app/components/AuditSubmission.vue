@@ -58,6 +58,7 @@ export default {
                 currentPage: 1,
                 pageMethod: this.toPage,
                 checkable: false,
+                operWidth: 100,
                 cols: [
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},

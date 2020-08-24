@@ -160,7 +160,6 @@ export default {
             let zip = new JSZip();
             let cache = {};
             let promises = [];
-            _this.title = '正在加载压缩文件';
 
             for (let item of files) {
                 const promise = _this.getImgArrayBuffer(item.url).then(data => {

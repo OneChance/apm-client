@@ -299,7 +299,9 @@
                                 <el-input type="text" v-model="submissionForm.auditType" disabled></el-input>
                             </td>
                         </tr>
-                        <tr class="allocMan" v-if="step==='assigned' || step === 'auditArc'">
+
+                        <tr class="allocMan"
+                            v-if="step==='assigned' || (step === 'auditArc' && submissionForm.assigned)">
                             <th v-if="submissionForm.assigned.thirdParty">分配审计单位</th>
                             <th v-if="!submissionForm.assigned.thirdParty">分配审计人员</th>
                             <td>
@@ -310,7 +312,8 @@
                                 <el-input type="text" v-model="submissionForm.assigned.telphone" disabled></el-input>
                             </td>
                         </tr>
-                        <tr class="allocMan" v-if="(step==='assigned' || step === 'auditArc') && submissionForm.assigned.thirdParty">
+                        <tr class="allocMan"
+                            v-if="step==='assigned' || (step === 'auditArc' && submissionForm.assigned && submissionForm.assigned.thirdParty)">
                             <th>联系人</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
@@ -853,7 +856,7 @@ export default {
                                 })
                                 //加载现场查看人员字段
                                 this.submissionForm.viewPeoples2 = []
-                                if(this.submissionForm.viewPeopleIds2){
+                                if (this.submissionForm.viewPeopleIds2) {
                                     this.submissionForm.viewPeopleIds2.split(',').forEach(id => {
                                         this.submissionForm.viewPeoples2.push(id - 0)
                                     })
@@ -946,8 +949,8 @@ export default {
                 status: 0,
                 //分配人
                 assignName: '',
-                assigned:{
-                    thirdParty:false,
+                assigned: {
+                    thirdParty: false,
                 },
                 //勘察准备-----------
                 prepareViewDate: '',
