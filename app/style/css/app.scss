@@ -12,6 +12,11 @@ body {
   user-select: none;
 }
 
+.form-required:after {
+  content: '*';
+  color: red;
+}
+
 .el-aside {
   width: initial !important;
 }

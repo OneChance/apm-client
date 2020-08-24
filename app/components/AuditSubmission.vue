@@ -12,8 +12,10 @@
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="from"
                          v-bind:formRules="rules"
+                         v-bind:formRules2="rules2"
                          v-bind:formOpers="formOpers"
                          v-bind:step="'submission'"
+                         v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
     </div>
@@ -26,7 +28,6 @@ import SubmissionForm from "./SubmissionForm";
 import Audit from "../script/server/audit";
 import Config from "../script/config";
 import FormValidator from "../script/client/formValidator";
-import Common from '../script/common'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {
@@ -48,7 +49,7 @@ export default {
                 {name: '保存', color: 'primary', event: this.saveSubmission},
                 {name: '提交', color: 'success', event: this.commitSubmission}
             ],
-            buttons:[
+            buttons: [
                 {name: '新增', color: 'success', event: this.add},
             ],
             tableConfig: {
@@ -58,7 +59,6 @@ export default {
                 currentPage: 1,
                 pageMethod: this.toPage,
                 checkable: false,
-                operWidth: 100,
                 cols: [
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
@@ -82,14 +82,14 @@ export default {
                 ]
             },
             rules: {
+                contractNo: [
+                    {required: true, message: '请输入合同编码', trigger: 'blur'},
+                ],
                 projectName: [
                     {required: true, message: '请输入工程项目名称', trigger: 'blur'},
                 ],
                 constructionUnit: [
                     {required: true, message: '请输入施工单位名称', trigger: 'blur'},
-                ],
-                budget: [
-                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
                 ],
                 contractMoney: [
                     {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
@@ -100,10 +100,51 @@ export default {
                 endDate: [
                     {required: true, message: '请选择竣工时间', trigger: 'blur'}
                 ],
+                constructionUnitApplyFee: [
+                    {required: true, message: '请填写施工单位报审金额', trigger: 'blur'}
+                ],
+                constructionUnitProjectMan: [
+                    {required: true, message: '请选择项目负责人', trigger: 'blur'}
+                ],
+                constructionUnitTel: [
+                    {required: true, message: '请填写施工单位联系电话', trigger: 'blur'}
+                ],
+                inspectUnitApplyFee: [
+                    {required: true, message: '请填写监理单位报审金额', trigger: 'blur'}
+                ],
+                inspectUnitProjectMan: [
+                    {required: true, message: '请填写监理单位项目负责人', trigger: 'blur'}
+                ],
+                inspectUnitTel: [
+                    {required: true, message: '请填写监理单位联系电话', trigger: 'blur'}
+                ],
+                buildUnitApplyFee: [
+                    {required: true, message: '请填写建设单位报审金额', trigger: 'blur'}
+                ],
+                buildUnitProjectMan: [
+                    {required: true, message: '请填写建设单位项目负责人', trigger: 'blur'}
+                ],
+                buildUnitTel: [
+                    {required: true, message: '请填写建设单位联系电话', trigger: 'blur'}
+                ],
                 materialGroup: [
                     {required: true, message: '请选择资料清单组', trigger: 'blur'},
                 ],
+                payType: [
+                    {required: true, message: '请选择结算方式', trigger: 'blur'},
+                ],
+                payCondition: [
+                    {required: true, message: '请选择付款情况', trigger: 'blur'},
+                ],
             },
+            rules2: {
+                payTypeOther: [
+                    {required: true, message: '请输入具体结算方式', trigger: 'blur'},
+                ],
+                payConditionOther: [
+                    {required: true, message: '请输入具体付款情况', trigger: 'blur'},
+                ],
+            }
         }
     },
     methods: {
@@ -120,7 +161,7 @@ export default {
             this.formId = row.id
         },
         deleteRow: function (row) {
-            Audit.deleteSubmission({id: row.id}).then(result => {
+            Audit.deleteSubmission({id: row.id}).then(() => {
                 this.$message({
                     message: '删除成功',
                     type: 'success'

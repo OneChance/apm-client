@@ -1,14 +1,19 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"></submission-query>
+            <submission-query ref="query"
+                              v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode"
+                              v-bind:buttons="buttons"
+                              v-bind:checkedList="listChecks">
+            </submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
                          v-bind:step="'auditArc'"
+                         v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
     </div>
@@ -17,10 +22,8 @@
 <script>
 
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import Common from '../script/common'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {
@@ -32,13 +35,18 @@ export default {
         return {
             stepCode: Config.stepCode.auditArc,
             dialogVisible: false,
+            buttons: [
+                {name: '退回', color: 'danger', event: this.batchBackToComplete},
+            ],
+            listChecks: [],
             tableConfig: {
                 data: [],
                 page: true,
                 total: 0,
                 currentPage: 1,
                 pageMethod: this.toPage,
-                checkable: false,
+                checkable: true,
+                checkBoxChange: this.checkBoxChange,
                 cols: [
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
@@ -50,7 +58,7 @@ export default {
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150'},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
-                    {prop: 'auditFee', label: '审计费用', width: '150'},
+                    {prop: 'auditFee', label: '惩罚性费用', width: '150'},
                 ],
                 oper: [
                     {
@@ -63,6 +71,12 @@ export default {
         }
     },
     methods: {
+        checkBoxChange(val) {
+            this.listChecks = val
+        },
+        batchBackToComplete: function () {
+            console.log(this.listChecks)
+        },
         editRow: function (row) {
             this.dialogVisible = false
             this.dialogVisible = true

@@ -11,6 +11,7 @@
                          v-bind:formRules="rules"
                          v-bind:formOpers="formOpers"
                          v-bind:step="'auditArc'"
+                         v-bind:stepCode="9999"
                          v-bind:formId="formId">
         </submission-form>
         <el-dialog title="附件清单"
@@ -85,18 +86,18 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'status', label: '审计状态', width: '150'},
+                    {prop: 'status', label: '审计状态', width: '150', fixed: true},
+                    {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
+                    {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
-                    {prop: 'auditNo', label: '审计编号', width: '150'},
                     {prop: 'contractNo', label: '合同编码', width: '150'},
-                    {prop: 'projectName', label: '工程项目', width: '220'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
                     {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
-                    {prop: 'auditFee', label: '审计费用', width: '150'},
+                    {prop: 'auditFee', label: '惩罚性费用', width: '150'},
                 ],
                 oper: [
                     {
@@ -158,23 +159,22 @@ export default {
         filesToRar(files, filename) {
             let _this = this;
             let zip = new JSZip();
-            let cache = {};
             let promises = [];
 
             for (let item of files) {
                 const promise = _this.getImgArrayBuffer(item.url).then(data => {
                     // 下载文件, 并存成ArrayBuffer对象(blob)
-                    zip.file(item.name, data, {binary: true}); // 逐个添加文件
-                    cache[item.name] = data;
+                    zip.file(item.type + "/" + item.name, data, {binary: true}); // 逐个添加文件
                 });
                 promises.push(promise);
             }
 
             Promise.all(promises).then(() => {
                 zip.generateAsync({type: "blob"}).then(content => {
+                    console.log(content)
                     FileSaver.saveAs(content, filename); // 利用file-saver保存文件  自定义文件名
                 });
-            }).catch(res => {
+            }).catch(() => {
                 _this.$message.error('文件压缩失败');
             });
         },

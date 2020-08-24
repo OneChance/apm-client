@@ -14,6 +14,7 @@
                          v-bind:from="'editform'"
                          v-bind:formOpers="formOpers"
                          v-bind:step="'project'"
+                         v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
     </div>

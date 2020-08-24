@@ -20,8 +20,17 @@ const oper = {
         viewDate2: [
             {required: true, message: '请选择现场查看时间(初审)', trigger: 'blur'}
         ],
-        viewPeoples2: [
-            {required: true, message: '请填写现场查看人员(初审)', trigger: 'blur'},
+        viewPeoplesAuditUnit2: [
+            {required: true, message: '请选择审核单位现场查看人员(初审)', trigger: 'blur'}
+        ],
+        viewPeoplesBuildUnit2: [
+            {required: true, message: '请选择建设单位现场查看人员(初审)', trigger: 'blur'}
+        ],
+        viewPeoplesConstructUnit2: [
+            {required: true, message: '请选择施工单位现场查看人员(初审)', trigger: 'blur'}
+        ],
+        viewPeoplesEntrustUnit2: [
+            {required: true, message: '请填写委托单位现场查看人员(初审)', trigger: 'blur'}
         ],
     },
 }

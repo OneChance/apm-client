@@ -73,14 +73,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <th rowspan="4">审计意见及说明</th>
+                            <th rowspan="5">审计意见及说明</th>
                             <td colspan="3">
                                 本工程造价中未扣水电费、甲供材；甲供材、水电费结算执行《扬州大学建设工程甲供材及水电费结算暂行办法》（扬大审计〔2018〕3号）
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                请财务部门代扣施工单位审计费{{ auditNoteForm.auditFee }}元
+                                请财务部门代扣施工单位惩罚性费用{{ auditNoteForm.auditFee }}元
                             </td>
                         </tr>
                         <tr>
@@ -91,6 +91,11 @@
                         <tr>
                             <td colspan="3">
                                 本工程结算方式：{{ auditNoteForm.payType }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                审计备注：{{ auditNoteForm.auditNote }}
                             </td>
                         </tr>
                         <tr>
@@ -174,6 +179,7 @@ export default {
                     }
 
                     this.auditNoteForm.payType = result.submission.payType
+                    this.auditNoteForm.auditNote = result.submission.auditNote
                 })
             }
         },
@@ -198,6 +204,7 @@ export default {
                 auditFee: 0,
                 auditUnit: '',
                 payType: '',
+                auditNote: '',
             },
         }
     },

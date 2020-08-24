@@ -9,7 +9,9 @@
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
                          v-bind:formOpers="formOpers"
+                         v-bind:formRules="rules"
                          v-bind:step="'survey'"
+                         v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
     </div>
@@ -67,6 +69,7 @@ export default {
             },
             listChecks: [],
             formId: -1,
+            rules: Survey.rules,
         }
     },
     methods: {

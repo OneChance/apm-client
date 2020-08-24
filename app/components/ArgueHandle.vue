@@ -19,11 +19,9 @@
 
 import Argue from '../script/client/argue'
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import FormValidator from '../script/client/formValidator'
-import Common from '../script/common'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {

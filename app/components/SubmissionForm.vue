@@ -25,14 +25,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>合同编码</th>
+                            <th class="form-required">合同编码</th>
                             <td>
                                 <el-form-item prop="contractNo">
                                     <el-input v-model="submissionForm.contractNo"
                                               :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>工程项目名称<span style="color: red; ">*</span></th>
+                            <th class="form-required">工程项目名称</th>
                             <td>
                                 <el-form-item prop="projectName">
                                     <el-input v-model="submissionForm.projectName"
@@ -60,10 +60,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>施工单位名称<span style="color: red; ">*</span></th>
+                            <th class="form-required">施工单位名称</th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
-                                    <el-select v-model="submissionForm.constructionUnit" filterable
+                                    <el-select v-model="submissionForm.constructionUnit"
+                                               :disabled="step!=='submission' && step!=='reject'"
+                                               filterable
+                                               @change="unitChange"
                                                placeholder="填写施工单位名称" style="width: 220px;">
                                         <el-option
                                             v-for="unit in units"
@@ -76,7 +79,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>开工时间<span style="color: red; ">*</span></th>
+                            <th class="form-required">开工时间</th>
                             <td>
                                 <el-form-item prop="startDate">
                                     <el-date-picker v-model="submissionForm.startDate"
@@ -86,7 +89,7 @@
                                     </el-date-picker>
                                 </el-form-item>
                             </td>
-                            <th>竣工时间<span style="color: red; ">*</span></th>
+                            <th class="form-required">竣工时间</th>
                             <td>
                                 <el-form-item prop="endDate">
                                     <el-date-picker v-model="submissionForm.endDate"
@@ -126,21 +129,89 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>工程结算方式</th>
-                            <td>
+                            <th class="form-required">结算方式</th>
+                            <td colspan="3" v-if="step === 'submission' || step === 'reject'">
                                 <el-form-item prop="payType">
-                                    <el-input v-model="submissionForm.payType"
+                                    <el-radio v-model="submissionForm.payType" label="按实结算"
+                                              border
                                               :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写工程结算方式"></el-input>
+                                              @change="payTypeChange">
+                                        按实结算
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payType" label="中标价+变更价" border
+                                              :disabled="step!=='submission' && step!=='reject'"
+                                              @change="payTypeChange">
+                                        中标价+变更价
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payType" label="固定单价" border
+                                              :disabled="step!=='submission' && step!=='reject'"
+                                              @change="payTypeChange">
+                                        固定单价
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payType" label="其他" border
+                                              :disabled="step!=='submission' && step!=='reject'"
+                                              @change="payTypeChange">
+                                        其他
+                                    </el-radio>
+                                </el-form-item>
+                                <el-form-item prop="payTypeOther">
+                                    <el-input v-model="submissionForm.payTypeOther"
+                                              v-if="submissionForm.payType==='其他'"
+                                              :disabled="step!=='submission' && step!=='reject'" style="margin-top: 5px"
+                                              placeholder="其他结算方式"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>付款情况</th>
-                            <td>
+                            <td colspan="3" v-if="step !== 'submission' && step !== 'reject'">
+                                <el-input v-model="submissionForm.payType"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
+                                <el-input v-model="submissionForm.payTypeOther"
+                                          v-if="submissionForm.payType==='其他'"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="form-required">付款情况</th>
+                            <td colspan="3" v-if="step === 'submission' || step === 'reject'">
                                 <el-form-item prop="payCondition">
-                                    <el-input v-model="submissionForm.payCondition"
+                                    <el-radio v-model="submissionForm.payCondition" label="未付款" border
                                               :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写付款情况"></el-input>
+                                              @change="payConditionChange">
+                                        未付款
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payCondition" label="合同价50%" border
+                                              :disabled="step!=='submission' && step!=='reject'"
+                                              @change="payConditionChange">
+                                        合同价50%
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payCondition" label="合同价70%" border
+                                              :disabled="step!=='submission' && step!=='reject'"
+                                              @change="payConditionChange">
+                                        合同价70%
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payCondition" label="其他" border
+                                              :disabled="step!=='submission' && step!=='reject'"
+                                              @change="payConditionChange">
+                                        其他
+                                    </el-radio>
                                 </el-form-item>
+                                <el-form-item prop="payConditionOther">
+                                    <el-input v-model="submissionForm.payConditionOther"
+                                              v-if="submissionForm.payCondition==='其他'"
+                                              :disabled="step!=='submission' && step!=='reject'" style="margin-top: 5px"
+                                              placeholder="其他付款情况"></el-input>
+                                </el-form-item>
+                            </td>
+                            <td colspan="3" v-if="step !== 'submission' && step !== 'reject'">
+                                <el-input v-model="submissionForm.payCondition"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
+                                <el-input v-model="submissionForm.payConditionOther"
+                                          v-if="submissionForm.payCondition==='其他'"
+                                          :value="submissionForm.payCondition==='其他'?'':'无'"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
                             </td>
                         </tr>
                         <tr>
@@ -150,6 +221,7 @@
                                         <th style="width:15%">报审单位</th>
                                         <th>报审金额（元）</th>
                                         <th>核减金额（元）</th>
+                                        <th>项目负责人</th>
                                         <th>联系电话</th>
                                     </tr>
                                     <tr>
@@ -158,15 +230,25 @@
                                             <el-form-item prop="constructionUnitApplyFee">
                                                 <el-input v-model="submissionForm.constructionUnitApplyFee"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写施工单位报审金额"></el-input>
+                                                          placeholder="施工单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
-                                            <!--<el-form-item prop="constructionUnitCheckFee">
-                                                <el-input v-model="submissionForm.constructionUnitCheckFee"
-                                                          :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写施工单位核减金额"></el-input>
-                                            </el-form-item>-->
+
+                                        </td>
+                                        <td>
+                                            <el-form-item prop="constructionUnitProjectMan">
+                                                <el-select v-model="submissionForm.constructionUnitProjectMan"
+                                                           @change="projectManChange"
+                                                           placeholder="请选择项目负责人">
+                                                    <el-option
+                                                        v-for="pman in projectMans"
+                                                        :key="pman.value"
+                                                        :label="pman.label"
+                                                        :value="pman.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="constructionUnitTel">
@@ -182,21 +264,27 @@
                                             <el-form-item prop="inspectUnitApplyFee">
                                                 <el-input v-model="submissionForm.inspectUnitApplyFee"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写监理单位报审金额"></el-input>
+                                                          placeholder="监理单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="inspectUnitCheckFee">
                                                 <el-input v-model="submissionForm.inspectUnitCheckFee"
+                                                          disabled></el-input>
+                                            </el-form-item>
+                                        </td>
+                                        <td>
+                                            <el-form-item prop="inspectUnitTel">
+                                                <el-input v-model="submissionForm.inspectUnitProjectMan"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写监理单位核减金额"></el-input>
+                                                          placeholder="监理单位项目负责人"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="inspectUnitTel">
                                                 <el-input v-model="submissionForm.inspectUnitTel"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写监理单位联系电话"></el-input>
+                                                          placeholder="监理单位联系电话"></el-input>
                                             </el-form-item>
                                         </td>
                                     </tr>
@@ -206,21 +294,27 @@
                                             <el-form-item prop="buildUnitApplyFee">
                                                 <el-input v-model="submissionForm.buildUnitApplyFee"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写建设单位报审金额"></el-input>
+                                                          placeholder="建设单位报审金额"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="buildUnitCheckFee">
                                                 <el-input v-model="submissionForm.buildUnitCheckFee"
+                                                          disabled></el-input>
+                                            </el-form-item>
+                                        </td>
+                                        <td>
+                                            <el-form-item prop="buildUnitTel">
+                                                <el-input v-model="submissionForm.buildUnitProjectMan"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写建设单位报审金额"></el-input>
+                                                          placeholder="建设单位项目负责人"></el-input>
                                             </el-form-item>
                                         </td>
                                         <td>
                                             <el-form-item prop="buildUnitTel">
                                                 <el-input v-model="submissionForm.buildUnitTel"
                                                           :disabled="step!=='submission' && step!=='reject'"
-                                                          placeholder="填写建设单位报审金额"></el-input>
+                                                          placeholder="建设单位联系电话"></el-input>
                                             </el-form-item>
                                         </td>
                                     </tr>
@@ -246,7 +340,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>资料清单组</th>
+                            <th class="form-required">资料清单组</th>
                             <td colspan="3">
                                 <el-form-item prop="materialGroup">
                                     <el-select v-model="submissionForm.materialGroup" placeholder="请选择"
@@ -269,7 +363,8 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.details">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; "
+                                                                      v-if="fileType.mRequired">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -293,7 +388,7 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr class="allocMan" v-if="step==='assigned' || step === 'auditArc'">
+                        <tr class="allocMan" v-if="stepCode>=30">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.auditType" disabled></el-input>
@@ -301,7 +396,7 @@
                         </tr>
 
                         <tr class="allocMan"
-                            v-if="step==='assigned' || (step === 'auditArc' && submissionForm.assigned)">
+                            v-if="stepCode>=30 && submissionForm.assigned">
                             <th v-if="submissionForm.assigned.thirdParty">分配审计单位</th>
                             <th v-if="!submissionForm.assigned.thirdParty">分配审计人员</th>
                             <td>
@@ -313,20 +408,21 @@
                             </td>
                         </tr>
                         <tr class="allocMan"
-                            v-if="step==='assigned' || (step === 'auditArc' && submissionForm.assigned && submissionForm.assigned.thirdParty)">
+                            v-if="stepCode>=30 && submissionForm.assigned && submissionForm.assigned.thirdParty">
                             <th>联系人</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
                             </td>
                         </tr>
+                        <!--这里的意见非表单数据 是写入意见表的-->
                         <tr class="comment" v-if="step==='project' || step === 'assigned'">
                             <th>审计意见</th>
                             <td colspan="3">
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="step==='surveyPrepare' || step === 'auditArc' ">
-                            <th>约看现场时间</th>
+                        <tr class="comment" v-if="stepCode>=40">
+                            <th>约看现场时间<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="prepareViewDate">
                                     <el-date-picker v-model="submissionForm.prepareViewDate"
@@ -336,7 +432,7 @@
                                     </el-date-picker>
                                 </el-form-item>
                             </td>
-                            <th>现场查看时间</th>
+                            <th>现场查看时间<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="viewDate">
                                     <el-date-picker v-model="submissionForm.viewDate" :disabled="step!=='surveyPrepare'"
@@ -347,21 +443,75 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="step==='surveyPrepare' || step === 'auditArc' ">
-                            <th>现场查看人员</th>
-                            <td colspan="3">
-                                <el-form-item prop="viewPeoples">
-                                    <el-select v-model="submissionForm.viewPeoples" style="width:700px" filterable
-                                               multiple placeholder="请选择"
-                                               :disabled="step!=='surveyPrepare'">
-                                        <el-option v-for="item in users" :key="item.value" :label="item.label"
-                                                   :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
+                        <tr class="comment" v-if="stepCode>=50">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width: 30%">相关单位</th>
+                                        <th>现场查看人员</th>
+                                    </tr>
+                                    <tr>
+                                        <td>审核单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesAuditUnit">
+                                                <el-select v-model="submissionForm.viewPeoplesAuditUnit"
+                                                           style="width:700px" filterable
+                                                           multiple placeholder="请选择"
+                                                           :disabled="step!=='survey'">
+                                                    <el-option v-for="item in users" :key="item.value"
+                                                               :label="item.label"
+                                                               :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>建设单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesBuildUnit">
+                                                <el-select v-model="submissionForm.viewPeoplesBuildUnit"
+                                                           style="width:700px" filterable
+                                                           multiple placeholder="请选择"
+                                                           :disabled="step!=='survey'">
+                                                    <el-option v-for="item in users" :key="item.value"
+                                                               :label="item.label"
+                                                               :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>施工单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesConstructUnit">
+                                                <el-select v-model="submissionForm.viewPeoplesConstructUnit"
+                                                           style="width:700px" filterable
+                                                           multiple placeholder="请选择"
+                                                           :disabled="step!=='survey'">
+                                                    <el-option v-for="item in users" :key="item.value"
+                                                               :label="item.label"
+                                                               :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>委托单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesEntrustUnit">
+                                                <el-input type="text"
+                                                          v-model="submissionForm.viewPeoplesEntrustUnit"
+                                                          :disabled="step!=='survey'"></el-input>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
-                        <tr v-if="step ==='survey' || step === 'auditArc' ">
+                        <tr v-if="stepCode>=50">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -371,7 +521,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.surveyFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -394,7 +544,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step ==='argueHandle' || step ==='argueDeal' || step === 'auditArc' ">
+                        <tr v-if="stepCode>=60 || stepCode === -30">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -404,7 +554,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.argueFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -427,25 +577,9 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step === 'auditFirst' || step === 'auditArc' ">
-                            <th>送审价</th>
-                            <td>
-                                <el-form-item prop="submissionPrice">
-                                    <el-input v-model="submissionForm.submissionPrice" :disabled="step!=='auditFirst'"
-                                              placeholder="填写送审价"></el-input>
-                                </el-form-item>
-                            </td>
-                            <th>初审审定金额</th>
-                            <td>
-                                <el-form-item prop="firstAuditPrice">
-                                    <el-input v-model="submissionForm.firstAuditPrice" :disabled="step!=='auditFirst'"
-                                              placeholder="填写土建金额"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
 
-                        <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
-                            <th>约看现场时间(初审)</th>
+                        <tr class="comment" v-if="stepCode>=70">
+                            <th>约看现场时间(初审)<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="prepareViewDate2">
                                     <el-date-picker v-model="submissionForm.prepareViewDate2"
@@ -455,7 +589,7 @@
                                     </el-date-picker>
                                 </el-form-item>
                             </td>
-                            <th>现场查看时间(初审)</th>
+                            <th>现场查看时间(初审)<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="viewDate2">
                                     <el-date-picker v-model="submissionForm.viewDate2"
@@ -467,27 +601,143 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
-                            <th>现场查看人员(初审)</th>
+                        <tr class="comment" v-if="stepCode>=70">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width: 30%">相关单位</th>
+                                        <th>现场查看人员(初审)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>审核单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesAuditUnit2">
+                                                <el-select v-model="submissionForm.viewPeoplesAuditUnit2"
+                                                           style="width:700px" filterable
+                                                           multiple placeholder="请选择"
+                                                           :disabled="step!=='auditFirst'">
+                                                    <el-option v-for="item in users" :key="item.value"
+                                                               :label="item.label"
+                                                               :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>建设单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesBuildUnit2">
+                                                <el-select v-model="submissionForm.viewPeoplesBuildUnit2"
+                                                           style="width:700px" filterable
+                                                           multiple placeholder="请选择"
+                                                           :disabled="step!=='auditFirst'">
+                                                    <el-option v-for="item in users" :key="item.value"
+                                                               :label="item.label"
+                                                               :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>施工单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesConstructUnit2">
+                                                <el-select v-model="submissionForm.viewPeoplesConstructUnit2"
+                                                           style="width:700px" filterable
+                                                           multiple placeholder="请选择"
+                                                           :disabled="step!=='auditFirst'">
+                                                    <el-option v-for="item in users" :key="item.value"
+                                                               :label="item.label"
+                                                               :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>委托单位</td>
+                                        <td colspan="3">
+                                            <el-form-item prop="viewPeoplesEntrustUnit2">
+                                                <el-input type="text"
+                                                          v-model="submissionForm.viewPeoplesEntrustUnit2"
+                                                          :disabled="step!=='auditFirst'"></el-input>
+                                            </el-form-item>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=70">
+                            <th>送审价</th>
+                            <td>
+                                <el-form-item prop="submissionPrice">
+                                    <el-input v-model="submissionForm.submissionPrice" :disabled="step!=='auditFirst'"
+                                              placeholder="填写送审价"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>初审审定金额<span style="color: red; ">*</span></th>
+                            <td>
+                                <el-form-item prop="firstAuditPrice">
+                                    <el-input v-model="submissionForm.firstAuditPrice" :disabled="step!=='auditFirst'"
+                                              placeholder="填写土建金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=70">
+                            <th class="form-required">初审核减额</th>
+                            <td>
+                                <el-form-item prop="submissionPrice">
+                                    <el-input v-model="submissionForm.auditFirstSub" disabled></el-input>
+                                </el-form-item>
+                            </td>
+                            <th class="form-required">初审核减率%</th>
+                            <td>
+                                <el-form-item prop="firstAuditPrice">
+                                    <el-input v-model="submissionForm.auditFirstSubRatio"
+                                              disabled
+                                    ></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=80">
+                            <th class="form-required">复审审定金额</th>
+                            <td>
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="submissionForm.secondAuditPrice" :disabled="step!=='auditSecond'"
+                                              placeholder="填写复审审定金额"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th class="form-required">复审核减额</th>
+                            <td>
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="submissionForm.auditSecondSub"
+                                              disabled></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=80">
+                            <th class="form-required">复审核减率</th>
                             <td colspan="3">
-                                <el-form-item prop="viewPeoples2">
-                                    <el-select v-model="submissionForm.viewPeoples2" style="width:700px" filterable
-                                               multiple placeholder="请选择"
-                                               :disabled="step!=='auditFirst'">
-                                        <el-option v-for="item in users" :key="item.value" :label="item.label"
-                                                   :value="item.value">
-                                        </el-option>
-                                    </el-select>
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="submissionForm.auditSecondSubRatio"
+                                              disabled></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
 
                         <tr v-if="step === 'auditSecond' || step === 'auditArc' ">
-                            <th>复审审定金额</th>
+                            <th class="form-required">审计备注</th>
                             <td colspan="3">
-                                <el-form-item prop="secondAuditPrice">
-                                    <el-input v-model="submissionForm.secondAuditPrice" :disabled="step!=='auditSecond'"
-                                              placeholder="填写复审审定金额"></el-input>
+                                <el-form-item prop="auditNote">
+                                    <el-input type="textarea" v-model="submissionForm.auditNote"
+                                              :disabled="step!=='auditSecond'"
+                                              placeholder="审计备注"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -502,7 +752,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditFirstFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -536,7 +786,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditSecondFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -571,7 +821,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.supplementFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -681,8 +931,27 @@ import ConstructionUnit from "../script/server/constructionUnit";
 
 export default {
     name: "SubmissionForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'],
     watch: {
+        'submissionForm.constructionUnitApplyFee': function (newVal) {
+            this.submissionForm.inspectUnitCheckFee = newVal - this.submissionForm.inspectUnitApplyFee
+            this.submissionForm.buildUnitCheckFee = newVal - this.submissionForm.buildUnitApplyFee
+        },
+        'submissionForm.inspectUnitApplyFee': function (newVal) {
+            this.submissionForm.inspectUnitCheckFee = this.submissionForm.constructionUnitApplyFee - newVal
+        },
+        'submissionForm.buildUnitApplyFee': function (newVal) {
+            this.submissionForm.buildUnitCheckFee = this.submissionForm.constructionUnitApplyFee - newVal
+        },
+        'submissionForm.submissionPrice': function () {
+            this.calAuditFirst()
+        },
+        'submissionForm.firstAuditPrice': function () {
+            this.calAuditFirst()
+        },
+        'submissionForm.secondAuditPrice': function () {
+            this.calAuditSecond()
+        },
         visible: function (newVal) {
             if (newVal) {
                 this.submissionForm.details = []
@@ -692,7 +961,7 @@ export default {
                         $(".comment").hide()
                     } else if (this.from === 'editform') {
 
-                        if (this.step === 'surveyPrepare' || this.step === 'auditFirst' || this.step === 'auditArc') {
+                        if (this.stepCode >= 50) {
                             ClientCall.getEmps().then(result => {
                                 this.users = []
                                 result.list.content.forEach(user => {
@@ -848,19 +1117,8 @@ export default {
                                 this.comments = res.list
                             })
 
-                            if (this.step === 'auditArc') {
-                                //加载现场查看人员字段
-                                this.submissionForm.viewPeoples = []
-                                this.submissionForm.viewPeopleIds.split(',').forEach(id => {
-                                    this.submissionForm.viewPeoples.push(id - 0)
-                                })
-                                //加载现场查看人员字段
-                                this.submissionForm.viewPeoples2 = []
-                                if (this.submissionForm.viewPeopleIds2) {
-                                    this.submissionForm.viewPeopleIds2.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoples2.push(id - 0)
-                                    })
-                                }
+
+                            if (this.stepCode > 30) {
                                 //加载分配人字段
                                 if (this.submissionForm.assigned) {
                                     if (this.submissionForm.assigned.thirdParty) {
@@ -869,19 +1127,76 @@ export default {
                                         this.submissionForm.assignName = this.submissionForm.assigned.name
                                     }
                                 }
-                            } else if (this.step === 'auditFirst') {
-                                //初始化约看时间为勘察准备时期填写的值
-                                let prepareViewDate = this.submissionForm.prepareViewDate
-                                let vewDate = this.submissionForm.viewDate
-                                let viewPeopleIds = this.submissionForm.viewPeopleIds
+                            }
 
-                                this.submissionForm.prepareViewDate2 = prepareViewDate
-                                this.submissionForm.viewDate2 = vewDate
-                                //this.submissionForm.viewPeoples2 = []
+                            if (this.stepCode > 50) {
+                                //加载现场查看人员字段(选择的字段)
+                                if (this.submissionForm.viewPeoplesAuditUnitIds) {
+                                    this.submissionForm.viewPeoplesAuditUnit = []
+                                    this.submissionForm.viewPeoplesAuditUnitIds.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesAuditUnit.push(id - 0)
+                                    })
+
+                                    this.submissionForm.viewPeoplesBuildUnit = []
+                                    this.submissionForm.viewPeoplesBuildUnitIds.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesBuildUnit.push(id - 0)
+                                    })
+
+                                    this.submissionForm.viewPeoplesConstructUnit = []
+                                    this.submissionForm.viewPeoplesConstructUnitIds.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesConstructUnit.push(id - 0)
+                                    })
+                                }
+                            }
+
+                            if (this.stepCode >= 70) {
+                                if (this.stepCode === 70) {
+                                    //初始化约看时间为勘察准备和勘察阶段填写的值
+                                    let prepareViewDate = this.submissionForm.prepareViewDate
+                                    let vewDate = this.submissionForm.viewDate
+
+                                    this.submissionForm.prepareViewDate2 = prepareViewDate
+                                    this.submissionForm.viewDate2 = vewDate
+                                    this.submissionForm.viewPeoplesAuditUnit2 = []
+
+                                    this.submissionForm.viewPeoplesAuditUnitIds.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
+                                    })
+                                    this.submissionForm.viewPeoplesBuildUnit2 = []
+                                    this.submissionForm.viewPeoplesBuildUnitIds.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesBuildUnit2.push(id - 0)
+                                    })
+                                    this.submissionForm.viewPeoplesConstructUnit2 = []
+                                    this.submissionForm.viewPeoplesConstructUnitIds.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesConstructUnit2.push(id - 0)
+                                    })
+
+                                } else {
+
+                                    this.submissionForm.viewPeoplesAuditUnit2 = []
+                                    this.submissionForm.viewPeoplesAuditUnitIds2.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
+                                    })
+                                    this.submissionForm.viewPeoplesBuildUnit2 = []
+                                    this.submissionForm.viewPeoplesBuildUnitIds2.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesBuildUnit2.push(id - 0)
+                                    })
+                                    this.submissionForm.viewPeoplesConstructUnit2 = []
+                                    this.submissionForm.viewPeoplesConstructUnitIds2.split(',').forEach(id => {
+                                        this.submissionForm.viewPeoplesConstructUnit2.push(id - 0)
+                                    })
+                                }
+
+                                this.submissionForm.viewPeoples2 = []
                                 viewPeopleIds.split(',').forEach(id => {
                                     this.submissionForm.viewPeoples2.push(id - 0)
                                 })
-                            } else if (this.step === 'auditSecond') {
+
+                                //送审价=建设单位报审金额
+                                this.submissionForm.submissionPrice = this.submissionForm.buildUnitApplyFee
+                            }
+
+                            if (this.stepCode >= 80) {
                                 //将复审审定金额默认设置为初审审定金额
                                 if (!this.submissionForm.secondAuditPrice || this.submissionForm.secondAuditPrice === 0) {
                                     this.submissionForm.secondAuditPrice = this.submissionForm.firstAuditPrice
@@ -905,17 +1220,19 @@ export default {
             pageSize: 999999,
         }).then(res => {
             this.units = []
-            res.list.content.forEach(user => {
+            res.list.content.forEach(unit => {
                 this.units.push({
-                    value: user.id,
-                    label: user.name
+                    value: unit.id,
+                    label: unit.name,
+                    links: [
+                        {value: unit.contact, label: unit.contact, telphone: unit.telphone}
+                    ]
                 })
             })
         })
     },
     data: function () {
         return {
-            units: [],
             dialogVisible: false,
             submissionForm: {
                 id: '',
@@ -932,15 +1249,20 @@ export default {
                 constructMoney: 0,
                 installMoney: 0,
                 payType: '',
+                payTypeOther: '',
                 payCondition: '',
+                payConditionOther: '',
                 constructionUnitApplyFee: 0,
                 constructionUnitCheckFee: 0,
+                constructionUnitProjectMan: '',
                 constructionUnitTel: '',
                 inspectUnitApplyFee: 0,
                 inspectUnitCheckFee: 0,
+                inspectUnitProjectMan: '',
                 inspectUnitTel: '',
                 buildUnitApplyFee: 0,
                 buildUnitCheckFee: 0,
+                buildUnitProjectMan: '',
                 buildUnitTel: '',
                 content: '',
                 description: '',
@@ -955,8 +1277,10 @@ export default {
                 //勘察准备-----------
                 prepareViewDate: '',
                 viewDate: '',
-                viewPeoples: [],
-                viewPeopleIds: '',
+                viewPeoplesAuditUnit: [],
+                viewPeoplesBuildUnit: [],
+                viewPeoplesConstructUnit: [],
+                viewPeoplesEntrustUnit: '',
                 //现场勘察--------------
                 surveyFiles: [],
                 //争议处理
@@ -967,10 +1291,17 @@ export default {
                 auditFirstFiles: [],
                 prepareViewDate2: '',
                 viewDate2: '',
-                viewPeoples2: [],
-                viewPeopleIds2: '',
+                viewPeoplesAuditUnit2: [],
+                viewPeoplesBuildUnit2: [],
+                viewPeoplesConstructUnit2: [],
+                viewPeoplesEntrustUnit2: '',
+                auditFirstSub: '',
+                auditFirstSubRatio: '',
                 //审计复审
                 secondAuditPrice: 0,
+                auditNote: '',
+                auditSecondSub: '',
+                auditSecondSubRatio: '',
                 auditSecondFiles: [],
                 //争议处理，申请人补充上传资料
                 supplementFiles: [],
@@ -982,12 +1313,37 @@ export default {
             comment: '',
             comments: [],
             users: [],
+            units: [],
+            projectMans: [],
         }
     },
     methods: {
+        calAuditFirst: function () {
+            this.submissionForm.auditFirstSub = this.submissionForm.submissionPrice - this.submissionForm.firstAuditPrice
+            this.submissionForm.auditFirstSubRatio = (this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(2)
+        },
+        calAuditSecond: function () {
+            this.submissionForm.auditSecondSub = this.submissionForm.firstAuditPrice - this.submissionForm.secondAuditPrice
+            this.submissionForm.auditSecondSubRatio = (this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2)
+        },
+        unitChange: function (val) {
+            this.projectMans.length = 0
+            this.submissionForm.constructionUnitProjectMan = ''
+            this.submissionForm.constructionUnitTel = ''
+            this.units.filter(u => u.value === val)[0].links.forEach(link => {
+                this.projectMans.push(link)
+            });
+        },
+        projectManChange: function (val) {
+            this.submissionForm.constructionUnitTel = this.projectMans.filter(man => man.value === val)[0].telphone
+        },
         commit: function (event) {
-            if ((this.step === 'submission' && event.name.indexOf('save') === -1) || this.step === 'reject' || this.step === 'surveyPrepare' || this.step ===
-                'auditFirst' || this.step === 'auditSecond') {
+            if ((this.step === 'submission' && event.name.indexOf('save') === -1) ||
+                this.step === 'reject' ||
+                this.step === 'surveyPrepare' ||
+                this.step === 'survey' ||
+                this.step === 'auditFirst' ||
+                this.step === 'auditSecond') {
                 //需要验证表单的提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
@@ -1020,9 +1376,23 @@ export default {
                                 targetId: this.submissionForm.id,
                                 prepareViewDate: this.submissionForm.prepareViewDate,
                                 viewDate: this.submissionForm.viewDate,
-                                viewPeopleIds: this.submissionForm.viewPeoples.toString(),
                                 type: 2
                             })
+                        } else if (this.step === 'survey') {
+                            //验证现场勘察附件上传情况
+                            if (this.fileListCheck(this.submissionForm.surveyFiles)) {
+                                //附件列表转换为serverId字符串
+                                this.fileIdsConstruct(this.submissionForm.surveyFiles)
+                                event({
+                                    targetId: this.submissionForm.id,
+                                    surveyFiles: this.submissionForm.surveyFiles,
+                                    viewPeopleAuditUnitIds: this.submissionForm.viewPeoplesAuditUnit.toString(),
+                                    viewPeoplesBuildUnitIds: this.submissionForm.viewPeoplesBuildUnit.toString(),
+                                    viewPeoplesConstructUnitIds: this.submissionForm.viewPeoplesConstructUnit.toString(),
+                                    viewPeoplesEntrustUnit: this.submissionForm.viewPeoplesEntrustUnit,
+                                    type: 2
+                                })
+                            }
                         } else if (this.step === 'auditFirst') {
                             //验证现场勘察附件上传情况
                             if (this.fileListCheck(this.submissionForm.auditFirstFiles)) {
@@ -1032,10 +1402,15 @@ export default {
                                     type: 2,
                                     submissionPrice: this.submissionForm.submissionPrice,
                                     firstAuditPrice: this.submissionForm.firstAuditPrice,
+                                    auditFirstSub: this.submissionForm.auditFirstSub,
+                                    auditFirstSubRatio: this.submissionForm.auditFirstSubRatio,
                                     auditFirstFiles: this.submissionForm.auditFirstFiles,
                                     prepareViewDate2: this.submissionForm.prepareViewDate2,
                                     viewDate2: this.submissionForm.viewDate2,
-                                    viewPeopleIds2: this.submissionForm.viewPeoples2.toString(),
+                                    viewPeopleAuditUnitIds2: this.submissionForm.viewPeoplesAuditUnit2.toString(),
+                                    viewPeoplesBuildUnitIds2: this.submissionForm.viewPeoplesBuildUnit2.toString(),
+                                    viewPeoplesConstructUnitIds2: this.submissionForm.viewPeoplesConstructUnit2.toString(),
+                                    viewPeoplesEntrustUnit2: this.submissionForm.viewPeoplesEntrustUnit2,
                                 })
                             }
                         } else if (this.step === 'auditSecond') {
@@ -1045,6 +1420,8 @@ export default {
                                     targetId: this.submissionForm.id,
                                     type: 2,
                                     secondAuditPrice: this.submissionForm.secondAuditPrice,
+                                    auditSecondSub: this.submissionForm.auditSecondSub,
+                                    auditSecondSubRatio: this.submissionForm.auditSecondSubRatio,
                                     auditSecondFiles: this.submissionForm.auditSecondFiles
                                 })
                             }
@@ -1063,17 +1440,6 @@ export default {
                     //保存不验证必填
                     this.fileIdsConstruct(this.submissionForm.details)
                     event(this.submissionForm)
-                } else if (this.step === 'survey') {
-                    //验证现场勘察附件上传情况
-                    if (this.fileListCheck(this.submissionForm.surveyFiles)) {
-                        //附件列表转换为serverId字符串
-                        this.fileIdsConstruct(this.submissionForm.surveyFiles)
-                        event({
-                            targetId: this.submissionForm.id,
-                            surveyFiles: this.submissionForm.surveyFiles,
-                            type: 2
-                        })
-                    }
                 } else if (this.step === 'argueHandle') {
                     this.fileIdsConstruct(this.submissionForm.argueFiles)
                     event({
@@ -1128,45 +1494,45 @@ export default {
             }
         },
         //资料清单移除方法
-        handleRemove(file, fileList) {
+        handleRemove(file) {
             this.removeFileFromList(file, this.submissionForm.details)
         },
-        beforeRemove(file, fileList) {
+        beforeRemove(file) {
             return this.removeableConfirm(file, ['submission', 'reject'], '当前阶段不可移除资料清单附件!')
         },
         //初审资料移除方法
-        handleRemoveAuditFirst(file, fileList) {
+        handleRemoveAuditFirst(file) {
             this.removeFileFromList(file, this.submissionForm.auditFirstFiles)
         },
-        beforeRemoveAuditFirst(file, fileList) {
+        beforeRemoveAuditFirst(file) {
             return this.removeableConfirm(file, ['auditFirst'], '当前阶段不可移除初审资料附件!')
         },
         //现场勘察资料移除方法
-        handleRemoveSurvey(file, fileList) {
+        handleRemoveSurvey(file) {
             this.removeFileFromList(file, this.submissionForm.surveyFiles)
         },
-        beforeRemoveSurvey(file, fileList) {
+        beforeRemoveSurvey(file) {
             return this.removeableConfirm(file, ['survey'], '当前阶段不可移除现场勘察资料附件!')
         },
         //争议处理移除方法
-        handleRemoveArgue(file, fileList) {
+        handleRemoveArgue(file) {
             this.removeFileFromList(file, this.submissionForm.argueFiles)
         },
-        beforeRemoveArgue(file, fileList) {
+        beforeRemoveArgue(file) {
             return this.removeableConfirm(file, ['argueHandle'], '当前阶段不可移除争议处理资料附件!')
         },
         //复审资料移除方法
-        handleRemoveAuditSecond(file, fileList) {
+        handleRemoveAuditSecond(file) {
             this.removeFileFromList(file, this.submissionForm.auditSecondFiles)
         },
-        beforeRemoveAuditSecond(file, fileList) {
+        beforeRemoveAuditSecond(file) {
             return this.removeableConfirm(file, ['auditSecond'], '当前阶段不可移除复审资料附件!')
         },
         //补充资料
-        handleRemoveSupplement(file, fileList) {
+        handleRemoveSupplement(file) {
             this.removeFileFromList(file, this.submissionForm.supplementFiles)
         },
-        beforeRemoveSupplement(file, fileList) {
+        beforeRemoveSupplement(file) {
             return this.removeableConfirm(file, ['argueDeal'], '当前阶段不可移除补充资料附件!')
         },
         removeableConfirm(file, steps, message) {
@@ -1251,6 +1617,22 @@ export default {
                 }
             })
         },
+        payConditionChange(val) {
+            if (val === '其他') {
+                this.formRules['payConditionOther'] = this.formRules2['payConditionOther']
+            } else {
+                delete this.formRules.payConditionOther
+                this.submissionForm.payConditionOther = ''
+            }
+        },
+        payTypeChange(val) {
+            if (val === '其他') {
+                this.formRules['payTypeOther'] = this.formRules2['payTypeOther']
+            } else {
+                delete this.formRules.payTypeOther
+                this.submissionForm.payTypeOther = ''
+            }
+        }
     },
 }
 </script>

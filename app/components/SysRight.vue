@@ -73,10 +73,10 @@
                 </el-form-item>
                 <el-form-item label="备注">
                     <el-input
-                            type="textarea"
-                            :rows="2"
-                            placeholder="请输入内容"
-                            v-model="rightsInfo.note">
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入内容"
+                        v-model="rightsInfo.note">
                     </el-input>
                 </el-form-item>
             </el-form>
@@ -91,149 +91,149 @@
 
 <script>
 
-    import Right from '../script/server/right'
+import Right from '../script/server/right'
 
-    export default {
-        name: "SysRight",
-        mounted: function () {
+export default {
+    name: "SysRight",
+    mounted: function () {
 
-            this.rights = Right.getRights()
+        this.rights = Right.getRights()
 
-            //格式化cascader数据====================================================
+        //格式化cascader数据====================================================
+        let rightsPrepare = []
+
+        for (let right of this.rights) {
+            rightsPrepare.push(right);
+        }
+
+        for (let right of rightsPrepare.reverse()) {
+            if (right.isLeaf) {
+                continue
+            }
+            let addObj = {value: right.id, label: right.label, pid: right.pid}
+            let last = this.rightPath.pop();
+            while (last) {
+                if (last.pid === right.id) {
+                    if (!addObj.children) {
+                        addObj.children = []
+                    }
+                    addObj.children.push(last)
+                } else {
+                    this.rightPath.push(last)
+                    break;
+                }
+                last = this.rightPath.pop()
+            }
+            this.rightPath.push(addObj)
+        }
+        this.rightPath = this.rightPath.reverse()
+        //======================================================================
+    },
+    data: function () {
+        return {
+            rights: [],
+            curPath: [],
+            rightsInfo: {
+                id: 0,
+                pid: 0,
+                label: "",
+                url: "",
+                type: "",
+                sort: 0,
+                note: ''
+            },
+            dialogVisible: false,
+            rightPath: []
+        }
+    },
+    methods: {
+        rowClassNameHandler({row}) {
+            let className = 'pid-' + row.pid
+            if (row.pid !== 0 && row['visible'] !== true) {
+                className += ' hiddenRow'
+            }
+            return className
+        },
+        onExpand(row) {
+            let self = this
+            let isShowChildren = !row['showChildren']
+            row['showChildren'] = isShowChildren
+            self.loadSubItems(row, isShowChildren)
+        },
+        loadSubItems(item, isShowChildren) {
+            let self = this
+            for (let i = 0; i < self.rights.length; i++) {
+                if (self.rights[i].pid === item.id) {
+                    if (isShowChildren) {
+                        self.rights[i].visible = true
+                    } else {
+                        if (self.rights[i].visible) {
+                            self.rights[i].visible = false
+                            if (self.rights[i].hasChildren) {
+                                self.rights[i].showChildren = false
+                            }
+                        }
+                        self.loadSubItems(self.rights[i], false);
+                    }
+                }
+            }
+        },
+        expandAll() {
+            for (let i = 0; i < this.rights.length; i++) {
+                if (this.rights[i].hasChildren) {
+                    this.rights[i].showChildren = true;
+                }
+                this.rights[i].visible = true;
+            }
+        },
+        foldAll() {
+            for (let i = 0; i < this.rights.length; i++) {
+                if (this.rights[i].hasChildren) {
+                    this.rights[i].showChildren = false;
+                }
+                if (this.rights[i].level !== 1) {
+                    this.rights[i].visible = false;
+                }
+            }
+        },
+        submit() {
+
+        },
+        editRight(row) {
+            this.rightsInfo.id = row.id
+            this.rightsInfo.pid = row.pid
+            this.rightsInfo.label = row.label
+
+            //获取cascade当前路径
             let rightsPrepare = []
 
             for (let right of this.rights) {
                 rightsPrepare.push(right);
             }
 
+            this.curPath = []
+
+            let recordId = row.pid
+
             for (let right of rightsPrepare.reverse()) {
-                if (right.isLeaf) {
-                    continue
+                if (right.id === recordId) {
+                    this.curPath.push(recordId)
+                    recordId = right.pid
                 }
-                let addObj = {value: right.id, label: right.label, pid: right.pid}
-                let last = this.rightPath.pop();
-                while (last) {
-                    if (last.pid === right.id) {
-                        if (!addObj.children) {
-                            addObj.children = []
-                        }
-                        addObj.children.push(last)
-                    } else {
-                        this.rightPath.push(last)
-                        break;
-                    }
-                    last = this.rightPath.pop()
-                }
-                this.rightPath.push(addObj)
             }
-            this.rightPath = this.rightPath.reverse()
-            //======================================================================
+
+            this.curPath = this.curPath.reverse()
         },
-        data: function () {
-            return {
-                rights: [],
-                curPath: [],
-                rightsInfo: {
-                    id: 0,
-                    pid: 0,
-                    label: "",
-                    url: "",
-                    type: "",
-                    sort: 0,
-                    note: ''
-                },
-                dialogVisible: false,
-                rightPath: []
-            }
-        },
-        methods: {
-            rowClassNameHandler({row, rowIndex}) {
-                let className = 'pid-' + row.pid
-                if (row.pid !== 0 && row['visible'] !== true) {
-                    className += ' hiddenRow'
-                }
-                return className
-            },
-            onExpand(row) {
-                let self = this
-                let isShowChildren = !row['showChildren']
-                row['showChildren'] = isShowChildren
-                self.loadSubItems(row, isShowChildren)
-            },
-            loadSubItems(item, isShowChildren) {
-                let self = this
-                for (let i = 0; i < self.rights.length; i++) {
-                    if (self.rights[i].pid === item.id) {
-                        if (isShowChildren) {
-                            self.rights[i].visible = true
-                        } else {
-                            if (self.rights[i].visible) {
-                                self.rights[i].visible = false
-                                if (self.rights[i].hasChildren) {
-                                    self.rights[i].showChildren = false
-                                }
-                            }
-                            self.loadSubItems(self.rights[i], false);
-                        }
-                    }
-                }
-            },
-            expandAll() {
-                for (let i = 0; i < this.rights.length; i++) {
-                    if (this.rights[i].hasChildren) {
-                        this.rights[i].showChildren = true;
-                    }
-                    this.rights[i].visible = true;
-                }
-            },
-            foldAll() {
-                for (let i = 0; i < this.rights.length; i++) {
-                    if (this.rights[i].hasChildren) {
-                        this.rights[i].showChildren = false;
-                    }
-                    if (this.rights[i].level !== 1) {
-                        this.rights[i].visible = false;
-                    }
-                }
-            },
-            submit() {
+        deleteRight() {
 
-            },
-            editRight(row) {
-                this.rightsInfo.id = row.id
-                this.rightsInfo.pid = row.pid
-                this.rightsInfo.label = row.label
-
-                //获取cascade当前路径
-                let rightsPrepare = []
-
-                for (let right of this.rights) {
-                    rightsPrepare.push(right);
-                }
-
-                this.curPath = []
-
-                let recordId = row.pid
-
-                for (let right of rightsPrepare.reverse()) {
-                    if (right.id === recordId) {
-                        this.curPath.push(recordId)
-                        recordId = right.pid
-                    }
-                }
-
-                this.curPath = this.curPath.reverse()
-            },
-            deleteRight() {
-
-            }
-        },
-        components: {},
-    }
+        }
+    },
+    components: {},
+}
 </script>
 
 <style scoped>
-    .right-button-group {
-        margin-bottom: 20px;
-    }
+.right-button-group {
+    margin-bottom: 20px;
+}
 </style>

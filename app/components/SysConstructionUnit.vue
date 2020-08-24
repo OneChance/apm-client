@@ -15,22 +15,29 @@
 
         <el-dialog title="施工单位信息"
                    :visible.sync="dialogVisible"
+                   class="form-dialog"
                    :close-on-click-modal="false">
             <template>
-                <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                    <el-form-item label="施工单位名称" prop="username">
-                        <el-input v-model="form.name"></el-input>
+                <el-form ref="form" :model="form" :rules="rules" label-width="120px" :inline="true">
+                    <el-form-item label="施工单位名称" prop="name">
+                        <el-input v-model="form.name" style="width: 350px;"></el-input>
                     </el-form-item>
-                    <el-form-item label="联系人" prop="name">
-                        <el-input v-model="form.contact"></el-input>
-                    </el-form-item>
-                    <el-form-item label="联系方式" prop="telphone">
-                        <el-input v-model="form.telphone"></el-input>
-                    </el-form-item>
+                    <div v-for="(link,index) in form.links">
+                        <el-form-item label="联系人" :prop="'links.' + index + '.contact'"
+                                      :rules="{required: true, message: '联系人', trigger: 'blur'}">
+                            <el-input v-model="link.contact"></el-input>
+                        </el-form-item>
+                        <el-form-item label="联系方式" :prop="'links.' + index + '.telphone'"
+                                      :rules="{required: true, message: '联系方式', trigger: 'blur'}">
+                            <el-input v-model="link.telphone"></el-input>
+                        </el-form-item>
+                        <el-button @click.prevent="removeLink(link)">删除</el-button>
+                    </div>
                 </el-form>
             </template>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button @click="addLink">新增联系人</el-button>
                 <el-button type="primary" @click="commit()">确 定</el-button>
             </div>
         </el-dialog>
@@ -53,18 +60,14 @@ export default {
             },
             form: {
                 name: '',
-                contact: '',
-                telphone: '',
+                links: [{
+                    contact: '',
+                    telphone: '',
+                }],
             },
             rules: {
                 name: [
                     {required: true, message: '施工单位名称', trigger: 'blur'},
-                ],
-                contact: [
-                    {required: true, message: '联系人', trigger: 'blur'},
-                ],
-                telphone: [
-                    {required: true, message: '联系方式', trigger: 'blur'},
                 ],
             },
             tableConfig: {
@@ -97,10 +100,22 @@ export default {
         this.list()
     },
     methods: {
+        addLink: function () {
+            this.form.links.push({
+                contact: '',
+                telphone: '',
+            })
+        },
+        removeLink: function (link) {
+            let index = this.form.links.indexOf(link)
+            if (index > 0) {
+                this.form.links.splice(index, 1)
+            }
+        },
         commit: function () {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
-                    ConstructionUnit.saveConstructionUnit(this.form).then(result => {
+                    ConstructionUnit.saveConstructionUnit(this.form).then(() => {
                         this.operSuccess(this)
                         this.dialogVisible = false;
                     })
@@ -112,6 +127,7 @@ export default {
         },
         add: function () {
             this.dialogVisible = true
+            this.form.links.length = 1
             this.$nextTick(() => {
                 this.$refs['form'].resetFields();
             });
@@ -121,12 +137,12 @@ export default {
                 this.dialogVisible = true
                 this.form.id = result.construction.id
                 this.form.name = result.construction.name
-                this.form.contact = result.construction.contact
-                this.form.telphone = result.construction.telphone
+                this.form.links[0].contact = result.construction.contact
+                this.form.links[0].telphone = result.construction.telphone
             })
         },
         delete: function (row) {
-            ConstructionUnit.deleteConstructionUnit({id: row.id}).then(result => {
+            ConstructionUnit.deleteConstructionUnit({id: row.id}).then(() => {
                 this.operSuccess(this)
             })
         },

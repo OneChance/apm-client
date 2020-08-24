@@ -9,7 +9,7 @@
                     <el-button type="primary" @click="queryList">查询</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="success" @click="batchOper(1)">批量操作</el-button>
+                    <el-button type="success" @click="batchOper(1)">批量处理</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="danger" @click="batchOper(0)">批量打回</el-button>
@@ -111,7 +111,7 @@ export default {
     },
     methods: {
         allocCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(result => {
+            ClientCall.batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(() => {
                 this.operSuccess()
             })
         },
@@ -150,14 +150,40 @@ export default {
                             this.forms.alloc.visible = false
                             this.forms.alloc.visible = true
                         } else {
-                            ClientCall.batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(result => {
+                            ClientCall.batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(() => {
                                 this.operSuccess()
                             })
                         }
                     } else if (stage === 'check') { //批量审核分配
-                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(result => {
+                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
                             this.operSuccess()
                         })
+                    } else if (stage === 'complete') { //批量打回复审
+                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            this.operSuccess()
+                        })
+                    } else if (stage === 'complete') {
+                        if (approve === 1) {//批量归档
+                            ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                                this.operSuccess()
+                            })
+                        } else {//批量打回复审
+                            ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                                this.operSuccess()
+                            })
+                        }
+                    } else if (stage === 'arc') { //批量打回完成
+                        if (approve === 1) {
+                            Notification.error({
+                                title: '操作失败!',
+                                message: '归档阶段无法进入下一阶段！',
+                                duration: 3000
+                            })
+                        } else {//批量打回完成
+                            ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                                this.operSuccess()
+                            })
+                        }
                     } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second'].indexOf(stage) !== -1) {
                         Notification.error({
                             title: '操作失败!',

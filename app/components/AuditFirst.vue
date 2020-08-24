@@ -11,6 +11,7 @@
                          v-bind:formRules="rules"
                          v-bind:formOpers="formOpers"
                          v-bind:step="'auditFirst'"
+                         v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
     </div>

@@ -13,9 +13,6 @@ const oper = {
         viewDate: [
             {required: true, message: '请选择现场查看时间', trigger: 'blur'}
         ],
-        viewPeoples: [
-            {required: true, message: '请填写现场查看人员', trigger: 'blur'},
-        ],
     },
 }
 
