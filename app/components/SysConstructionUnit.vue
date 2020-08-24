@@ -100,7 +100,7 @@ export default {
         commit: function () {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
-                    ConstructionUnit.saveConstructionUnit(this.form).then(result => {
+                    ConstructionUnit.saveConstructionUnit(this.form).then(() => {
                         this.operSuccess(this)
                         this.dialogVisible = false;
                     })
@@ -126,7 +126,7 @@ export default {
             })
         },
         delete: function (row) {
-            ConstructionUnit.deleteConstructionUnit({id: row.id}).then(result => {
+            ConstructionUnit.deleteConstructionUnit({id: row.id}).then(() => {
                 this.operSuccess(this)
             })
         },

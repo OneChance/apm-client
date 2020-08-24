@@ -63,7 +63,9 @@
                             <th>施工单位名称<span style="color: red; ">*</span></th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
-                                    <el-select v-model="submissionForm.constructionUnit" filterable
+                                    <el-select v-model="submissionForm.constructionUnit"
+                                               :disabled="step!=='submission' && step!=='reject'"
+                                               filterable
                                                placeholder="填写施工单位名称" style="width: 220px;">
                                         <el-option
                                             v-for="unit in units"
@@ -126,21 +128,79 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>工程结算方式</th>
-                            <td>
+                            <th>结算方式</th>
+                            <td colspan="3" v-if="step === 'submission' || step === 'reject'">
                                 <el-form-item prop="payType">
-                                    <el-input v-model="submissionForm.payType"
-                                              :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写工程结算方式"></el-input>
+                                    <el-radio v-model="submissionForm.payType" label="按实结算" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        按实结算
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payType" label="中标价+变更价" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        中标价+变更价
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payType" label="固定单价" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        固定单价
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payType" label="其他" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        其他
+                                    </el-radio>
+                                </el-form-item>
+                                <el-form-item prop="payTypeOther">
+                                    <el-input v-model="submissionForm.payTypeOther"
+                                              v-if="submissionForm.payType==='其他'"
+                                              :disabled="step!=='submission' && step!=='reject'" style="width: 200px"
+                                              placeholder="其他结算方式"></el-input>
                                 </el-form-item>
                             </td>
+                            <td colspan="3" v-if="step !== 'submission' && step !== 'reject'">
+                                <el-input v-model="submissionForm.payType"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
+                                <el-input v-model="submissionForm.payTypeOther"
+                                          v-if="submissionForm.payType==='其他'"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>付款情况</th>
-                            <td>
+                            <td colspan="3" v-if="step === 'submission' || step === 'reject'">
                                 <el-form-item prop="payCondition">
-                                    <el-input v-model="submissionForm.payCondition"
-                                              :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写付款情况"></el-input>
+                                    <el-radio v-model="submissionForm.payCondition" label="未付款" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        未付款
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payCondition" label="合同价50%" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        合同价50%
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payCondition" label="合同价70%" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        合同价70%
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.payCondition" label="其他" border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        其他
+                                    </el-radio>
                                 </el-form-item>
+                                <el-form-item prop="payConditionOther">
+                                    <el-input v-model="submissionForm.payConditionOther"
+                                              v-if="submissionForm.payCondition==='其他'"
+                                              :disabled="step!=='submission' && step!=='reject'" style="width: 200px"
+                                              placeholder="其他付款情况"></el-input>
+                                </el-form-item>
+                            </td>
+                            <td colspan="3" v-if="step !== 'submission' && step !== 'reject'">
+                                <el-input v-model="submissionForm.payCondition"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
+                                <el-input v-model="submissionForm.payConditionOther"
+                                          v-if="submissionForm.payCondition==='其他'"
+                                          :disabled="step!=='submission' && step!=='reject'"
+                                          style="width: 200px"></el-input>
                             </td>
                         </tr>
                         <tr>
@@ -269,7 +329,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.details">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; " v-if="fileType.mRequired">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -301,7 +361,7 @@
                         </tr>
 
                         <tr class="allocMan"
-                            v-if="step==='assigned' || (step === 'auditArc' && submissionForm.assigned)">
+                            v-if="(step==='assigned' || step === 'auditArc') && submissionForm.assigned">
                             <th v-if="submissionForm.assigned.thirdParty">分配审计单位</th>
                             <th v-if="!submissionForm.assigned.thirdParty">分配审计人员</th>
                             <td>
@@ -313,7 +373,7 @@
                             </td>
                         </tr>
                         <tr class="allocMan"
-                            v-if="step==='assigned' || (step === 'auditArc' && submissionForm.assigned && submissionForm.assigned.thirdParty)">
+                            v-if="(step==='assigned' || step === 'auditArc') && submissionForm.assigned && submissionForm.assigned.thirdParty">
                             <th>联系人</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
@@ -326,7 +386,7 @@
                             </td>
                         </tr>
                         <tr class="comment" v-if="step==='surveyPrepare' || step === 'auditArc' ">
-                            <th>约看现场时间</th>
+                            <th>约看现场时间<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="prepareViewDate">
                                     <el-date-picker v-model="submissionForm.prepareViewDate"
@@ -336,7 +396,7 @@
                                     </el-date-picker>
                                 </el-form-item>
                             </td>
-                            <th>现场查看时间</th>
+                            <th>现场查看时间<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="viewDate">
                                     <el-date-picker v-model="submissionForm.viewDate" :disabled="step!=='surveyPrepare'"
@@ -348,7 +408,7 @@
                             </td>
                         </tr>
                         <tr class="comment" v-if="step==='surveyPrepare' || step === 'auditArc' ">
-                            <th>现场查看人员</th>
+                            <th>现场查看人员<span style="color: red; ">*</span></th>
                             <td colspan="3">
                                 <el-form-item prop="viewPeoples">
                                     <el-select v-model="submissionForm.viewPeoples" style="width:700px" filterable
@@ -371,7 +431,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.surveyFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -404,7 +464,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.argueFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -428,14 +488,14 @@
                         </tr>
 
                         <tr v-if="step === 'auditFirst' || step === 'auditArc' ">
-                            <th>送审价</th>
+                            <th>送审价<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="submissionPrice">
                                     <el-input v-model="submissionForm.submissionPrice" :disabled="step!=='auditFirst'"
                                               placeholder="填写送审价"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>初审审定金额</th>
+                            <th>初审审定金额<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="firstAuditPrice">
                                     <el-input v-model="submissionForm.firstAuditPrice" :disabled="step!=='auditFirst'"
@@ -445,7 +505,7 @@
                         </tr>
 
                         <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
-                            <th>约看现场时间(初审)</th>
+                            <th>约看现场时间(初审)<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="prepareViewDate2">
                                     <el-date-picker v-model="submissionForm.prepareViewDate2"
@@ -455,7 +515,7 @@
                                     </el-date-picker>
                                 </el-form-item>
                             </td>
-                            <th>现场查看时间(初审)</th>
+                            <th>现场查看时间(初审)<span style="color: red; ">*</span></th>
                             <td>
                                 <el-form-item prop="viewDate2">
                                     <el-date-picker v-model="submissionForm.viewDate2"
@@ -468,7 +528,7 @@
                             </td>
                         </tr>
                         <tr class="comment" v-if="step==='auditFirst' || step === 'auditArc' ">
-                            <th>现场查看人员(初审)</th>
+                            <th>现场查看人员(初审)<span style="color: red; ">*</span></th>
                             <td colspan="3">
                                 <el-form-item prop="viewPeoples2">
                                     <el-select v-model="submissionForm.viewPeoples2" style="width:700px" filterable
@@ -483,7 +543,7 @@
                         </tr>
 
                         <tr v-if="step === 'auditSecond' || step === 'auditArc' ">
-                            <th>复审审定金额</th>
+                            <th>复审审定金额<span style="color: red; ">*</span></th>
                             <td colspan="3">
                                 <el-form-item prop="secondAuditPrice">
                                     <el-input v-model="submissionForm.secondAuditPrice" :disabled="step!=='auditSecond'"
@@ -502,7 +562,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditFirstFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -536,7 +596,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditSecondFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -571,7 +631,7 @@
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.supplementFiles">
                                         <td>
-                                            {{ fileType.mName }}
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td>
                                             <el-upload class="upload-demo" action="noAction" :http-request="upload"
@@ -683,6 +743,16 @@ export default {
     name: "SubmissionForm",
     props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules'],
     watch: {
+        'submissionForm.constructionUnitApplyFee': function (newVal) {
+            this.submissionForm.inspectUnitCheckFee = newVal - this.submissionForm.inspectUnitApplyFee
+            this.submissionForm.buildUnitCheckFee = newVal - this.submissionForm.buildUnitApplyFee
+        },
+        'submissionForm.inspectUnitApplyFee': function (newVal) {
+            this.submissionForm.inspectUnitCheckFee = this.submissionForm.constructionUnitApplyFee - newVal
+        },
+        'submissionForm.buildUnitApplyFee': function (newVal) {
+            this.submissionForm.buildUnitCheckFee = this.submissionForm.constructionUnitApplyFee - newVal
+        },
         visible: function (newVal) {
             if (newVal) {
                 this.submissionForm.details = []
@@ -932,7 +1002,9 @@ export default {
                 constructMoney: 0,
                 installMoney: 0,
                 payType: '',
+                payTypeOther: '',
                 payCondition: '',
+                payConditionOther: '',
                 constructionUnitApplyFee: 0,
                 constructionUnitCheckFee: 0,
                 constructionUnitTel: '',
@@ -1128,45 +1200,45 @@ export default {
             }
         },
         //资料清单移除方法
-        handleRemove(file, fileList) {
+        handleRemove(file) {
             this.removeFileFromList(file, this.submissionForm.details)
         },
-        beforeRemove(file, fileList) {
+        beforeRemove(file) {
             return this.removeableConfirm(file, ['submission', 'reject'], '当前阶段不可移除资料清单附件!')
         },
         //初审资料移除方法
-        handleRemoveAuditFirst(file, fileList) {
+        handleRemoveAuditFirst(file) {
             this.removeFileFromList(file, this.submissionForm.auditFirstFiles)
         },
-        beforeRemoveAuditFirst(file, fileList) {
+        beforeRemoveAuditFirst(file) {
             return this.removeableConfirm(file, ['auditFirst'], '当前阶段不可移除初审资料附件!')
         },
         //现场勘察资料移除方法
-        handleRemoveSurvey(file, fileList) {
+        handleRemoveSurvey(file) {
             this.removeFileFromList(file, this.submissionForm.surveyFiles)
         },
-        beforeRemoveSurvey(file, fileList) {
+        beforeRemoveSurvey(file) {
             return this.removeableConfirm(file, ['survey'], '当前阶段不可移除现场勘察资料附件!')
         },
         //争议处理移除方法
-        handleRemoveArgue(file, fileList) {
+        handleRemoveArgue(file) {
             this.removeFileFromList(file, this.submissionForm.argueFiles)
         },
-        beforeRemoveArgue(file, fileList) {
+        beforeRemoveArgue(file) {
             return this.removeableConfirm(file, ['argueHandle'], '当前阶段不可移除争议处理资料附件!')
         },
         //复审资料移除方法
-        handleRemoveAuditSecond(file, fileList) {
+        handleRemoveAuditSecond(file) {
             this.removeFileFromList(file, this.submissionForm.auditSecondFiles)
         },
-        beforeRemoveAuditSecond(file, fileList) {
+        beforeRemoveAuditSecond(file) {
             return this.removeableConfirm(file, ['auditSecond'], '当前阶段不可移除复审资料附件!')
         },
         //补充资料
-        handleRemoveSupplement(file, fileList) {
+        handleRemoveSupplement(file) {
             this.removeFileFromList(file, this.submissionForm.supplementFiles)
         },
-        beforeRemoveSupplement(file, fileList) {
+        beforeRemoveSupplement(file) {
             return this.removeableConfirm(file, ['argueDeal'], '当前阶段不可移除补充资料附件!')
         },
         removeableConfirm(file, steps, message) {

@@ -80,7 +80,7 @@ export default {
     methods: {
         submit() {
             let comp = this
-            MaterialFile.saveMaterialType(this.fileTypeForm).then(result => {
+            MaterialFile.saveMaterialType(this.fileTypeForm).then(() => {
                 comp.$message({
                     message: '操作成功',
                     type: 'success'
@@ -102,7 +102,7 @@ export default {
         },
         deleteFileType(row) {
             let comp = this
-            MaterialFile.deleteMaterialTypes({id: row.id}).then(res => {
+            MaterialFile.deleteMaterialTypes({id: row.id}).then(() => {
                 comp.$message({
                     message: '删除成功',
                     type: 'success'
@@ -110,7 +110,7 @@ export default {
                 comp.list()
             })
         },
-        requiredFormatter(row, column) {
+        requiredFormatter(row) {
             return row.required ? '是' : '否'
         },
         toPage: function (val) {

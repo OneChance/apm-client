@@ -151,9 +151,5 @@ export default {
 </script>
 
 <style scoped>
-.role-rights-tree {
-    height: 400px;
-    overflow: scroll;
-    overflow-x: hidden;
-}
+
 </style>

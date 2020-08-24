@@ -11,7 +11,13 @@
                              type="selection"
                              width="55">
             </el-table-column>
+            <el-table-column
+                label="#"
+                type="index"
+                fixed
+                width="50"></el-table-column>
             <el-table-column v-for="col in tableConfig.cols" :prop="col.prop" :label="col.label" :key="col.prop"
+                             :fixed="col.fixed"
                              :formatter="col.formatter" :sortable="col.sortable"
                              :width="col.width"></el-table-column>
             <el-table-column

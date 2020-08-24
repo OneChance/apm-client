@@ -111,7 +111,7 @@ export default {
     },
     methods: {
         allocCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(result => {
+            ClientCall.batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(() => {
                 this.operSuccess()
             })
         },
@@ -150,12 +150,12 @@ export default {
                             this.forms.alloc.visible = false
                             this.forms.alloc.visible = true
                         } else {
-                            ClientCall.batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(result => {
+                            ClientCall.batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(() => {
                                 this.operSuccess()
                             })
                         }
                     } else if (stage === 'check') { //批量审核分配
-                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(result => {
+                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
                             this.operSuccess()
                         })
                     } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second'].indexOf(stage) !== -1) {

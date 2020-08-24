@@ -111,13 +111,13 @@ export default {
     },
     methods: {
         signOut: function () {
-            Account.logOut().then(result => {
+            Account.logOut().then(() => {
                 App.router.$router.push('sign').catch(err => err);
             })
             this.$cookie.delete('apm_token');
             localStorage.removeItem("apm_token");
         },
-        handleSelect(key, keyPath) {
+        handleSelect(key) {
             if (key === 'sign') {
                 this.signOut()
             } else {

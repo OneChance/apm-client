@@ -17,10 +17,8 @@
 <script>
 
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import Common from '../script/common'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {

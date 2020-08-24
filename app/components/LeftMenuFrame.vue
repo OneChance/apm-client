@@ -62,8 +62,6 @@ import SysMenu from '../components/SysMenu.vue'
 import SysMaterialFile from '../components/SysMaterialFile.vue'
 import SysMaterialFileGroup from '../components/SysMaterialFileGroup.vue'
 import AuditSubmission from '../components/AuditSubmission.vue'
-import App from "../script/app";
-import Config from "../script/config";
 import AuditProject from "./AuditProject";
 import SysUser from "./SysUser";
 import SysIntermediary from "./SysIntermediary";
@@ -94,7 +92,7 @@ export default {
     },
     props: ['menus'],
     watch: {
-        menus: function (newVal, oldVal) {
+        menus: function (newVal) {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
             if (newVal.length === 4) {
@@ -115,18 +113,10 @@ export default {
         }
     },
     mounted: function () {
-        let comp = this
 
-        this.$nextTick(() => {
-            //comp.menuCollapse(document.body.clientWidth)
-        });
-
-        App.hub.$on('windowResize', (size) => {
-            //comp.menuCollapse(size)
-        })
     },
     methods: {
-        handleSelect(key, keyPath) {
+        handleSelect(key) {
             console.log(key)
             if (key === 'collapse') {
                 this.isCollapse = !this.isCollapse
@@ -135,7 +125,7 @@ export default {
             }
         },
         menuCollapse(size) {
-            //this.isCollapse = size <= Config.size.leftMenuCollapseWidth
+
         }
     },
     components: {

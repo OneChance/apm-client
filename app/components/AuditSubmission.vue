@@ -26,7 +26,6 @@ import SubmissionForm from "./SubmissionForm";
 import Audit from "../script/server/audit";
 import Config from "../script/config";
 import FormValidator from "../script/client/formValidator";
-import Common from '../script/common'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {
@@ -48,7 +47,7 @@ export default {
                 {name: '保存', color: 'primary', event: this.saveSubmission},
                 {name: '提交', color: 'success', event: this.commitSubmission}
             ],
-            buttons:[
+            buttons: [
                 {name: '新增', color: 'success', event: this.add},
             ],
             tableConfig: {
@@ -58,7 +57,6 @@ export default {
                 currentPage: 1,
                 pageMethod: this.toPage,
                 checkable: false,
-                operWidth: 100,
                 cols: [
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
@@ -120,7 +118,7 @@ export default {
             this.formId = row.id
         },
         deleteRow: function (row) {
-            Audit.deleteSubmission({id: row.id}).then(result => {
+            Audit.deleteSubmission({id: row.id}).then(() => {
                 this.$message({
                     message: '删除成功',
                     type: 'success'

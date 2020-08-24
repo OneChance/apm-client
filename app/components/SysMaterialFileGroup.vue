@@ -109,7 +109,7 @@ export default {
             for (let a of comp.alloced) {
                 comp.submitGroup.materialId.push(a)
             }
-            MaterialFile.saveMaterialGroup(comp.submitGroup).then(res => {
+            MaterialFile.saveMaterialGroup(comp.submitGroup).then(() => {
                 comp.$message({
                     message: '操作成功',
                     type: 'success'
@@ -143,7 +143,7 @@ export default {
         },
         deleteGroup(row) {
             let comp = this
-            MaterialFile.deleteMaterialGroup({id: row.id}).then(res => {
+            MaterialFile.deleteMaterialGroup({id: row.id}).then(() => {
                 comp.$message({
                     message: '操作成功',
                     type: 'success'

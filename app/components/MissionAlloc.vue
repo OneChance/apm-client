@@ -27,10 +27,8 @@ import AllocForm from "./AllocForm"
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import Config from "../script/config";
-import Audit from "../script/server/audit";
 import {Notification} from "element-ui";
 import ClientCall from "../script/client/clientCall";
-import Common from '../script/common'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {
@@ -86,7 +84,7 @@ export default {
             this.listChecks = val
         },
         commitCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks.map(form => form.id), 1).then(result => {
+            ClientCall.batchAlloc(form, this.listChecks.map(form => form.id), 1).then(() => {
                 this.operSuccess()
             })
         },
@@ -109,7 +107,7 @@ export default {
                     this.allocFormVisible = false
                     this.allocFormVisible = true
                 } else {
-                    ClientCall.batchAlloc(null, this.listChecks.map(form => form.id), 0).then(result => {
+                    ClientCall.batchAlloc(null, this.listChecks.map(form => form.id), 0).then(() => {
                         this.operSuccess()
                     })
                 }

@@ -85,11 +85,11 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'status', label: '审计状态', width: '150'},
+                    {prop: 'status', label: '审计状态', width: '150', fixed: true},
+                    {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
+                    {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
-                    {prop: 'auditNo', label: '审计编号', width: '150'},
                     {prop: 'contractNo', label: '合同编码', width: '150'},
-                    {prop: 'projectName', label: '工程项目', width: '220'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
                     {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
@@ -158,23 +158,22 @@ export default {
         filesToRar(files, filename) {
             let _this = this;
             let zip = new JSZip();
-            let cache = {};
             let promises = [];
 
             for (let item of files) {
                 const promise = _this.getImgArrayBuffer(item.url).then(data => {
                     // 下载文件, 并存成ArrayBuffer对象(blob)
-                    zip.file(item.name, data, {binary: true}); // 逐个添加文件
-                    cache[item.name] = data;
+                    zip.file(item.type + "/" + item.name, data, {binary: true}); // 逐个添加文件
                 });
                 promises.push(promise);
             }
 
             Promise.all(promises).then(() => {
                 zip.generateAsync({type: "blob"}).then(content => {
+                    console.log(content)
                     FileSaver.saveAs(content, filename); // 利用file-saver保存文件  自定义文件名
                 });
-            }).catch(res => {
+            }).catch(() => {
                 _this.$message.error('文件压缩失败');
             });
         },

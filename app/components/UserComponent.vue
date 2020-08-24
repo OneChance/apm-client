@@ -129,7 +129,7 @@ export default {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     this.form.password = md5(this.form.password)
-                    User.saveUser(this.form).then(result => {
+                    User.saveUser(this.form).then(() => {
                         this.operSuccess(this)
                         this.userInfoDialogVisible = false;
                     })
@@ -152,7 +152,7 @@ export default {
             })
         },
         delete: function (row) {
-            User.deleteUser({id: row.id}).then(result => {
+            User.deleteUser({id: row.id}).then(() => {
                 this.operSuccess(this)
             })
         },
