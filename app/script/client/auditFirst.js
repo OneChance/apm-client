@@ -29,7 +29,7 @@ const oper = {
         viewPeoplesConstructUnit2: [
             {required: true, message: '请选择施工单位现场查看人员(初审)', trigger: 'blur'}
         ],
-        viewPeoplesEntrustUnit2: [
+        viewPeoplesEntrustUnitIds2: [
             {required: true, message: '请填写委托单位现场查看人员(初审)', trigger: 'blur'}
         ],
     },

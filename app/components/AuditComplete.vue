@@ -38,6 +38,7 @@ export default {
             dialogVisible: false,
             noteFormVisible: false,
             buttons: [
+                {name: '归档', color: 'success', event: this.batchArc},
                 {name: '退回', color: 'danger', event: this.batchBackToAuditSecond},
             ],
             listChecks: [],
@@ -87,6 +88,9 @@ export default {
     methods: {
         checkBoxChange(val) {
             this.listChecks = val
+        },
+        batchArc: function () {
+
         },
         batchBackToAuditSecond: function () {
             console.log(this.listChecks)

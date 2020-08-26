@@ -1,14 +1,17 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"></submission-query>
+            <submission-query ref="query"
+                              v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode">
+            </submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
                          v-bind:formOpers="formOpers"
+                         v-bind:stepCode="stepCode"
                          v-bind:step="'argueHandle'"
                          v-bind:formId="formId">
         </submission-form>

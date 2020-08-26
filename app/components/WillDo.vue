@@ -21,6 +21,7 @@
         <submission-form v-bind:visible="forms.submission.visible" v-bind:from="'editform'"
                          v-bind:formOpers="forms.submission.formOpers"
                          v-bind:formRules="forms.submission.rules"
+                         v-bind:stepCode="forms.submission.stepCode"
                          v-bind:step="forms.submission.step" v-bind:formId="formId">
         </submission-form>
         <alloc-form v-bind:visible="forms.alloc.visible" v-bind:commitCallback="allocCallback">
@@ -69,6 +70,7 @@ export default {
                     visible: false,
                     formOpers: [],
                     step: '',
+                    stepCode: '',
                     rules: [],
                 }
             },
@@ -253,6 +255,7 @@ export default {
                 this.forms.submission.formOpers = []
             }
             this.formId = row.targetId
+            this.forms.submission.stepCode = Config.stepCode[step]
         },
         queryList: function () {
             this.list(this.query)

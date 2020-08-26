@@ -16,7 +16,7 @@ const oper = {
         viewPeoplesConstructUnit: [
             {required: true, message: '请选择施工单位现场查看人员', trigger: 'blur'}
         ],
-        viewPeoplesEntrustUnit: [
+        viewPeoplesEntrustUnitIds: [
             {required: true, message: '请填写委托单位现场查看人员', trigger: 'blur'}
         ],
     },

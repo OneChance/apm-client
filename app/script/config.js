@@ -13,7 +13,7 @@ export default {
         submissionSave: -10, //送审保存
         auditProject: 10, //审计立项
         alloced: 20, //分配
-        allocApproved: 30, //分配审核
+        assigned: 30, //分配审核
         surveyPrepare: 40, //勘察准
         survey: 50, //现场勘察
         argueHandle: 60, //争议处理

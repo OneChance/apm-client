@@ -2,7 +2,7 @@ import Net from './net.js'
 
 export default {
     saveConstructionUnit: function (data) {
-        return Net.post('/construction/addOrUpdate/', data);
+        return Net.jsonPost('/construction/addOrUpdate/', data);
     },
     getConstructionUnits: function (data) {
         return Net.get('/construction/list/', data);

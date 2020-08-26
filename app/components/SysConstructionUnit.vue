@@ -75,9 +75,7 @@ export default {
                 page: true,
                 pageMethod: this.toPage,
                 cols: [
-                    {prop: 'name', label: '施工单位名称', width: '180'},
-                    {prop: 'contact', label: '联系人', width: '180'},
-                    {prop: 'telphone', label: '联系方式', width: '180'},
+                    {prop: 'name', label: '施工单位名称', width: '300'},
                 ],
                 oper: [
                     {
@@ -137,8 +135,7 @@ export default {
                 this.dialogVisible = true
                 this.form.id = result.construction.id
                 this.form.name = result.construction.name
-                this.form.links[0].contact = result.construction.contact
-                this.form.links[0].telphone = result.construction.telphone
+                this.form.links = result.construction.links
             })
         },
         delete: function (row) {

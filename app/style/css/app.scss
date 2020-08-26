@@ -330,6 +330,10 @@ body {
   color: #3e3d3d !important;
 }
 
+.el-textarea.is-disabled .el-textarea__inner {
+  color: #3e3d3d !important;
+}
+
 //单选按钮
 .el-radio {
   margin-right: 0 !important;
@@ -337,6 +341,10 @@ body {
 
 .el-radio.is-bordered + .el-radio.is-bordered {
   margin-left: 0 !important;
+}
+
+.editing {
+  background-color: #c9f0c2 !important;
 }
 
 //适配小屏幕

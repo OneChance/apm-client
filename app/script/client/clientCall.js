@@ -83,4 +83,17 @@ export default {
         }
         return User.getUsers(data)
     },
+    batchArc(comment, checks, approve) {
+        return Audit.allocApprove({
+            type: approve,
+            targetIds: checks,
+            comment: comment,
+        })
+    },
+    batchBackToComplete() {
+
+    },
+    batchBackToAuditSecond() {
+
+    }
 }
