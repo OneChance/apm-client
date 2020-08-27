@@ -26,6 +26,7 @@ import Config from "../script/config";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import SubmissionQuery from "./SubmissionQuery";
+import ClientCall from "../script/client/clientCall";
 
 export default {
     name: "AuditComplete",
@@ -90,10 +91,14 @@ export default {
             this.listChecks = val
         },
         batchArc: function () {
-
+            ClientCall.batchArc('', this.listChecks.map(form => form.id), 1).then(() => {
+                this.operSuccess()
+            })
         },
         batchBackToAuditSecond: function () {
-            console.log(this.listChecks)
+            ClientCall.batchBackToAuditSecond('', this.listChecks.map(form => form.id), 0).then(() => {
+                this.operSuccess()
+            })
         },
         genNoteForm: function (row) {
             this.noteFormVisible = false

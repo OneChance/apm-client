@@ -25,6 +25,7 @@ import Config from "../script/config";
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import SubmissionQuery from "./SubmissionQuery";
+import ClientCall from "../script/client/clientCall";
 
 export default {
     name: "AuditArc",
@@ -75,7 +76,9 @@ export default {
             this.listChecks = val
         },
         batchBackToComplete: function () {
-            console.log(this.listChecks)
+            ClientCall.batchBackToComplete('', this.listChecks.map(form => form.id), 0).then(() => {
+                this.operSuccess()
+            })
         },
         editRow: function (row) {
             this.dialogVisible = false

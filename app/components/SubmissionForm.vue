@@ -814,7 +814,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step ==='argueHandle' || step ==='argueDeal' || step === 'auditArc' ">
+                        <tr v-if="step ==='argueDeal' || stepCode>=60">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>

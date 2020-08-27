@@ -20,6 +20,6 @@ export default {
         auditFirst: 70, //初审阶段
         auditSecond: 80, //复审阶段
         auditComplete: 90, //完成阶段
-        auditArc: 90, //完成阶段
+        auditArc: 100, //归档阶段
     }
 }

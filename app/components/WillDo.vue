@@ -160,21 +160,17 @@ export default {
                         ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
                             this.operSuccess()
                         })
-                    } else if (stage === 'complete') { //批量打回复审
-                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
-                            this.operSuccess()
-                        })
                     } else if (stage === 'complete') {
                         if (approve === 1) {//批量归档
-                            ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            ClientCall.batchArc('', this.listChecks.map(form => form.targetId), approve).then(() => {
                                 this.operSuccess()
                             })
                         } else {//批量打回复审
-                            ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            ClientCall.batchBackToAuditSecond('', this.listChecks.map(form => form.targetId), approve).then(() => {
                                 this.operSuccess()
                             })
                         }
-                    } else if (stage === 'arc') { //批量打回完成
+                    } else if (stage === 'filed') {
                         if (approve === 1) {
                             Notification.error({
                                 title: '操作失败!',
@@ -182,7 +178,7 @@ export default {
                                 duration: 3000
                             })
                         } else {//批量打回完成
-                            ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            ClientCall.batchBackToComplete('', this.listChecks.map(form => form.targetId), approve).then(() => {
                                 this.operSuccess()
                             })
                         }
@@ -217,6 +213,10 @@ export default {
                 step = 'auditSecond'
             } else if (row.stage === 'argue_reject') {
                 step = 'argueDeal'
+            } else if (row.stage === 'complete') {
+                step = 'auditComplete'
+            } else if (row.stage === 'filed') {
+                step = 'auditArc'
             }
 
             this.forms.submission.step = step

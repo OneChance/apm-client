@@ -53,4 +53,17 @@ export default {
     commitAuditSecond: function (data) {
         return Net.jsonPost('/submission/audit/second/approve/', data);
     },
+    //从完成退回复审
+    completeToAuditSecond(data) {
+        return Net.post('/submission/complete/approves/', data);
+    },
+    //从完成到归档
+    arc(data) {
+        console.log(data)
+        return Net.post('/submission/complete/approves/', data);
+    },
+    //归档退回完成
+    arcToComplete(data) {
+        return Net.post('/submission/filed/approves/', data);
+    }
 }
