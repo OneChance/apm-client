@@ -21,6 +21,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item prop="link" v-if="allocForm.auditType === '外审'">
+                    <el-input
+                        v-model="allocForm.link"
+                        placeholder="联系人"
+                        :disabled="true">
+                    </el-input>
+                </el-form-item>
                 <el-form-item prop="tel">
                     <el-input
                         v-model="allocForm.tel"
@@ -114,6 +121,9 @@ export default {
         chooseTarget(val) {
             User.getUser({id: val}).then(result => {
                 this.allocForm.tel = result.user.telphone
+                if (this.allocForm.auditType === '外审') {
+                    this.allocForm.link = result.user.name
+                }
             })
         }
     },

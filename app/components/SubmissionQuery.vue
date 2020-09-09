@@ -129,6 +129,7 @@ export default {
                 {value: 70, label: '初审'},
                 {value: 80, label: '复审'},
                 {value: 90, label: '完成'},
+                {value: 100, label: '归档'},
             ],
         }
     },

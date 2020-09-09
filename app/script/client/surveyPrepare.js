@@ -10,9 +10,6 @@ const oper = {
         prepareViewDate: [
             {required: true, message: '请选择约看现场时间', trigger: 'blur'}
         ],
-        viewDate: [
-            {required: true, message: '请选择现场查看时间', trigger: 'blur'}
-        ],
     },
 }
 

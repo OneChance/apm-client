@@ -91,6 +91,9 @@ export default {
                 constructionUnit: [
                     {required: true, message: '请输入施工单位名称', trigger: 'blur'},
                 ],
+                isBid: [
+                    {required: true, message: '请选择是否招投标', trigger: 'blur'},
+                ],
                 contractMoney: [
                     {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
                 ],
@@ -104,7 +107,7 @@ export default {
                     {required: true, message: '请填写施工单位报审金额', trigger: 'blur'}
                 ],
                 constructionUnitProjectMan: [
-                    {required: true, message: '请选择项目负责人', trigger: 'blur'}
+                    {required: true, message: '请选择施工单位项目负责人', trigger: 'blur'}
                 ],
                 constructionUnitTel: [
                     {required: true, message: '请填写施工单位联系电话', trigger: 'blur'}

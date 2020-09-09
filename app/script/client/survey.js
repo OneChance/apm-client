@@ -7,6 +7,9 @@ const oper = {
         {name: '提交', color: 'success', event: commitSurvey},
     ],
     rules: {
+        viewDate: [
+            {required: true, message: '请选择现场查看时间', trigger: 'blur'}
+        ],
         viewPeoplesAuditUnit: [
             {required: true, message: '请选择审核单位现场查看人员', trigger: 'blur'}
         ],

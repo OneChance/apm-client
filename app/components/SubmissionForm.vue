@@ -61,7 +61,7 @@
                         </tr>
                         <tr>
                             <th class="form-required">施工单位名称</th>
-                            <td colspan="3">
+                            <td>
                                 <el-form-item prop="constructionUnit">
                                     <el-select v-model="submissionForm.constructionUnit"
                                                :disabled="step!=='submission' && step!=='reject'"
@@ -75,6 +75,21 @@
                                             :value="unit.value">
                                         </el-option>
                                     </el-select>
+                                </el-form-item>
+                            </td>
+                            <th class="form-required">是否招投标</th>
+                            <td>
+                                <el-form-item prop="isBid">
+                                    <el-radio v-model="submissionForm.isBid" label="是"
+                                              border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        是
+                                    </el-radio>
+                                    <el-radio v-model="submissionForm.isBid" label="否"
+                                              border
+                                              :disabled="step!=='submission' && step!=='reject'">
+                                        否
+                                    </el-radio>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -425,7 +440,7 @@
                         <tr class="comment" v-if="stepCode>=40">
                             <th class="form-required">约看现场时间
                             </th>
-                            <td :class="stepCode===40?'editing':''">
+                            <td :class="stepCode===40?'editing':''" colspan="3">
                                 <el-form-item prop="prepareViewDate">
                                     <el-date-picker v-model="submissionForm.prepareViewDate"
                                                     :disabled="step!=='surveyPrepare'" format="yyyy-MM-dd HH:mm:ss"
@@ -434,10 +449,13 @@
                                     </el-date-picker>
                                 </el-form-item>
                             </td>
+                        </tr>
+
+                        <tr class="comment" v-if="stepCode>=50">
                             <th class="form-required">现场查看时间</th>
-                            <td :class="stepCode===40?'editing':''">
+                            <td :class="stepCode===50?'editing':''" colspan="3">
                                 <el-form-item prop="viewDate">
-                                    <el-date-picker v-model="submissionForm.viewDate" :disabled="step!=='surveyPrepare'"
+                                    <el-date-picker v-model="submissionForm.viewDate" :disabled="step!=='survey'"
                                                     format="yyyy-MM-dd HH:mm:ss"
                                                     value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
                                                     placeholder="选择日期">
@@ -445,6 +463,7 @@
                                 </el-form-item>
                             </td>
                         </tr>
+
                         <tr class="comment" v-if="stepCode>=50">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
@@ -696,10 +715,10 @@
                                     <el-input v-model="submissionForm.auditFirstSub" disabled></el-input>
                                 </el-form-item>
                             </td>
-                            <th class="form-required">初审核减率%</th>
+                            <th class="form-required">初审核减率</th>
                             <td :class="stepCode===70?'editing':''">
                                 <el-form-item prop="firstAuditPrice">
-                                    <el-input v-model="submissionForm.auditFirstSubRatio"
+                                    <el-input v-model="submissionForm.auditFirstSubRatio+'%'"
                                               disabled
                                     ></el-input>
                                 </el-form-item>
@@ -761,7 +780,7 @@
                             <th class="form-required">复审核减率</th>
                             <td colspan="3" :class="stepCode===80?'editing':''">
                                 <el-form-item prop="secondAuditPrice">
-                                    <el-input v-model="submissionForm.auditSecondSubRatio"
+                                    <el-input v-model="submissionForm.auditSecondSubRatio+'%'"
                                               disabled></el-input>
                                 </el-form-item>
                             </td>
@@ -1123,7 +1142,7 @@ export default {
                             //加载施工单位项目负责人列表
                             this.setProjectMans(this.submissionForm.constructionUnit)
 
-                            if (this.stepCode > 30) {
+                            if (this.stepCode >= 30) {
                                 //加载分配人字段
                                 if (this.submissionForm.assigned) {
                                     if (this.submissionForm.assigned.thirdParty) {
@@ -1244,6 +1263,7 @@ export default {
                 feeFrom: '',
                 budget: 0,
                 constructionUnit: '',
+                isBid: '',
                 startDate: '',
                 endDate: '',
                 contractMoney: 0,
@@ -1321,11 +1341,11 @@ export default {
     methods: {
         calAuditFirst: function () {
             this.submissionForm.auditFirstSub = this.submissionForm.submissionPrice - this.submissionForm.firstAuditPrice
-            this.submissionForm.auditFirstSubRatio = (this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(2)
+            this.submissionForm.auditFirstSubRatio = (this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(4) * 100
         },
         calAuditSecond: function () {
             this.submissionForm.auditSecondSub = this.submissionForm.firstAuditPrice - this.submissionForm.secondAuditPrice
-            this.submissionForm.auditSecondSubRatio = (this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2)
+            this.submissionForm.auditSecondSubRatio = (this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2) * 100
         },
         unitChange: function (val) {
             this.projectMans.length = 0
@@ -1383,7 +1403,6 @@ export default {
                             event({
                                 targetId: this.submissionForm.id,
                                 prepareViewDate: this.submissionForm.prepareViewDate,
-                                viewDate: this.submissionForm.viewDate,
                                 type: 2
                             })
                         } else if (this.step === 'survey') {
@@ -1392,6 +1411,7 @@ export default {
                                 //附件列表转换为serverId字符串
                                 this.fileIdsConstruct(this.submissionForm.surveyFiles)
                                 event({
+                                    viewDate: this.submissionForm.viewDate,
                                     targetId: this.submissionForm.id,
                                     surveyFiles: this.submissionForm.surveyFiles,
                                     viewPeoplesAuditUnitIds: this.submissionForm.viewPeoplesAuditUnit.toString(),
