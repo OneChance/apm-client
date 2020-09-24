@@ -981,6 +981,23 @@ export default {
         },
         visible: function (newVal) {
             if (newVal) {
+                MaterialFile.getMaterialGroups().then(res => {
+                    this.materialGroups = res.list
+                })
+                ConstructionUnit.getConstructionUnits({
+                    page: 1,
+                    pageSize: 999999,
+                }).then(res => {
+                    this.units = []
+                    res.list.content.forEach(unit => {
+                        this.units.push({
+                            value: unit.id,
+                            label: unit.name,
+                            links: unit.links
+                        })
+                    })
+                })
+
                 this.submissionForm.details = []
                 this.$nextTick(() => {
                     if (this.from === 'addform') {
@@ -1120,10 +1137,10 @@ export default {
                                     for (let fType of res.materialGroup.details) {
                                         let detail = this.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
                                         if (detail) {
-                                            detail.mRequired = fType.material.required
+                                            detail.mRequired = fType.required
                                         } else {
                                             this.submissionForm.details.push({
-                                                mRequired: fType.material.required,
+                                                mRequired: fType.required,
                                                 mId: fType.material.id,
                                                 mName: fType.material.name,
                                                 mFiles: [],
@@ -1228,22 +1245,7 @@ export default {
         }
     },
     mounted: function () {
-        MaterialFile.getMaterialGroups().then(res => {
-            this.materialGroups = res.list
-        })
-        ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        }).then(res => {
-            this.units = []
-            res.list.content.forEach(unit => {
-                this.units.push({
-                    value: unit.id,
-                    label: unit.name,
-                    links: unit.links
-                })
-            })
-        })
+
     },
     data: function () {
         return {
@@ -1598,7 +1600,7 @@ export default {
                 comp.submissionForm.details.length = []
                 for (let fType of res.materialGroup.details) {
                     comp.submissionForm.details.push({
-                        mRequired: fType.material.required,
+                        mRequired: fType.required,
                         mId: fType.material.id, //清单类型id
                         mName: fType.material.name,
                         mFiles: [], //上传的文件列表
