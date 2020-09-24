@@ -98,6 +98,7 @@ export default {
         },
         allocTypeChange: function (val) {//分配类型改变
             this.allocForm.target = ''
+            this.allocForm.link = ''
             this.allocForm.tel = ''
             let thirdParty = false
             if (val === '内审') {
