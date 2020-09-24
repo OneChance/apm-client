@@ -11,7 +11,7 @@ export default {
         return Net.post('/material/delete/', data);
     },
     saveMaterialGroup: function (data) {
-        return Net.post('/material/group/addOrUpdate/', data);
+        return Net.jsonPost('/material/group/addOrUpdate/', data);
     },
     getMaterialGroups: function () {
         return Net.get('/material/group/list/');

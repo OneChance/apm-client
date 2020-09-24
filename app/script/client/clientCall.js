@@ -40,6 +40,9 @@ export default {
         if (form) {
             data.assignedId = form.target
             data.auditType = form.auditType
+            if (form.auditType === '外审') {
+                data.assignedLinkId = form.link
+            }
         }
         return Audit.allocMissions(data)
     },

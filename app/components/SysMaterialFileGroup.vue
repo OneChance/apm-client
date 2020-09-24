@@ -28,14 +28,24 @@
                     v-model="alloced"
                     :titles="['待分配', '已分配']"
                     @change="handleChange"
+                    @right-check-change="rightCheck"
                     targetOrder="new"
                     :data="alloc">
+                    <el-button class="transfer-footer" type="danger" slot="right-footer" size="small"
+                               @click="setRequire">必填
+                    </el-button>
+                    <el-button class="transfer-footer" type="success" slot="right-footer" size="small" @click="moveUp">
+                        上移
+                    </el-button>
+                    <el-button class="transfer-footer" type="success" slot="right-footer" size="small"
+                               @click="moveDown">下移
+                    </el-button>
                 </el-transfer>
             </template>
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click="groupDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="groupDialogVisible=false;commitAlloc()">确 定</el-button>
+                <el-button type="primary" @click="commitAlloc()">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -58,7 +68,7 @@ export default {
             submitGroup: {
                 id: '',
                 name: '',
-                materialId: []
+                details: []
             },
             alloc: [],    //待分配
             alloced: [],  //已分配
@@ -83,9 +93,72 @@ export default {
                 ]
             },
             allocList: [],
+            allocSets: [],
+            requireSets: [],
         }
     },
     methods: {
+        checkOperChoose() {
+            if (this.allocSets.length > 1) {
+                this.$notify.error({
+                    title: '操作失败',
+                    message: '只能选择一项进行设置',
+                });
+                return false
+            } else if (this.allocSets.length === 0) {
+                this.$notify.error({
+                    title: '操作失败',
+                    message: '请选择一项进行设置',
+                });
+                return false
+            }
+            return true
+        },
+        moveUp() {
+            if (this.checkOperChoose()) {
+                let i = this.alloced.indexOf(this.allocSets[0])
+                if (i == 0) {
+                    this.$message.error('无法上移');
+                    return;
+                }
+                let up = this.alloced[i - 1]
+                this.alloced.splice(i - 1, 1)
+                this.alloced.splice(i, 0, up)
+            }
+        },
+        moveDown() {
+            if (this.checkOperChoose()) {
+                let i = this.alloced.indexOf(this.allocSets[0])
+                if (i == this.alloced.length - 1) {
+                    this.$message.error('无法下移');
+                    return;
+                }
+                let down = this.alloced[i + 1]
+                this.alloced.splice(i + 1, 1)
+                this.alloced.splice(i, 0, down)
+            }
+        },
+        setRequire() {
+            if (this.checkOperChoose()) {
+                let itemContent = $(".el-checkbox__original[value=" + this.allocSets[0] + "]").parent().next()
+                let requireObj = this.requireSets.filter(r => r.id === this.allocSets[0])[0]
+                if (requireObj) {
+                    requireObj.required = !requireObj.required
+                    if (requireObj.required) {
+                        itemContent.addClass('form-required')
+                    } else {
+                        itemContent.removeClass('form-required')
+                    }
+                } else {
+                    itemContent.addClass('form-required')
+                    this.requireSets.push({id: this.allocSets[0], required: true})
+                }
+            }
+        },
+        rightCheck(options) {
+            this.allocSets.length = 0;
+            options.forEach(o => this.allocSets.push(o))
+        },
         addGroup() {
             let comp = this
             comp.groupDialogVisible = true;
@@ -107,13 +180,18 @@ export default {
             let comp = this
             comp.submitGroup.name = comp.currentGroup.name
             for (let a of comp.alloced) {
-                comp.submitGroup.materialId.push(a)
+                comp.submitGroup.details.push({
+                    material: {id: a},
+                    required: this.requireSets.filter(s => s.id === a)[0] ? this.requireSets.filter(s => s.id === a)[0].required : false
+                })
             }
+
             MaterialFile.saveMaterialGroup(comp.submitGroup).then(() => {
                 comp.$message({
                     message: '操作成功',
                     type: 'success'
                 });
+                this.groupDialogVisible = false;
                 comp.list()
             })
         },
@@ -137,7 +215,19 @@ export default {
                     comp.submitGroup.id = res.materialGroup.id
                     for (let detail of res.materialGroup.details) {
                         this.alloced.push(detail.material.id);
+                        this.requireSets.push({
+                            id: detail.material.id,
+                            required: detail.required
+                        })
                     }
+                    //标注必填
+                    this.$nextTick(() => {
+                        this.alloced.forEach(a => {
+                            if (this.requireSets.filter(s => s.id === a)[0].required) {
+                                $(".el-checkbox__original[value=" + a + "]").parent().next().addClass('form-required')
+                            }
+                        })
+                    })
                 })
             })
         },
@@ -160,9 +250,11 @@ export default {
             this.currentGroup = {}
             this.submitGroup.id = ''
             this.submitGroup.name = ''
-            this.submitGroup.materialId = []
+            this.submitGroup.details = []
             this.alloc = []
             this.alloced = []
+            this.allocSets.length = []
+            this.requireSets.length = []
         }
     },
     components: {TableComponent}
@@ -170,5 +262,8 @@ export default {
 </script>
 
 <style scoped>
-
+.transfer-footer {
+    margin-left: 20px;
+    padding: 6px 5px;
+}
 </style>

@@ -416,18 +416,23 @@
                             <th v-if="submissionForm.assigned.thirdParty">分配审计单位</th>
                             <th v-if="!submissionForm.assigned.thirdParty">分配审计人员</th>
                             <td>
-                                <el-input type="text" v-model="submissionForm.assignName" disabled></el-input>
+                                <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
                             </td>
                             <th>联系方式</th>
                             <td>
-                                <el-input type="text" v-model="submissionForm.assigned.telphone" disabled></el-input>
+                                <el-input type="text" v-model="submissionForm.assigned.telphone" disabled
+                                          v-if="!submissionForm.assigned.thirdParty"></el-input>
+                                <el-input type="text" v-model="submissionForm.assignedLink.telphone" disabled
+                                          v-if="submissionForm.assigned.thirdParty && submissionForm.assignedLink"></el-input>
                             </td>
                         </tr>
                         <tr class="allocMan"
                             v-if="stepCode>=30 && submissionForm.assigned && submissionForm.assigned.thirdParty">
                             <th>联系人</th>
                             <td colspan="3">
-                                <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
+                                <el-input type="text" v-if="submissionForm.assignedLink"
+                                          v-model="submissionForm.assignedLink.contact"
+                                          disabled></el-input>
                             </td>
                         </tr>
                         <!--这里的意见非表单数据 是写入意见表的-->
@@ -1117,7 +1122,7 @@ export default {
                                         if (detail) {
                                             detail.mRequired = fType.material.required
                                         } else {
-                                            comp.submissionForm.details.push({
+                                            this.submissionForm.details.push({
                                                 mRequired: fType.material.required,
                                                 mId: fType.material.id,
                                                 mName: fType.material.name,
@@ -1141,17 +1146,6 @@ export default {
 
                             //加载施工单位项目负责人列表
                             this.setProjectMans(this.submissionForm.constructionUnit)
-
-                            if (this.stepCode >= 30) {
-                                //加载分配人字段
-                                if (this.submissionForm.assigned) {
-                                    if (this.submissionForm.assigned.thirdParty) {
-                                        this.submissionForm.assignName = this.submissionForm.assigned.thirdPartyName
-                                    } else {
-                                        this.submissionForm.assignName = this.submissionForm.assigned.name
-                                    }
-                                }
-                            }
 
                             if (this.stepCode > 50) {
                                 //加载现场查看人员字段(选择的字段)
@@ -1290,9 +1284,12 @@ export default {
                 materialGroup: '',
                 details: [], //资料清单信息
                 status: 0,
-                //分配人
-                assignName: '',
+                assignedLink: {
+                    telphone: '',
+                    contact: '',
+                },
                 assigned: {
+                    telphone: '',
                     thirdParty: false,
                 },
                 //勘察准备-----------
@@ -1354,13 +1351,16 @@ export default {
             this.setProjectMans(val)
         },
         setProjectMans: function (val) {
-            this.units.filter(u => u.value === val)[0].links.forEach(link => {
-                this.projectMans.push({
-                    label: link.contact,
-                    value: link.id + "",
-                    telphone: link.telphone,
-                })
-            });
+            let unit = this.units.filter(u => u.value === val)[0]
+            if (unit) {
+                unit.links.forEach(link => {
+                    this.projectMans.push({
+                        label: link.contact,
+                        value: link.id + "",
+                        telphone: link.telphone,
+                    })
+                });
+            }
         },
         projectManChange: function (val) {
             this.submissionForm.constructionUnitTel = this.projectMans.filter(man => man.value === val)[0].telphone

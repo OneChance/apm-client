@@ -86,6 +86,7 @@ export default {
         }
     },
     mounted: function () {
+
         let comp = this;
         Menu.getMenu().then(res => {
             comp.menus = res.menus

@@ -66,6 +66,7 @@ export default {
             window.location.href = "https://uaaap.yzu.edu.cn/cas/login?service=http%3a%2f%2fwxgl.yzu.edu.cn/sys/index.page";
         },
         signCallback: function (res) {
+            console.log(res)
             if (res) {
                 //保存token
                 localStorage.setItem("apm_token", res.token);
@@ -75,14 +76,7 @@ export default {
         },
     },
     mounted: function () {
-        let comp = this
-        $(document).on('keydown', (e) => {
-            if (e.keyCode === 13) {
-                if (comp.password && comp.name) {
-                    comp.signIn();
-                }
-            }
-        });
+
     },
 }
 </script>

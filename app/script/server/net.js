@@ -84,5 +84,8 @@ let request = function (api, type, data, progress) {
             title: '错误',
             message: e.response.data.error_msg
         });
+        if (e.response.data.error_code === 10000) {
+            App.router.$router.push('sign');
+        }
     })
 };

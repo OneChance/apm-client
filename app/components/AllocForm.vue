@@ -22,11 +22,15 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="link" v-if="allocForm.auditType === '外审'">
-                    <el-input
-                        v-model="allocForm.link"
-                        placeholder="联系人"
-                        :disabled="true">
-                    </el-input>
+                    <el-select v-model="allocForm.link" filterable placeholder="请选择审计人员"
+                               @change="chooseLink">
+                        <el-option
+                            v-for="l in links"
+                            :key="l.value"
+                            :label="l.label"
+                            :value="l.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item prop="tel">
                     <el-input
@@ -68,6 +72,7 @@ export default {
             allocForm: {
                 auditType: '',
                 target: '',
+                link: '',
                 tel: '',
             },
             allocRules: {
@@ -80,6 +85,7 @@ export default {
             },
             targetPlaceholder: '请选择',
             targets: [],
+            links: [],
         }
     },
     methods: {
@@ -108,9 +114,6 @@ export default {
                 this.targets = []
                 res.list.content.forEach(user => {
                     let label = user.name + '(' + user.username + ")"
-                    if (thirdParty) {
-                        label = user.thirdPartyName + '(' + user.username + ")"
-                    }
                     this.targets.push({
                         value: user.id,
                         label: label
@@ -120,12 +123,23 @@ export default {
         },
         chooseTarget(val) {
             User.getUser({id: val}).then(result => {
-                this.allocForm.tel = result.user.telphone
                 if (this.allocForm.auditType === '外审') {
-                    this.allocForm.link = result.user.name
+                    this.links.length = 0;
+                    result.user.links.forEach(l => {
+                        this.links.push({
+                            value: l.id,
+                            label: l.contact,
+                            tel: l.telphone
+                        })
+                    })
+                } else {
+                    this.allocForm.tel = result.user.telphone
                 }
             })
-        }
+        },
+        chooseLink(val) {
+            this.allocForm.tel = this.links.filter(l => l.value === val)[0].tel
+        },
     },
 }
 </script>

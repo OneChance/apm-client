@@ -22,9 +22,6 @@
                 <el-form-item label="名称" prop="name">
                     <el-input v-model="fileTypeForm.name"></el-input>
                 </el-form-item>
-                <el-form-item label="是否必须上传" prop="required">
-                    <el-switch v-model="fileTypeForm.required"></el-switch>
-                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
