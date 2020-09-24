@@ -6,9 +6,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const ImageminMozjpeg = require('imagemin-mozjpeg');
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = merge(common, {
     mode: 'production',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].[chunkhash].js',
+        publicPath: 'http://demo.ceeg.cn/',
+        chunkFilename: '[name].[chunkhash].js'
+    },
     optimization: {
         minimizer: [
             new BabiliPlugin(), //js压缩
