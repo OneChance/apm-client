@@ -138,6 +138,16 @@ export default {
                 this.alloced.splice(i, 0, down)
             }
         },
+        handleChange(value, direction, movedKeys) {
+            movedKeys.forEach(key => {
+                if (direction === 'left') {
+                    let setObj = this.requireSets.filter(s => s.id === key)
+                    if (setObj) {
+                        setObj[0].required = false
+                    }
+                }
+            })
+        },
         setRequire() {
             if (this.checkOperChoose()) {
                 let itemContent = $(".el-checkbox__original[value=" + this.allocSets[0] + "]").parent().next()
