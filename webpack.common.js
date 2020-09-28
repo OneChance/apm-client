@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
 
 module.exports = {
     entry: {
@@ -17,12 +18,21 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@vue/babel-preset-jsx']
+                use: [
+                    {
+                        loader: 'thread-loader',
+                        options: {
+                            workers: 4
+                        }
+                    },
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@vue/babel-preset-jsx'],
+                            cacheDirectory: true
+                        }
                     }
-                }
+                ]
             },
             {
                 test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
@@ -57,16 +67,26 @@ module.exports = {
     plugins: [
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
-            filename: '[name].style.[contenthash:12].css'
+            filename: 'css/[name].style.[contenthash:12].css'
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, 'app/index.html'),
-            inject: true
+            inject: true,
+            minify: {
+                collapseWhitespace: true,
+                removeComments: true
+            }
         }),
         new webpack.ProvidePlugin({
             jQuery: 'jquery/dist/jquery.min.js',
             $: 'jquery/dist/jquery.min.js'
-        })
+        }),/*
+        new webpack.DllReferencePlugin({
+            manifest: path.resolve(__dirname, 'dll/manifest.json'),
+        }),
+        new AddAssetHtmlWebpackPlugin({
+            filepath: path.resolve(__dirname, 'dll/vendor.js'),
+        })*/
     ]
 };

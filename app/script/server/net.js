@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueCookie from 'vue-cookie'
 import App from '../app.js'
 import Env from './env.js'
 import axios from 'axios'
@@ -9,7 +10,8 @@ import {Notification} from 'element-ui';
 
 axios.defaults.withCredentials = true;
 
-Vue.use(VueAxios, axios);
+Vue.use(VueAxios, axios)
+Vue.use(VueCookie)
 
 //附件请求
 let axiosUpload = Vue.axios.create({
@@ -41,6 +43,10 @@ let request = function (api, type, data, progress) {
     let axiosRequest;
     let fullURL = Env.baseURL + api;
     let token = localStorage.getItem("apm_token")
+
+    if (!token) {
+        token = Vue.cookie.get('apm_token')
+    }
 
     if (type === 'download') {
         axiosRequest = Vue.axios.get(api, {
@@ -85,7 +91,7 @@ let request = function (api, type, data, progress) {
             message: e.response.data.error_msg
         });
         if (e.response.data.error_code === 10000) {
-            App.router.$router.push('sign');
+            App.router.$router.push('/sign');
         }
     })
 };

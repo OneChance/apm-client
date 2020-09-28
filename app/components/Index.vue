@@ -77,7 +77,7 @@ export default {
             activeMenuIndex: 'my',
             userOper: [
                 {
-                    index: 'userOper', name: '管理员', sub: [
+                    index: 'userOper', name: '', sub: [
                         {index: 'sign', name: '退出'},
                     ]
                 }
@@ -113,7 +113,7 @@ export default {
     methods: {
         signOut: function () {
             Account.logOut().then(() => {
-                App.router.$router.push('sign').catch(err => err);
+                App.router.$router.push('/sign').catch(err => err);
             })
             this.$cookie.delete('apm_token');
             localStorage.removeItem("apm_token");

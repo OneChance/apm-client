@@ -12,9 +12,9 @@ module.exports = merge(common, {
     mode: 'production',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].[chunkhash].js',
-        publicPath: 'http://demo.ceeg.cn/',
-        chunkFilename: '[name].[chunkhash].js'
+        filename: 'js/[name].[chunkhash].js',
+        publicPath: 'http://gcsj.yzu.edu.cn/',
+        chunkFilename: 'js/[name].[chunkhash].js'
     },
     optimization: {
         minimizer: [

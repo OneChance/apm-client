@@ -117,7 +117,6 @@ export default {
     },
     methods: {
         handleSelect(key) {
-            console.log(key)
             if (key === 'collapse') {
                 this.isCollapse = !this.isCollapse
             } else {
