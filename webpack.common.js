@@ -2,8 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
     entry: {
@@ -81,12 +80,6 @@ module.exports = {
         new webpack.ProvidePlugin({
             jQuery: 'jquery/dist/jquery.min.js',
             $: 'jquery/dist/jquery.min.js'
-        }),/*
-        new webpack.DllReferencePlugin({
-            manifest: path.resolve(__dirname, 'dll/manifest.json'),
-        }),
-        new AddAssetHtmlWebpackPlugin({
-            filepath: path.resolve(__dirname, 'dll/vendor.js'),
-        })*/
+        })
     ]
 };
