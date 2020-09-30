@@ -141,11 +141,19 @@ export default {
                 } else {
                     let stage = this.listChecks[0].stage
                     if (stage === 'project') { //批量审核立项
-                        ClientCall.batchAudit(approve, this.listChecks.map(form => form.targetId)).then(result => {
-                            if (result) {
-                                this.operSuccess()
-                            }
-                        })
+                        if (approve === 0) {
+                            ClientCall.batchAudit(approve, this.listChecks.map(form => form.targetId)).then(result => {
+                                if (result) {
+                                    this.operSuccess()
+                                }
+                            })
+                        } else {
+                            Notification.error({
+                                title: '操作失败!',
+                                message: '审计立项阶段需要填写审计编号,不可批量审核同意！',
+                                duration: 3000
+                            })
+                        }
                     } else if (stage === 'distribution') { //批量分配
                         if (approve === 1) {
                             this.forms.submission.visible = false
@@ -217,13 +225,16 @@ export default {
                 step = 'auditComplete'
             } else if (row.stage === 'filed') {
                 step = 'auditArc'
+            } else if (row.stage === 'project') {
+                step = 'auditProject'
             }
 
             this.forms.submission.step = step
 
-            if (step === 'project') {
+            if (step === 'auditProject') {
                 ProjectAudit.comp = this //设置当前组件,用于回调刷新列表方法
                 this.forms.submission.formOpers = ProjectAudit.buttons
+                this.forms.submission.rules = ProjectAudit.rules
             } else if (step === 'assigned') {
                 AllocApprove.comp = this
                 this.forms.submission.formOpers = AllocApprove.buttons

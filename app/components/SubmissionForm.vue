@@ -1,12 +1,28 @@
 <template>
-    <el-dialog :title="工程结算送审表" class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
+    <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="form">
+            <el-form v-if="step === 'submission'">
+                <el-form-item prop="isBid">
+                    <el-radio v-model="submissionForm.formType" label="工程结算送审表"
+                              border>
+                        工程结算送审表
+                    </el-radio>
+                    <el-radio v-model="submissionForm.formType" label="测试中表单A"
+                              border>
+                        测试中表单A
+                    </el-radio>
+                    <el-radio v-model="submissionForm.formType" label="测试中表单B"
+                              border>
+                        测试中表单B
+                    </el-radio>
+                </el-form-item>
+            </el-form>
+            <div class="form" v-if="submissionForm.formType === '工程结算送审表'" id="submission">
                 <el-form :model="submissionForm" :rules="formRules" ref="submissionForm">
                     <table class="form-table">
                         <tr>
                             <th colspan="4">
-                                扬州大学工程结算送审表
+                                工程结算送审表
                             </th>
                         </tr>
                         <tr>
@@ -17,10 +33,11 @@
                                               :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>审计编号</th>
-                            <td>
+                            <th :class="stepCode===10?'form-required':''">审计编号</th>
+                            <td :class="stepCode===10?'editing':''">
                                 <el-form-item prop="auditNo">
-                                    <el-input v-model="submissionForm.auditNo" :disabled="true"></el-input>
+                                    <el-input v-model="submissionForm.auditNo"
+                                              :disabled="step!=='auditProject'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -436,7 +453,7 @@
                             </td>
                         </tr>
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr class="comment" v-if="step==='project' || step === 'assigned'">
+                        <tr class="comment" v-if="step==='auditProject' || step === 'assigned'">
                             <th>审计意见</th>
                             <td colspan="3" :class="stepCode===10||stepCode===30?'editing':''">
                                 <el-input type="textarea" v-model="comment"></el-input>
@@ -1251,6 +1268,7 @@ export default {
         return {
             dialogVisible: false,
             submissionForm: {
+                formType: '工程结算送审表',
                 id: '',
                 itemCode: '',
                 auditNo: '',
@@ -1369,6 +1387,7 @@ export default {
         },
         commit: function (event) {
             if ((this.step === 'submission' && event.name.indexOf('save') === -1) ||
+                this.step === 'auditProject' ||
                 this.step === 'reject' ||
                 this.step === 'surveyPrepare' ||
                 this.step === 'survey' ||
@@ -1401,6 +1420,12 @@ export default {
 
                             this.fileIdsConstruct(this.submissionForm.details)
                             event(this.submissionForm)
+                        } else if (this.step === 'auditProject') {
+                            event({
+                                targetId: this.submissionForm.id,
+                                content: this.comment,
+                                auditNo: this.submissionForm.auditNo
+                            })
                         } else if (this.step === 'surveyPrepare') {
                             event({
                                 targetId: this.submissionForm.id,

@@ -11,12 +11,13 @@ export default {
         return Audit.saveSubmission(data)
     },
     //审计立项
-    audit(approve, comment, formId) {
+    audit(approve, form) {
         return Audit.saveAuditProject({
             target: 'submission',
             type: approve,
-            targetId: formId,
-            content: comment,
+            targetId: form.targetId,
+            content: form.content,
+            auditNo: form.auditNo
         })
     },
     //批量审计立项

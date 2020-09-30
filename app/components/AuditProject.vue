@@ -13,6 +13,7 @@
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
                          v-bind:formOpers="formOpers"
+                         v-bind:formRules="formRules"
                          v-bind:step="'project'"
                          v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
@@ -38,16 +39,18 @@ export default {
     mounted() {
         ProjectAudit.comp = this
         this.formOpers = ProjectAudit.buttons
+        this.formRules = ProjectAudit.rules
     },
     data: function () {
         return {
             stepCode: Config.stepCode.auditProject,
             dialogVisible: false,
             buttons: [
-                {name: '批量审核通过', color: 'success', event: this.batchAuditAgree},
+                //{name: '批量审核通过', color: 'success', event: this.batchAuditAgree},
                 {name: '批量打回', color: 'danger', event: this.batchAuditReject},
             ],
             formOpers: [],
+            formRules: [],
             tableConfig: {
                 data: [],
                 page: true,
