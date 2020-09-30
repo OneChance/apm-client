@@ -21,13 +21,13 @@
             <template>
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="true">
                     <el-form-item label="用户名" prop="username">
-                        <el-input v-model="form.username"></el-input>
+                        <el-input v-model="form.username" :disabled="loginUser.id !== 1"></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
                         <el-input v-model="form.password"></el-input>
                     </el-form-item>
                     <el-form-item label="单位名称" prop="name" style="width:580px">
-                        <el-input v-model="form.name" style="width:500px"></el-input>
+                        <el-input v-model="form.name" style="width:500px" :disabled="loginUser.id !== 1"></el-input>
                     </el-form-item>
 
                     <div v-for="(link,index) in form.links">
@@ -115,7 +115,7 @@ export default {
                     }
                 ]
             },
-            userInfoDialogVisible: false
+            userInfoDialogVisible: false,
         }
     },
     mounted: function () {

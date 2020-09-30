@@ -6,6 +6,7 @@ import cookie from 'vue-cookie'
 
 //设置COOKIE工具
 Vue.prototype.$cookie = cookie;
+Vue.prototype.loginUser = {}
 
 //局部打印插件
 import printArea from '../plugin/printarea/jquery.PrintArea'

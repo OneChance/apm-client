@@ -95,6 +95,7 @@ export default {
 
         Account.getLoginUser().then(res => {
             this.userOper[0].name = res.user.name
+            this.__proto__.__proto__.loginUser = res.user
         })
 
         this.$nextTick(() => {
