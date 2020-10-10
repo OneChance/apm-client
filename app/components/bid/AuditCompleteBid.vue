@@ -1,41 +1,41 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query"
+            <bid-query ref="query"
                               v-bind:tableConfigObject="tableConfig"
                               v-bind:buttons="buttons"
                               v-bind:stepCode="stepCode"
                               v-bind:checkedList="listChecks">
-            </submission-query>
+            </bid-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
-        <submission-form v-bind:visible="dialogVisible"
+        <bid-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
                          v-bind:step="'auditArc'"
                          v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
-        </submission-form>
-        <audit-note-form v-bind:visible="noteFormVisible" v-bind:formId="formId"></audit-note-form>
+        </bid-form>
+        <note-form v-bind:visible="noteFormVisible" v-bind:formId="formId"></note-form>
     </div>
 </template>
 
 <script>
-import AuditNoteForm from './AuditNoteForm'
-import Config from "../script/config";
-import TableComponent from "./TableComponent";
-import SubmissionForm from "./SubmissionForm";
-import SubmissionQuery from "./SubmissionQuery";
-import ClientCall from "../script/client/clientCall";
+import NoteForm from './NoteForm'
+import Config from "../../script/config";
+import TableComponent from "../TableComponent";
+import BidForm from "./BidForm";
+import BidQuery from "./BidQuery";
+import ClientCall from "../../script/client/bid/clientCall";
 
 export default {
-    name: "AuditComplete",
+    name: "AuditCompleteBid",
     mounted: function () {
 
     },
     data: function () {
         return {
-            stepCode: Config.stepCode.auditComplete,
+            stepCode: Config.stepCodeBid.auditComplete,
             dialogVisible: false,
             noteFormVisible: false,
             buttons: [
@@ -126,10 +126,9 @@ export default {
         },
     },
     components: {
-        AuditNoteForm,
+        NoteForm,
         TableComponent,
-        SubmissionForm,
-        SubmissionQuery
+        BidForm, BidQuery
     }
 }
 </script>

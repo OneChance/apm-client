@@ -1,17 +1,18 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"></submission-query>
+            <submission-query ref="query"
+                              v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode">
+            </submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
         <submission-form v-bind:visible="dialogVisible"
                          v-bind:from="'editform'"
-                         v-bind:formRules="rules"
                          v-bind:formOpers="formOpers"
-                         v-bind:step="'auditFirst'"
                          v-bind:stepCode="stepCode"
+                         v-bind:step="'argueHandle'"
                          v-bind:formId="formId">
         </submission-form>
     </div>
@@ -19,22 +20,23 @@
 
 <script>
 
-import AuditFirst from '../script/client/auditFirst'
-import Config from "../script/config";
-import TableComponent from "./TableComponent";
+import Argue from '../../script/client/project/argue'
+import Config from "../../script/config";
+import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
+import FormValidator from '../../script/client/formValidator'
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {
-    name: "AuditFirst",
+    name: "ArgueHandle",
     mounted: function () {
-        AuditFirst.comp = this
+        Argue.comp = this
     },
     data: function () {
         return {
-            stepCode: Config.stepCode.auditFirst,
+            stepCode: Config.stepCode.argueHandle,
             dialogVisible: false,
-            formOpers: AuditFirst.buttons,
+            formOpers: Argue.buttons,
             tableConfig: {
                 data: [],
                 page: true,
@@ -60,7 +62,14 @@ export default {
                     },
                 ]
             },
-            rules: AuditFirst.rules
+            rules: {
+                submissionPrice: [
+                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
+                ],
+                firstAuditPrice: [
+                    {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
+                ],
+            },
         }
     },
     methods: {

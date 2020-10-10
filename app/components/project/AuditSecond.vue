@@ -18,9 +18,9 @@
 
 <script>
 
-import AuditSecond from '../script/client/auditSecond'
-import Config from "../script/config";
-import TableComponent from "./TableComponent";
+import AuditSecond from '../../script/client/project/auditSecond'
+import Config from "../../script/config";
+import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import SubmissionQuery from "./SubmissionQuery";
 

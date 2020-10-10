@@ -15,7 +15,13 @@
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
-                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value">
+                    <el-submenu :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id === 2">
+                        <template slot="title">{{ menu.label }}</template>
+                        <el-menu-item :index="m.value" v-for="m in menu.children" :key="m.value">
+                            {{ m.label }}
+                        </el-menu-item>
+                    </el-submenu>
+                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id !== 2">
                         {{ menu.label }}
                     </el-menu-item>
                 </el-menu>
@@ -90,6 +96,7 @@ export default {
         let comp = this;
         Menu.getMenu().then(res => {
             comp.menus = res.menus
+            console.log(res.menus)
             comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
         })
 
@@ -127,7 +134,25 @@ export default {
                 //如果非左边菜单架构，替换当前组件
                 //this.currentComponent = key
                 //否则，替换组件数据
-                this.leftMenus = this.menus.filter(menu => menu.value === key)[0].children
+                //根据菜单决定取哪一种审计类型的菜单
+                this.leftMenus = this.getMenu(key).children
+            }
+        },
+        getMenu(key) {
+            let menuList = []
+            this.menus.forEach(menu => {
+                menuList.push(menu)
+            })
+            while (menuList.length > 0) {
+                let menu = menuList.pop()
+                if (menu.value === key) {
+                    return menu
+                }
+                if (menu.children) {
+                    menu.children.forEach(m => {
+                        menuList.push(m)
+                    })
+                }
             }
         }
     },

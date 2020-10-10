@@ -31,23 +31,23 @@
 
 <script>
 import TableComponent from "./TableComponent";
-import SubmissionForm from "./SubmissionForm";
+import SubmissionForm from "./project/SubmissionForm";
 import AllocForm from "./AllocForm";
 import Common from '../script/common'
-import ClientCall from "../script/client/clientCall"
+import ClientCall from "../script/client/project/clientCall"
 import Config from "../script/config";
 import {
     Notification
 } from "element-ui";
-import ProjectAudit from "../script/client/projectOper"
-import AllocApprove from "../script/client/allocApproveOper"
-import RejectedOper from "../script/client/rejectedOper"
-import SurveyPrepare from "../script/client/surveyPrepare.js"
-import Survey from "../script/client/survey.js"
-import Argue from "../script/client/argue.js"
-import AuditFirst from "../script/client/auditFirst.js"
-import AuditSecond from "../script/client/auditSecond.js"
-import ArgueResolve from "../script/client/argueResolve"
+import ProjectAudit from "../script/client/project/projectOper"
+import AllocApprove from "../script/client/project/allocApproveOper"
+import RejectedOper from "../script/client/project/rejectedOper"
+import SurveyPrepare from "../script/client/project/surveyPrepare.js"
+import Survey from "../script/client/project/survey.js"
+import Argue from "../script/client/project/argue.js"
+import AuditFirst from "../script/client/project/auditFirst.js"
+import AuditSecond from "../script/client/project/auditSecond.js"
+import ArgueResolve from "../script/client/project/argueResolve"
 
 export default {
     name: "WillDo",

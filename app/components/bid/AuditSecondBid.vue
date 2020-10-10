@@ -1,0 +1,95 @@
+<template>
+    <div class="card-content">
+        <el-card class="box-card">
+            <bid-query ref="query" v-bind:tableConfigObject="tableConfig" v-bind:stepCode="stepCode"></bid-query>
+            <table-component v-bind:tableConfig="tableConfig">
+            </table-component>
+        </el-card>
+        <bid-form v-bind:visible="dialogVisible"
+                  v-bind:from="'editform'"
+                  v-bind:formRules="rules"
+                  v-bind:formOpers="formOpers"
+                  v-bind:step="'auditSecond'"
+                  v-bind:stepCode="stepCode"
+                  v-bind:formId="formId">
+        </bid-form>
+    </div>
+</template>
+
+<script>
+
+import AuditSecond from '../../script/client/bid/auditSecond'
+import Config from "../../script/config";
+import TableComponent from "../TableComponent";
+import BidForm from "./BidForm";
+import BidQuery from "./BidQuery";
+
+export default {
+    name: "AuditSecondBid",
+    mounted: function () {
+        AuditSecond.comp = this
+    },
+    data: function () {
+        return {
+            stepCode: Config.stepCodeBid.auditSecond,
+            dialogVisible: false,
+            formOpers: AuditSecond.buttons,
+            tableConfig: {
+                data: [],
+                page: true,
+                total: 0,
+                currentPage: 1,
+                pageMethod: this.toPage,
+                checkable: false,
+                cols: [
+                    {prop: 'itemCode', label: '立项代码', width: '150'},
+                    {prop: 'auditNo', label: '审计编号', width: '150'},
+                    {prop: 'contractNo', label: '合同编码', width: '150'},
+                    {prop: 'projectName', label: '工程项目', width: '220'},
+                    {prop: 'constructionUnit', label: '施工单位', width: '220'},
+                    {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
+                    {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
+                    {prop: 'auditType', label: '审计方式', width: '100'},
+                    {prop: 'submissionPrice', label: '送审金额', width: '150'},
+                    {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
+                    {prop: 'auditFee', label: '审计费用', width: '150'},
+                ],
+                oper: [
+                    {
+                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                        tip: {content: '编辑', placement: 'top'},
+                        event: this.editRow,
+                    },
+                ]
+            },
+            rules: AuditSecond.rules
+        }
+    },
+    methods: {
+        editRow: function (row) {
+            this.dialogVisible = false
+            this.dialogVisible = true
+            this.formId = row.id
+        },
+        operSuccess() {
+            this.dialogVisible = false
+            this.$message({
+                message: '操作成功',
+                type: 'success'
+            });
+            this.$refs.query.list({page: 1})
+        },
+        toPage: function (val) {
+            this.$refs.query.list({page: val})
+        },
+    },
+    components: {
+        TableComponent,
+        BidForm, BidQuery
+    }
+}
+</script>
+
+<style scoped>
+
+</style>

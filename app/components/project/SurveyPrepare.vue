@@ -18,10 +18,10 @@
 
 <script>
 
-import TableComponent from "./TableComponent";
+import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import Config from "../script/config";
-import SurveyPrepare from "../script/client/surveyPrepare"
+import Config from "../../script/config";
+import SurveyPrepare from "../../script/client/project/surveyPrepare"
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {

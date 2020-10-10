@@ -1,53 +1,47 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query"
-                              v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"
-                              v-bind:buttons="buttons"
-                              v-bind:checkedList="listChecks">
-            </submission-query>
+            <bid-query ref="query" v-bind:tableConfigObject="tableConfig"
+                       v-bind:stepCode="stepCode"></bid-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
-        <submission-form v-bind:visible="dialogVisible"
-                         v-bind:from="'editform'"
-                         v-bind:step="'auditArc'"
-                         v-bind:stepCode="stepCode"
-                         v-bind:formId="formId">
-        </submission-form>
+        <bid-form v-bind:visible="dialogVisible"
+                  v-bind:from="'editform'"
+                  v-bind:formRules="rules"
+                  v-bind:formOpers="formOpers"
+                  v-bind:step="'auditFirst'"
+                  v-bind:stepCode="stepCode"
+                  v-bind:formId="formId">
+        </bid-form>
     </div>
 </template>
 
 <script>
 
-import Config from "../script/config";
-import TableComponent from "./TableComponent";
-import SubmissionForm from "./SubmissionForm";
-import SubmissionQuery from "./SubmissionQuery";
-import ClientCall from "../script/client/clientCall";
+import AuditFirst from '../../script/client/bid/auditFirst'
+import Config from "../../script/config";
+import TableComponent from "../TableComponent";
+import BidForm from "./BidForm";
+import BidQuery from "./BidQuery";
 
 export default {
-    name: "AuditArc",
+    name: "AuditFirstBid",
     mounted: function () {
-
+        AuditFirst.comp = this
     },
     data: function () {
         return {
-            stepCode: Config.stepCode.auditArc,
+            stepCode: Config.stepCodeBid.auditFirst,
             dialogVisible: false,
-            buttons: [
-                {name: '退回', color: 'danger', event: this.batchBackToComplete},
-            ],
-            listChecks: [],
+            formOpers: AuditFirst.buttons,
             tableConfig: {
                 data: [],
                 page: true,
                 total: 0,
                 currentPage: 1,
                 pageMethod: this.toPage,
-                checkable: true,
-                checkBoxChange: this.checkBoxChange,
+                checkable: false,
                 cols: [
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
@@ -57,29 +51,19 @@ export default {
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
                     {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
-                    {prop: 'submissionPrice', label: '送审金额', width: '150'},
-                    {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
-                    {prop: 'auditFee', label: '惩罚性费用', width: '150'},
                 ],
                 oper: [
                     {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '查看', placement: 'top'},
+                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                        tip: {content: '编辑', placement: 'top'},
                         event: this.editRow,
                     },
                 ]
             },
+            rules: AuditFirst.rules
         }
     },
     methods: {
-        checkBoxChange(val) {
-            this.listChecks = val
-        },
-        batchBackToComplete: function () {
-            ClientCall.batchBackToComplete('', this.listChecks.map(form => form.id), 0).then(() => {
-                this.operSuccess()
-            })
-        },
         editRow: function (row) {
             this.dialogVisible = false
             this.dialogVisible = true
@@ -99,7 +83,7 @@ export default {
     },
     components: {
         TableComponent,
-        SubmissionForm, SubmissionQuery
+        BidForm, BidQuery
     }
 }
 </script>

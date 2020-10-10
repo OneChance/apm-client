@@ -1,19 +1,19 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"></submission-query>
+            <bid-query ref="query" v-bind:tableConfigObject="tableConfig"
+                       v-bind:stepCode="stepCode"></bid-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
-        <submission-form v-bind:visible="dialogVisible"
-                         v-bind:from="from"
-                         v-bind:formRules="rules"
-                         v-bind:formOpers="formOpers"
-                         v-bind:step="'auditArc'"
-                         v-bind:stepCode="9999"
-                         v-bind:formId="formId">
-        </submission-form>
+        <bid-form v-bind:visible="dialogVisible"
+                  v-bind:from="from"
+                  v-bind:formRules="rules"
+                  v-bind:formOpers="formOpers"
+                  v-bind:step="'auditArc'"
+                  v-bind:stepCode="9999"
+                  v-bind:formId="formId">
+        </bid-form>
         <el-dialog title="附件清单"
                    class="files-down"
                    :visible.sync="fileListVisible"
@@ -53,17 +53,17 @@
 
 <script>
 
-import TableComponent from "./TableComponent";
-import SubmissionForm from "./SubmissionForm";
-import Audit from "../script/server/audit";
-import Env from "../script/server/env"
-import SubmissionQuery from "./SubmissionQuery";
+import TableComponent from "../TableComponent";
+import Env from "../../script/server/env"
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
-import Download from "../script/server/download"
+import Download from "../../script/server/download"
+import BidForm from "./BidForm";
+import BidQuery from "./BidQuery";
+import ClientCall from "../../script/client/bid/clientCall";
 
 export default {
-    name: "ListAll",
+    name: "ListAllBid",
     created: function () {
 
     },
@@ -93,7 +93,7 @@ export default {
                     {prop: 'contractNo', label: '合同编码', width: '150'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
-                    {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
+                    {prop: 'assigned.name', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
@@ -130,7 +130,7 @@ export default {
             this.fileListVisible = false
             this.fileListVisible = true
 
-            Audit.getSubmission({
+            ClientCall.getSubmission({
                 id: row.id
             }).then(result => {
                 this.downFiles = []
@@ -195,7 +195,7 @@ export default {
             this.$refs.query.list({page: val})
         },
     },
-    components: {TableComponent, SubmissionForm, SubmissionQuery}
+    components: {TableComponent, BidForm, BidQuery}
 }
 </script>
 

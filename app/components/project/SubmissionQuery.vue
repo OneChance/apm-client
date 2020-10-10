@@ -83,11 +83,11 @@
 
 <script>
 
-import User from "../script/server/user";
-import ConstructionUnit from "../script/server/constructionUnit";
-import Common from "../script/common";
-import Config from "../script/config";
-import Audit from "../script/server/audit";
+import User from "../../script/server/user";
+import ConstructionUnit from "../../script/server/constructionUnit";
+import Common from "../../script/common";
+import Config from "../../script/config";
+import Audit from "../../script/server/audit";
 
 export default {
     name: "SubmissionQuery",
@@ -156,7 +156,7 @@ export default {
                 res.list.content.forEach(user => {
                     this.inters.push({
                         value: user.id,
-                        label: user.thirdPartyName
+                        label: user.name
                     })
                 })
             })

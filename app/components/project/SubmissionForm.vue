@@ -1,23 +1,7 @@
 <template>
     <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <el-form v-if="step === 'submission'">
-                <el-form-item prop="isBid">
-                    <el-radio v-model="submissionForm.formType" label="工程结算送审表"
-                              border>
-                        工程结算送审表
-                    </el-radio>
-                    <el-radio v-model="submissionForm.formType" label="测试中表单A"
-                              border>
-                        测试中表单A
-                    </el-radio>
-                    <el-radio v-model="submissionForm.formType" label="测试中表单B"
-                              border>
-                        测试中表单B
-                    </el-radio>
-                </el-form-item>
-            </el-form>
-            <div class="form" v-if="submissionForm.formType === '工程结算送审表'" id="submission">
+            <div class="form" id="submission">
                 <el-form :model="submissionForm" :rules="formRules" ref="submissionForm">
                     <table class="form-table">
                         <tr>
@@ -78,7 +62,7 @@
                         </tr>
                         <tr>
                             <th class="form-required">施工单位名称</th>
-                            <td>
+                            <td colspan="3">
                                 <el-form-item prop="constructionUnit">
                                     <el-select v-model="submissionForm.constructionUnit"
                                                :disabled="step!=='submission' && step!=='reject'"
@@ -92,21 +76,6 @@
                                             :value="unit.value">
                                         </el-option>
                                     </el-select>
-                                </el-form-item>
-                            </td>
-                            <th class="form-required">是否招投标</th>
-                            <td>
-                                <el-form-item prop="isBid">
-                                    <el-radio v-model="submissionForm.isBid" label="是"
-                                              border
-                                              :disabled="step!=='submission' && step!=='reject'">
-                                        是
-                                    </el-radio>
-                                    <el-radio v-model="submissionForm.isBid" label="否"
-                                              border
-                                              :disabled="step!=='submission' && step!=='reject'">
-                                        否
-                                    </el-radio>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -965,13 +934,13 @@
 import {
     Notification
 } from "element-ui";
-import MaterialFile from "../script/server/materialFile";
-import Upload from "../script/server/upload";
-import Audit from "../script/server/audit";
-import Comment from "../script/server/comment";
-import ClientCall from "../script/client/clientCall"
-import Env from "../script/server/env"
-import ConstructionUnit from "../script/server/constructionUnit";
+import MaterialFile from "../../script/server/materialFile";
+import Upload from "../../script/server/upload";
+import Audit from "../../script/server/audit";
+import Comment from "../../script/server/comment";
+import ClientCall from "../../script/client/project/clientCall"
+import Env from "../../script/server/env"
+import ConstructionUnit from "../../script/server/constructionUnit";
 
 export default {
     name: "SubmissionForm",
@@ -1270,6 +1239,7 @@ export default {
             submissionForm: {
                 formType: '工程结算送审表',
                 id: '',
+                /*--------------------------submission start -----------------------------------*/
                 itemCode: '',
                 auditNo: '',
                 contractNo: '',
@@ -1277,7 +1247,6 @@ export default {
                 feeFrom: '',
                 budget: 0,
                 constructionUnit: '',
-                isBid: '',
                 startDate: '',
                 endDate: '',
                 contractMoney: 0,
@@ -1343,6 +1312,8 @@ export default {
                 auditSecondFiles: [],
                 //争议处理，申请人补充上传资料
                 supplementFiles: [],
+                /*--------------------------submission end -----------------------------------*/
+                /*--------------------------aaa start -----------------------------------*/
             },
             materialGroups: [],
             uploadParams: {

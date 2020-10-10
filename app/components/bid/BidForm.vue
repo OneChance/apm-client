@@ -1,0 +1,942 @@
+<template>
+    <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
+        <template>
+            <div class="form" id="bid">
+                <el-form :model="bidForm" :rules="formRules" ref="bidForm">
+                    <table class="form-table">
+                        <tr>
+                            <th colspan="4">
+                                招标控制价审核送审表
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>立项代码</th>
+                            <td>
+                                <el-form-item prop="itemCode">
+                                    <el-input v-model="bidForm.itemCode"
+                                              :disabled="stepCode>0"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th :class="stepCode===10?'form-required':''">审计编号</th>
+                            <td :class="stepCode===10?'editing':''">
+                                <el-form-item prop="auditNo">
+                                    <el-input v-model="bidForm.auditNo"
+                                              :disabled="stepCode>0"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="form-required">工程项目名称</th>
+                            <td>
+                                <el-form-item prop="projectName">
+                                    <el-input v-model="bidForm.projectName"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写工程项目名称"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>经费来源</th>
+                            <td>
+                                <el-form-item prop="feeFrom">
+                                    <el-input v-model="bidForm.feeFrom"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写经费来源"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="form-required">编制单位名称</th>
+                            <td colspan="3">
+                                <el-form-item prop="bidUnit">
+                                    <el-input v-model="bidForm.bidUnit"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写编制单位名称"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="form-required">编标人</th>
+                            <td>
+                                <el-form-item prop="bidMan">
+                                    <el-input v-model="bidForm.bidMan"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写编标人"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>联系电话</th>
+                            <td>
+                                <el-form-item prop="bidManTel">
+                                    <el-input v-model="bidForm.bidManTel"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写联系电话"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="form-required">预计开工时间</th>
+                            <td>
+                                <el-form-item prop="startDate">
+                                    <el-date-picker v-model="bidForm.startDate"
+                                                    :disabled="stepCode>0"
+                                                    format="yyyy-MM-dd"
+                                                    value-format="yyyy-MM-dd" type="date" placeholder="选择预计开工时间">
+                                    </el-date-picker>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>预算金额(万元)</th>
+                            <td>
+                                <el-form-item prop="budget">
+                                    <el-input v-model="bidForm.budget"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写预算"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>土建</th>
+                            <td>
+                                <el-form-item prop="constructMoney">
+                                    <el-input v-model="bidForm.constructMoney"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写土建金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>报审金额(万元)</th>
+                            <td>
+                                <el-form-item prop="subMoney">
+                                    <el-input v-model="bidForm.subMoney"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写预算"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>安装</th>
+                            <td>
+                                <el-form-item prop="installMoney">
+                                    <el-input v-model="bidForm.installMoney"
+                                              :disabled="stepCode>0"
+                                              placeholder="填写安装金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th class="form-required">资料清单组</th>
+                            <td colspan="3">
+                                <el-form-item prop="materialGroup">
+                                    <el-select v-model="bidForm.materialGroup" placeholder="请选择"
+                                               :disabled="stepCode>0"
+                                               @change="materialGroupChange">
+                                        <el-option v-for="group in materialGroups" :key="group.id" :label="group.name"
+                                                   :value="group.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:20%">资料清单</th>
+                                        <th style="width:30%">附件</th>
+                                        <th style="width:50%">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.bidForm.details">
+                                        <td>
+                                            {{ fileType.mName }}<span style="color: red; "
+                                                                      v-if="fileType.mRequired">*</span>
+                                        </td>
+                                        <td>
+                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
+                                                       :with-credentials="true" :on-preview="handlePreview"
+                                                       :on-remove="handleRemove" :before-remove="beforeRemove"
+                                                       :on-success="afterUpload" :data="uploadParams"
+                                                       multiple :on-exceed="handleExceed"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="stepCode<0"
+                                                           @click="toUpload(fileType.mId)">点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="fileType.mNote"
+                                                      :disabled="stepCode>0"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr class="allocMan" v-if="stepCode>=30">
+                            <th>审计方式</th>
+                            <td colspan="3">
+                                <el-input type="text" v-model="bidForm.auditType" disabled></el-input>
+                            </td>
+                        </tr>
+
+                        <tr class="allocMan"
+                            v-if="stepCode>=30 && bidForm.assigned">
+                            <th v-if="bidForm.assigned.thirdParty">分配审计单位</th>
+                            <th v-if="!bidForm.assigned.thirdParty">分配审计人员</th>
+                            <td>
+                                <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
+                            </td>
+                            <th>联系方式</th>
+                            <td>
+                                <el-input type="text" v-model="bidForm.assigned.telphone" disabled
+                                          v-if="!bidForm.assigned.thirdParty"></el-input>
+                                <el-input type="text" v-model="bidForm.assignedLink.telphone" disabled
+                                          v-if="bidForm.assigned.thirdParty && bidForm.assignedLink"></el-input>
+                            </td>
+                        </tr>
+                        <tr class="allocMan"
+                            v-if="stepCode>=30 && bidForm.assigned && bidForm.assigned.thirdParty">
+                            <th>联系人</th>
+                            <td colspan="3">
+                                <el-input type="text" v-if="bidForm.assignedLink"
+                                          v-model="bidForm.assignedLink.contact"
+                                          disabled></el-input>
+                            </td>
+                        </tr>
+                        <!--这里的意见非表单数据 是写入意见表的-->
+                        <tr class="comment" v-if="step==='auditProject' || step === 'assigned'">
+                            <th>审计意见</th>
+                            <td colspan="3" :class="stepCode===10||stepCode===30?'editing':''">
+                                <el-input type="textarea" v-model="comment"></el-input>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=70">
+                            <th>送审价</th>
+                            <td :class="stepCode===70?'editing':''">
+                                <el-form-item prop="submissionPrice">
+                                    <el-input v-model="bidForm.submissionPrice" :disabled="step!=='auditFirst'"
+                                              placeholder="填写送审价"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>初审审定金额<span style="color: red; ">*</span></th>
+                            <td :class="stepCode===70?'editing':''">
+                                <el-form-item prop="firstAuditPrice">
+                                    <el-input v-model="bidForm.firstAuditPrice" :disabled="step!=='auditFirst'"
+                                              placeholder="填写土建金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=70">
+                            <th class="form-required">初审核减额</th>
+                            <td :class="stepCode===70?'editing':''">
+                                <el-form-item prop="submissionPrice">
+                                    <el-input v-model="bidForm.auditFirstSub" disabled></el-input>
+                                </el-form-item>
+                            </td>
+                            <th class="form-required">初审核减率</th>
+                            <td :class="stepCode===70?'editing':''">
+                                <el-form-item prop="firstAuditPrice">
+                                    <el-input v-model="bidForm.auditFirstSubRatio+'%'"
+                                              disabled
+                                    ></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=70">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:20%">初审资料</th>
+                                        <th style="width:30%">附件</th>
+                                        <th style="width:50%">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.bidForm.auditFirstFiles">
+                                        <td>
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
+                                        </td>
+                                        <td :class="stepCode===70?'editing':''">
+                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
+                                                       :with-credentials="true" :on-preview="handlePreview"
+                                                       :on-remove="handleRemoveAuditFirst"
+                                                       :before-remove="beforeRemoveAuditFirst" :on-success="afterUpload"
+                                                       multiple :on-exceed="handleExceed"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="step ==='auditFirst'" @click="toUpload(fileType.mId)">
+                                                    点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditFirst'"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=80">
+                            <th class="form-required">复审审定金额</th>
+                            <td :class="stepCode===80?'editing':''">
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="bidForm.secondAuditPrice" :disabled="step!=='auditSecond'"
+                                              placeholder="填写复审审定金额"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th class="form-required">复审核减额</th>
+                            <td :class="stepCode===80?'editing':''">
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="bidForm.auditSecondSub"
+                                              disabled></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=80">
+                            <th class="form-required">复审核减率</th>
+                            <td colspan="3" :class="stepCode===80?'editing':''">
+                                <el-form-item prop="secondAuditPrice">
+                                    <el-input v-model="bidForm.auditSecondSubRatio+'%'"
+                                              disabled></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=80">
+                            <th class="form-required">审计备注</th>
+                            <td colspan="3" :class="stepCode===80?'editing':''">
+                                <el-form-item prop="auditNote">
+                                    <el-input type="textarea" v-model="bidForm.auditNote"
+                                              :disabled="step!=='auditSecond'"
+                                              placeholder="审计备注"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+
+                        <tr v-if="stepCode>=80">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:20%">复审资料</th>
+                                        <th style="width:30%">附件</th>
+                                        <th style="width:50%">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.bidForm.auditSecondFiles">
+                                        <td>
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
+                                        </td>
+                                        <td :class="stepCode===80?'editing':''">
+                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
+                                                       :with-credentials="true" :on-preview="handlePreview"
+                                                       :on-remove="handleRemoveAuditSecond"
+                                                       :before-remove="beforeRemoveAuditSecond"
+                                                       :on-success="afterUpload"
+                                                       multiple :on-exceed="handleExceed"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="step ==='auditSecond'" @click="toUpload(fileType.mId)">
+                                                    点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditSecond'"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr v-if="step ==='argueDeal' || stepCode>=60">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:20%">补充资料</th>
+                                        <th style="width:30%">附件</th>
+                                        <th style="width:50%">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.bidForm.supplementFiles">
+                                        <td>
+                                            {{ fileType.mName }}<span style="color: red; ">*</span>
+                                        </td>
+                                        <td>
+                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
+                                                       :with-credentials="true" :on-preview="handlePreview"
+                                                       :on-remove="handleRemoveSupplement"
+                                                       :before-remove="beforeRemoveSupplement"
+                                                       :on-success="afterUpload"
+                                                       multiple :on-exceed="handleExceed"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button size="small" type="primary" class="upload-btn"
+                                                           v-if="step ==='argueDeal'" @click="toUpload(fileType.mId)">
+                                                    点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="fileType.mNote" :disabled="step!=='argueDeal'"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" class="comment compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th style="width:12%">审批阶段</th>
+                                        <th style="width:12%">审批人</th>
+                                        <th style="width:12%">审批意见</th>
+                                        <th>审批内容</th>
+                                    </tr>
+                                    <tr v-for="comment in comments" :key="comment.id">
+                                        <td>
+                                            {{ comment.stageStr }}
+                                        </td>
+                                        <td>
+                                            {{ comment.creator.name }}
+                                        </td>
+                                        <td>
+                                            {{ comment.typeStr }}
+                                        </td>
+                                        <td>
+                                            {{ comment.content }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr class="print-info">
+                            <th>送审部门盖章</th>
+                            <td style="height: 100px;">
+
+                            </td>
+                            <th>审计部门盖章</th>
+                            <td style="height: 100px;">
+
+                            </td>
+                        </tr>
+                        <tr class="print-info">
+                            <th>项目负责人</th>
+                            <td>
+
+                            </td>
+                            <th>材料接收人</th>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr class="print-info">
+                            <th>送审人联系电话</th>
+                            <td>
+
+                            </td>
+                            <th>接收时间</th>
+                            <td>
+
+                            </td>
+                        </tr>
+                    </table>
+                </el-form>
+            </div>
+        </template>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="visible = false">取 消</el-button>
+            <el-button v-for="oper in formOpers" :type="oper.color" @click="commit(oper.event)" :key="oper.name">
+                {{ oper.name }}
+            </el-button>
+            <el-button @click="visible = false;print()">打印</el-button>
+        </div>
+    </el-dialog>
+</template>
+
+<script>
+import {
+    Notification
+} from "element-ui";
+import MaterialFile from "../../script/server/materialFile";
+import Upload from "../../script/server/upload";
+import Audit from "../../script/server/audit";
+import Comment from "../../script/server/comment";
+import ClientCall from "../../script/client/project/clientCall"
+import Env from "../../script/server/env"
+import ConstructionUnit from "../../script/server/constructionUnit";
+
+export default {
+    name: "BidForm",
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'],
+    watch: {
+        'bidForm.submissionPrice': function () {
+            this.calAuditFirst()
+        },
+        'bidForm.firstAuditPrice': function () {
+            this.calAuditFirst()
+        },
+        'bidForm.secondAuditPrice': function () {
+            this.calAuditSecond()
+        },
+        visible: function (newVal) {
+            if (newVal) {
+                MaterialFile.getMaterialGroups().then(res => {
+                    this.materialGroups = res.list
+                })
+                ConstructionUnit.getConstructionUnits({
+                    page: 1,
+                    pageSize: 999999,
+                }).then(res => {
+                    this.units = []
+                    res.list.content.forEach(unit => {
+                        this.units.push({
+                            value: unit.id,
+                            label: unit.name,
+                            links: unit.links
+                        })
+                    })
+                })
+
+                this.bidForm.details = []
+                this.$nextTick(() => {
+                    if (this.from === 'addform') {
+                        this.$refs['bidForm'].resetFields();
+                        $(".comment").hide()
+                    } else if (this.from === 'editform') {
+
+                        if (this.stepCode >= 50) {
+                            ClientCall.getEmps().then(result => {
+                                this.users = []
+                                result.list.content.forEach(user => {
+                                    this.users.push({
+                                        value: user.id,
+                                        label: user.name
+                                    })
+                                })
+                            })
+                        }
+                        //加载form
+                        Audit.getSubmission({
+                            id: this.formId
+                        }).then(result => {
+
+                            //加载初审资料附件
+                            if (!result.bid.auditFirstFiles || result.bid.auditFirstFiles.length === 0) {
+                                result.bid.auditFirstFiles = [
+                                    {
+                                        mId: '-4',
+                                        mName: '审定单',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                    {
+                                        mId: '-5',
+                                        mName: '初审报告',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                    {
+                                        mId: '-6',
+                                        mName: '审计工作底稿',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                    {
+                                        mId: '-7',
+                                        mName: '计价文本',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                ]
+                            }
+                            //加载复审资料附件
+                            if (!result.bid.auditSecondFiles || result.bid.auditSecondFiles.length === 0) {
+                                result.bid.auditSecondFiles = [
+                                    {
+                                        mId: '-8',
+                                        mName: '审定单',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                    {
+                                        mId: '-9',
+                                        mName: '初审报告',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                    {
+                                        mId: '-10',
+                                        mName: '审计工作底稿',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                    {
+                                        mId: '-11',
+                                        mName: '计价文本',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                ]
+                            }
+                            //加载补充资料附件
+                            if (!result.bid.supplementFiles || result.bid.supplementFiles.length === 0) {
+                                result.bid.supplementFiles = [{
+                                    mId: '-12',
+                                    mName: '补充资料',
+                                    mFiles: [],
+                                    mFileIds: '',
+                                    mNote: ''
+                                }]
+                            }
+
+                            for (let p in result.bid) {
+                                this.bidForm[p] = result.bid[p]
+                            }
+
+                            if (this.bidForm.materialGroup) {
+                                MaterialFile.getMaterialGroup({
+                                    id: this.bidForm.materialGroup
+                                }).then(res => {
+                                    for (let fType of res.materialGroup.details) {
+                                        let detail = this.bidForm.details.filter(f => f.mId === fType.material.id)[0]
+                                        if (detail) {
+                                            detail.mRequired = fType.required
+                                        } else {
+                                            this.bidForm.details.push({
+                                                mRequired: fType.required,
+                                                mId: fType.material.id,
+                                                mName: fType.material.name,
+                                                mFiles: [],
+                                                mFileIds: '',
+                                                mNote: ''
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+
+                            //获取意见
+                            this.comments = []
+                            Comment.getComment({
+                                target: 'bid',
+                                targetId: this.bidForm.id
+                            }).then(res => {
+                                this.comments = res.list
+                            })
+
+                            if (this.stepCode >= 80) {
+                                //将复审审定金额默认设置为初审审定金额
+                                if (!this.bidForm.secondAuditPrice || this.bidForm.secondAuditPrice === 0) {
+                                    this.bidForm.secondAuditPrice = this.bidForm.firstAuditPrice
+                                }
+                            }
+                        })
+                    }
+                    $(".print-info").hide()
+                });
+            } else {
+                $(".upload-btn").show()
+            }
+        }
+    },
+    mounted: function () {
+
+    },
+    data: function () {
+        return {
+            dialogVisible: false,
+            bidForm: {
+                id: '',
+                itemCode: '',
+                auditNo: '',
+                contractNo: '',
+                projectName: '',
+                feeFrom: '',
+                bidUnit: '',
+                bidMan: '',
+                bidManTel: '',
+                budget: 0,
+                startDate: '',
+                subMoney: 0,
+                constructMoney: 0,
+                installMoney: 0,
+                materialGroup: '',
+                details: [], //资料清单信息
+                status: 0,
+                assignedLink: {
+                    telphone: '',
+                    contact: '',
+                },
+                assigned: {
+                    telphone: '',
+                    thirdParty: false,
+                },
+                //审计初审--------------
+                submissionPrice: 0,
+                firstAuditPrice: 0,
+                auditFirstFiles: [],
+                auditFirstSub: '',
+                auditFirstSubRatio: '',
+                //审计复审
+                secondAuditPrice: 0,
+                auditNote: '',
+                auditSecondSub: '',
+                auditSecondSubRatio: '',
+                auditSecondFiles: [],
+            },
+            materialGroups: [],
+            uploadParams: {
+                id: '',
+            },
+            comment: '',
+            comments: [],
+            users: [],
+        }
+    },
+    methods: {
+        calAuditFirst: function () {
+            this.bidForm.auditFirstSub = this.bidForm.submissionPrice - this.bidForm.firstAuditPrice
+            this.bidForm.auditFirstSubRatio = (this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100
+        },
+        calAuditSecond: function () {
+            this.bidForm.auditSecondSub = this.bidForm.firstAuditPrice - this.bidForm.secondAuditPrice
+            this.bidForm.auditSecondSubRatio = (this.bidForm.auditSecondSub / this.bidForm.firstAuditPrice).toFixed(2) * 100
+        },
+        commit: function (event) {
+            if ((this.step === 'bid' && event.name.indexOf('save') === -1) ||
+                this.step === 'auditProject' ||
+                this.step === 'reject' ||
+                this.step === 'surveyPrepare' ||
+                this.step === 'survey' ||
+                this.step === 'auditFirst' ||
+                this.step === 'auditSecond') {
+                //需要验证表单的提交
+                this.$refs['bidForm'].validate((valid) => {
+                    if (valid) {
+                        if (this.step === 'bid' || this.step === 'reject') {
+                            //验证资料组清单附件上传情况
+                            let fileOk = true
+                            for (let type of this.bidForm.details) {
+                                if (type.mRequired) {
+                                    if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
+                                        setTimeout(function () {
+                                            Notification.error({
+                                                title: '提交失败!',
+                                                message: type.mName + '必须上传附件或填写备注！',
+                                                duration: 5000
+                                            })
+                                        }, 100);
+                                        fileOk = false
+                                    }
+                                }
+                            }
+
+                            if (!fileOk) {
+                                return
+                            }
+
+                            this.fileIdsConstruct(this.bidForm.details)
+                            event(this.bidForm)
+                        } else if (this.step === 'auditProject') {
+                            event({
+                                targetId: this.bidForm.id,
+                                content: this.comment,
+                                auditNo: this.bidForm.auditNo
+                            })
+                        } else if (this.step === 'auditFirst') {
+                            //验证现场勘察附件上传情况
+                            if (this.fileListCheck(this.bidForm.auditFirstFiles)) {
+                                this.fileIdsConstruct(this.bidForm.auditFirstFiles)
+                                event({
+                                    targetId: this.bidForm.id,
+                                    type: 2,
+                                    submissionPrice: this.bidForm.submissionPrice,
+                                    firstAuditPrice: this.bidForm.firstAuditPrice,
+                                    auditFirstSub: this.bidForm.auditFirstSub,
+                                    auditFirstSubRatio: this.bidForm.auditFirstSubRatio,
+                                    auditFirstFiles: this.bidForm.auditFirstFiles,
+                                })
+                            }
+                        } else if (this.step === 'auditSecond') {
+                            if (this.fileListCheck(this.bidForm.auditSecondFiles)) {
+                                this.fileIdsConstruct(this.bidForm.auditSecondFiles)
+                                event({
+                                    targetId: this.bidForm.id,
+                                    type: 2,
+                                    secondAuditPrice: this.bidForm.secondAuditPrice,
+                                    auditSecondSub: this.bidForm.auditSecondSub,
+                                    auditSecondSubRatio: this.bidForm.auditSecondSubRatio,
+                                    auditNote: this.bidForm.auditNote,
+                                    auditSecondFiles: this.bidForm.auditSecondFiles,
+                                })
+                            }
+                        }
+                    } else {
+                        Notification.error({
+                            title: '提交失败!',
+                            message: '表单信息有误,请检查!',
+                            duration: 2000
+                        })
+                        return false;
+                    }
+                });
+            } else {
+                if (this.step === 'bid') {
+                    //保存不验证必填
+                    this.fileIdsConstruct(this.bidForm.details)
+                    event(this.bidForm)
+                } else {
+                    event(this.comment, this.bidForm.id)
+                }
+            }
+        },
+        print: function () {
+            $(".upload-btn").hide()
+            $(".print-info").show()
+            $(".form").printArea({
+                importCSS: false
+            })
+        },
+        //验证附件上传
+        fileListCheck(list) {
+            let fileOk = true
+            for (let type of list) {
+                if (!type.mFiles || type.mFiles.length === 0) {
+                    setTimeout(function () {
+                        Notification.error({
+                            title: '提交失败!',
+                            message: type.mName + '必须上传附件！',
+                            duration: 5000
+                        })
+                    }, 100);
+                    fileOk = false
+                }
+            }
+            return fileOk
+        },
+        //拼接附件id
+        fileIdsConstruct(list) {
+            for (let types of list) {
+                let ids = ''
+                for (let file of types.mFiles) {
+                    ids = ids + ',' + file.id
+                }
+                types.mFileIds = ids.substr(1)
+            }
+        },
+        //资料清单移除方法
+        handleRemove(file) {
+            this.removeFileFromList(file, this.bidForm.details)
+        },
+        beforeRemove(file) {
+            return this.removeableConfirm(file, ['bid', 'reject'], '当前阶段不可移除资料清单附件!')
+        },
+        //初审资料移除方法
+        handleRemoveAuditFirst(file) {
+            this.removeFileFromList(file, this.bidForm.auditFirstFiles)
+        },
+        beforeRemoveAuditFirst(file) {
+            return this.removeableConfirm(file, ['auditFirst'], '当前阶段不可移除初审资料附件!')
+        },
+        //复审资料移除方法
+        handleRemoveAuditSecond(file) {
+            this.removeFileFromList(file, this.bidForm.auditSecondFiles)
+        },
+        beforeRemoveAuditSecond(file) {
+            return this.removeableConfirm(file, ['auditSecond'], '当前阶段不可移除复审资料附件!')
+        },
+        removeableConfirm(file, steps, message) {
+            if (steps.indexOf(this.step) < 0) {
+                Notification.error({
+                    title: '操作失败!',
+                    message: message,
+                    duration: 2000
+                })
+                return false;
+            }
+            return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        removeFileFromList(file, list) {
+            for (let types of list) {
+                let size = types.mFiles.length
+                if (size !== 0) {
+                    types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
+                    if (types.mFiles.length < size) {
+                        break
+                    }
+                }
+            }
+        },
+        handlePreview(file) {
+            window.open(Env.baseURL + file.url)
+        },
+        materialGroupChange: function (value) {
+            //根据选择的清单组，初始化附加列表
+            let comp = this
+            MaterialFile.getMaterialGroup({
+                id: value
+            }).then(res => {
+                comp.bidForm.details.length = []
+                for (let fType of res.materialGroup.details) {
+                    comp.bidForm.details.push({
+                        mRequired: fType.required,
+                        mId: fType.material.id, //清单类型id
+                        mName: fType.material.name,
+                        mFiles: [], //上传的文件列表
+                        mFileIds: '', //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
+                        mNote: '' //上传文件的备注
+                    })
+                }
+            })
+        },
+        toUpload(typeId) {
+            //上传之前暂存当前要上传文件所属的清单组Id
+            this.uploadParams.id = typeId
+        },
+        upload(content) {
+            let comp = this
+            let fd = new FormData()
+            fd.append('formFile', content.file)
+            Upload.upload(comp.uploadParams.id, fd, (event) => {
+                let num = event.loaded / event.total * 100 | 0;
+                content.onProgress({
+                    percent: num
+                })
+            }).then(res => {
+                content.onSuccess()
+                //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
+                let fileData = {
+                    'id': res.id,
+                    'uid': content.file.uid,
+                    'name': content.file.name
+                }
+                if (comp.step === 'auditFirst') {
+                    comp.bidForm.auditFirstFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                } else if (comp.step === 'auditSecond') {
+                    comp.bidForm.auditSecondFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                } else {
+                    //送审阶段上传的资料清单
+                    comp.bidForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                }
+            })
+        },
+    },
+}
+</script>
+
+<style scoped>
+
+</style>

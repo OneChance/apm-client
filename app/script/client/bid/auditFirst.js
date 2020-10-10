@@ -1,6 +1,6 @@
 /*初审表单操作*/
 import ClientCall from "./clientCall";
-import FormValidator from "./formValidator";
+import FormValidator from "../formValidator";
 
 const oper = {
     comp: {},

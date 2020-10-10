@@ -7,7 +7,7 @@ module.exports = merge(common, {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[hash].js',
-        publicPath: 'http://192.168.1.200:8888/',
+        publicPath: 'http://demo.ceeg.cn/',  //192.168.1.200:8888
         chunkFilename: '[name].[hash].js'
     },
     devtool: 'inline-source-map',

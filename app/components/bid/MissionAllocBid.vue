@@ -1,22 +1,22 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query"
-                              v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"
-                              v-bind:buttons="buttons"
-                              v-bind:checkedList="listChecks">
-            </submission-query>
+            <bid-query ref="query"
+                       v-bind:tableConfigObject="tableConfig"
+                       v-bind:stepCode="stepCode"
+                       v-bind:buttons="buttons"
+                       v-bind:checkedList="listChecks">
+            </bid-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
-        <submission-form v-bind:visible="submissionFormVisible"
-                         v-bind:from="'editform'"
-                         v-bind:formOpers="formOpers"
-                         v-bind:step="'alloc'"
-                         v-bind:stepCode="stepCode"
-                         v-bind:formId="formId">
-        </submission-form>
+        <bid-form v-bind:visible="submissionFormVisible"
+                  v-bind:from="'editform'"
+                  v-bind:formOpers="formOpers"
+                  v-bind:step="'alloc'"
+                  v-bind:stepCode="stepCode"
+                  v-bind:formId="formId">
+        </bid-form>
         <alloc-form v-bind:visible="allocFormVisible"
                     v-bind:commitCallback="commitCallback">
         </alloc-form>
@@ -24,16 +24,16 @@
 </template>
 <script>
 
-import AllocForm from "./AllocForm"
-import TableComponent from "./TableComponent";
-import SubmissionForm from "./SubmissionForm";
-import Config from "../script/config";
+import AllocForm from "../AllocForm"
+import TableComponent from "../TableComponent";
+import Config from "../../script/config";
 import {Notification} from "element-ui";
-import ClientCall from "../script/client/clientCall";
-import SubmissionQuery from "./SubmissionQuery";
+import ClientCall from "../../script/client/bid/clientCall";
+import BidForm from "./BidForm";
+import BidQuery from "./BidQuery";
 
 export default {
-    name: "MissionAlloc",
+    name: "MissionAllocBid",
     created: function () {
 
     },
@@ -42,7 +42,7 @@ export default {
     },
     data: function () {
         return {
-            stepCode: Config.stepCode.alloced,
+            stepCode: Config.stepCodeBid.alloced,
             allocFormVisible: false,
             submissionFormVisible: false,
             opers: [
@@ -66,7 +66,6 @@ export default {
                     {prop: 'contractNo', label: '合同编码', width: '150'},
                     {prop: 'projectName', label: '工程项目', width: '220'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
-                    {prop: 'contractMoney', label: '中标或合同金额', width: '150'},
                 ],
                 oper: [
                     {
@@ -132,7 +131,7 @@ export default {
             this.$refs.query.list({page: val})
         },
     },
-    components: {TableComponent, SubmissionForm, AllocForm, SubmissionQuery}
+    components: {TableComponent, BidForm, AllocForm, BidQuery}
 }
 </script>
 

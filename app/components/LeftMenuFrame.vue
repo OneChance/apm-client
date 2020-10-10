@@ -61,22 +61,31 @@ import SysRole from '../components/SysRole.vue'
 import SysMenu from '../components/SysMenu.vue'
 import SysMaterialFile from '../components/SysMaterialFile.vue'
 import SysMaterialFileGroup from '../components/SysMaterialFileGroup.vue'
-import AuditSubmission from '../components/AuditSubmission.vue'
-import AuditProject from "./AuditProject";
+import AuditSubmission from './project/AuditSubmission.vue'
+import AuditProject from "./project/AuditProject";
 import SysUser from "./SysUser";
 import SysIntermediary from "./SysIntermediary";
-import MissionAlloc from "./MissionAlloc";
+import MissionAlloc from "./project/MissionAlloc";
 import WillDo from "./WillDo";
-import SurveyPrepare from "./SurveyPrepare"
-import Survey from "./Survey"
-import AuditComplete from "./AuditComplete";
-import AuditFirst from "./AuditFirst";
-import AuditSecond from "./AuditSecond";
-import AuditArc from "./AuditArc";
-import ArgueHandle from "./ArgueHandle";
+import SurveyPrepare from "./project/SurveyPrepare"
+import Survey from "./project/Survey"
+import AuditComplete from "./project/AuditComplete";
+import AuditFirst from "./project/AuditFirst";
+import AuditSecond from "./project/AuditSecond";
+import AuditArc from "./project/AuditArc";
+import ArgueHandle from "./project/ArgueHandle";
 import SysConstructionUnit from "./SysConstructionUnit";
-import ListAll from "./ListAll";
+import ListAll from "./project/ListAll";
 import ClientCall from "../script/client/clientCall";
+/**bid**/
+import ListAllBid from "./bid/ListAllBid";
+import AuditSubmissionBid from './bid/AuditSubmissionBid.vue'
+import AuditProjectBid from "./bid/AuditProjectBid";
+import MissionAllocBid from "./bid/MissionAllocBid";
+import AuditCompleteBid from "./bid/AuditCompleteBid";
+import AuditFirstBid from "./bid/AuditFirstBid";
+import AuditSecondBid from "./bid/AuditSecondBid";
+import AuditArcBid from "./bid/AuditArcBid";
 
 export default {
     name: "leftMenuFrame",
@@ -149,7 +158,16 @@ export default {
         AuditArc,
         ArgueHandle,
         SysConstructionUnit,
-        ListAll
+        ListAll,
+        /**********************************************/
+        ListAllBid,
+        AuditSubmissionBid,
+        AuditProjectBid,
+        MissionAllocBid,
+        AuditCompleteBid,
+        AuditFirstBid,
+        AuditSecondBid,
+        AuditArcBid,
     }
 }
 </script>

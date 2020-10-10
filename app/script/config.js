@@ -21,5 +21,16 @@ export default {
         auditSecond: 80, //复审阶段
         auditComplete: 90, //完成阶段
         auditArc: 100, //归档阶段
+    },
+    stepCodeBid: {
+        reject: -20,
+        save: -10, //送审保存
+        auditProject: 10, //审计立项
+        alloced: 20, //分配
+        assigned: 30, //分配审核
+        auditFirst: 40, //初审阶段
+        auditSecond: 50, //复审阶段
+        auditComplete: 60, //完成阶段
+        auditArc: 70, //归档阶段
     }
 }

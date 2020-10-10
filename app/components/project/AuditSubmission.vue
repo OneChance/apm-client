@@ -23,11 +23,11 @@
 
 <script>
 
-import TableComponent from "./TableComponent";
+import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import Audit from "../script/server/audit";
-import Config from "../script/config";
-import FormValidator from "../script/client/formValidator";
+import Audit from "../../script/server/audit";
+import Config from "../../script/config";
+import FormValidator from "../../script/client/formValidator";
 import SubmissionQuery from "./SubmissionQuery";
 
 export default {

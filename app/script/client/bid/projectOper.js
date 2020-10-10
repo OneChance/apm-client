@@ -1,6 +1,6 @@
 /*审计立项表单操作*/
 import ClientCall from "./clientCall";
-import FormValidator from "./formValidator";
+import FormValidator from "../formValidator";
 
 const oper = {
     comp: {}, //基本是列表所在控件,加载时候赋值,用于操作完毕后调用其上方法

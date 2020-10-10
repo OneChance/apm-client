@@ -143,8 +143,8 @@
 </template>
 
 <script>
-import Audit from "../script/server/audit.js"
-import Common from "../script/common.js"
+import Audit from "../../script/server/audit.js"
+import Common from "../../script/common.js"
 
 export default {
     name: "AuditNoteForm",
