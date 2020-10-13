@@ -21,7 +21,7 @@
                             <td :class="stepCode===10?'editing':''">
                                 <el-form-item prop="auditNo">
                                     <el-input v-model="submissionForm.auditNo"
-                                              :disabled="step!=='auditProject'"></el-input>
+                                              :disabled="step!=='project'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -422,7 +422,7 @@
                             </td>
                         </tr>
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr class="comment" v-if="step==='auditProject' || step === 'assigned'">
+                        <tr class="comment" v-if="step==='project' || step === 'assigned'">
                             <th>审计意见</th>
                             <td colspan="3" :class="stepCode===10||stepCode===30?'editing':''">
                                 <el-input type="textarea" v-model="comment"></el-input>
@@ -944,7 +944,7 @@ import ConstructionUnit from "../../script/server/constructionUnit";
 
 export default {
     name: "SubmissionForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'], //formRules2只在某些条件下验证
     watch: {
         'submissionForm.constructionUnitApplyFee': function (newVal) {
             this.submissionForm.inspectUnitCheckFee = newVal - this.submissionForm.inspectUnitApplyFee
@@ -1358,7 +1358,7 @@ export default {
         },
         commit: function (event) {
             if ((this.step === 'submission' && event.name.indexOf('save') === -1) ||
-                this.step === 'auditProject' ||
+                this.step === 'project' ||
                 this.step === 'reject' ||
                 this.step === 'surveyPrepare' ||
                 this.step === 'survey' ||
@@ -1391,7 +1391,7 @@ export default {
 
                             this.fileIdsConstruct(this.submissionForm.details)
                             event(this.submissionForm)
-                        } else if (this.step === 'auditProject') {
+                        } else if (this.step === 'project') {
                             event({
                                 targetId: this.submissionForm.id,
                                 content: this.comment,

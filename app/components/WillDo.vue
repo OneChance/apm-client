@@ -26,6 +26,13 @@
         </submission-form>
         <alloc-form v-bind:visible="forms.alloc.visible" v-bind:commitCallback="allocCallback">
         </alloc-form>
+        <bid-form v-bind:visible="forms.bid.visible"
+                  v-bind:from="'editform'"
+                  v-bind:formOpers="forms.bid.formOpers"
+                  v-bind:formRules="forms.bid.rules"
+                  v-bind:stepCode="forms.bid.stepCode"
+                  v-bind:step="forms.bid.step" v-bind:formId="formId">
+        </bid-form>
     </div>
 </template>
 
@@ -34,20 +41,29 @@ import TableComponent from "./TableComponent";
 import SubmissionForm from "./project/SubmissionForm";
 import AllocForm from "./AllocForm";
 import Common from '../script/common'
-import ClientCall from "../script/client/project/clientCall"
+import ClientCallProject from "../script/client/project/clientCall"
+import ClientCallBid from "../script/client/bid/clientCall"
+import ClientCall from "../script/client/clientCall"
 import Config from "../script/config";
 import {
     Notification
 } from "element-ui";
-import ProjectAudit from "../script/client/project/projectOper"
-import AllocApprove from "../script/client/project/allocApproveOper"
-import RejectedOper from "../script/client/project/rejectedOper"
+import ProjectAuditProject from "../script/client/project/projectOper"
+import AllocApproveProject from "../script/client/project/allocApproveOper"
+import RejectedOperProject from "../script/client/project/rejectedOper"
 import SurveyPrepare from "../script/client/project/surveyPrepare.js"
 import Survey from "../script/client/project/survey.js"
 import Argue from "../script/client/project/argue.js"
-import AuditFirst from "../script/client/project/auditFirst.js"
-import AuditSecond from "../script/client/project/auditSecond.js"
+import AuditFirstProject from "../script/client/project/auditFirst.js"
+import AuditSecondProject from "../script/client/project/auditSecond.js"
 import ArgueResolve from "../script/client/project/argueResolve"
+
+import BidForm from "./bid/BidForm";
+import ProjectAuditBid from "../script/client/bid/projectOper"
+import AllocApproveBid from "../script/client/bid/allocApproveOper"
+import RejectedOperBid from "../script/client/bid/rejectedOper"
+import AuditFirstBid from "../script/client/bid/auditFirst.js"
+import AuditSecondBid from "../script/client/bid/auditSecond.js"
 
 export default {
     name: "WillDo",
@@ -72,6 +88,13 @@ export default {
                     step: '',
                     stepCode: '',
                     rules: [],
+                },
+                bid: {
+                    visible: false,
+                    formOpers: [],
+                    step: '',
+                    stepCode: '',
+                    rules: [],
                 }
             },
             tableConfig: {
@@ -82,11 +105,17 @@ export default {
                 pageMethod: this.toPage,
                 checkBoxChange: this.checkBoxChange,
                 checkable: true,
-                cols: [{
-                    prop: 'stageStr',
-                    label: '待办名称',
-                    width: '150'
-                },
+                cols: [
+                    {
+                        prop: 'targetStr',
+                        label: '送审类型',
+                        width: '150',
+                    },
+                    {
+                        prop: 'stageStr',
+                        label: '待办名称',
+                        width: '150'
+                    },
                     {
                         prop: 'creator.name',
                         label: '送审人',
@@ -109,15 +138,27 @@ export default {
             },
             listChecks: [],
             formId: -1,
+            clientCall: {'submission': ClientCallProject, 'bid': ClientCallBid},
+            projectAudit: {'submission': ProjectAuditProject, 'bid': ProjectAuditBid},
+            allocApprove: {'submission': AllocApproveProject, 'bid': AllocApproveBid},
+            rejectedOper: {'submission': RejectedOperProject, 'bid': RejectedOperBid},
+            auditFirst: {'submission': AuditFirstProject, 'bid': AuditFirstBid},
+            auditSecond: {'submission': AuditSecondProject, 'bid': AuditSecondBid},
+            stepCode: {'submission': Config.stepCode, 'bid': Config.stepCodeBid},
+            currentType: '',
         }
     },
     methods: {
         allocCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(() => {
+            let type = this.listChecks[0].target
+            this.clientCall[type].batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(() => {
                 this.operSuccess()
             })
         },
         checkBoxChange(val) {
+            for (let formType in this.forms) {
+                this.forms[formType].visible = false
+            }
             this.listChecks = val
         },
         batchOper(approve) { //待办的批量处理
@@ -129,10 +170,18 @@ export default {
                 })
             } else {
                 let stageSet = new Set()
+                let typeSet = new Set()
                 this.listChecks.forEach(c => {
                     stageSet.add(c.stage)
+                    typeSet.add(c.target)
                 })
-                if (stageSet.size > 1) {
+                if (typeSet.size > 1) {
+                    Notification.error({
+                        title: '操作失败!',
+                        message: '选中的待办属于不同类型送审表,无法批量处理！',
+                        duration: 3000
+                    })
+                } else if (stageSet.size > 1) {
                     Notification.error({
                         title: '操作失败!',
                         message: '选中的待办处于不同阶段,无法批量处理！',
@@ -140,9 +189,10 @@ export default {
                     })
                 } else {
                     let stage = this.listChecks[0].stage
+                    let type = this.listChecks[0].target
                     if (stage === 'project') { //批量审核立项
                         if (approve === 0) {
-                            ClientCall.batchAudit(approve, this.listChecks.map(form => form.targetId)).then(result => {
+                            this.clientCall[type].batchAudit(approve, this.listChecks.map(form => form.targetId)).then(result => {
                                 if (result) {
                                     this.operSuccess()
                                 }
@@ -160,21 +210,21 @@ export default {
                             this.forms.alloc.visible = false
                             this.forms.alloc.visible = true
                         } else {
-                            ClientCall.batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(() => {
+                            this.clientCall[type].batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(() => {
                                 this.operSuccess()
                             })
                         }
                     } else if (stage === 'check') { //批量审核分配
-                        ClientCall.batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                        this.clientCall[type].batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
                             this.operSuccess()
                         })
                     } else if (stage === 'complete') {
                         if (approve === 1) {//批量归档
-                            ClientCall.batchArc('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            this.clientCall[type].batchArc('', this.listChecks.map(form => form.targetId), approve).then(() => {
                                 this.operSuccess()
                             })
                         } else {//批量打回复审
-                            ClientCall.batchBackToAuditSecond('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            this.clientCall[type].batchBackToAuditSecond('', this.listChecks.map(form => form.targetId), approve).then(() => {
                                 this.operSuccess()
                             })
                         }
@@ -186,7 +236,7 @@ export default {
                                 duration: 3000
                             })
                         } else {//批量打回完成
-                            ClientCall.batchBackToComplete('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            this.clientCall[type].batchBackToComplete('', this.listChecks.map(form => form.targetId), approve).then(() => {
                                 this.operSuccess()
                             })
                         }
@@ -200,12 +250,15 @@ export default {
                 }
             }
         },
-        editRow: function (row) { //待办的单据处理
-            //根据待办类型生成form
-            this.forms.alloc.visible = false
-            this.forms.submission.visible = false
-            this.forms.submission.visible = true
+        editRow: function (row) {
             let step = row.stage
+            let type = row.target
+
+            for (let formType in this.forms) {
+                this.forms[formType].visible = false
+            }
+
+            this.forms[type].visible = true
 
             if (row.stage === 'check') {
                 step = 'assigned'
@@ -225,22 +278,23 @@ export default {
                 step = 'auditComplete'
             } else if (row.stage === 'filed') {
                 step = 'auditArc'
-            } else if (row.stage === 'project') {
-                step = 'auditProject'
+            } else if (row.stage === 'distribution') {
+                step = 'alloced'
             }
 
-            this.forms.submission.step = step
+            this.forms[type].step = step
 
-            if (step === 'auditProject') {
-                ProjectAudit.comp = this //设置当前组件,用于回调刷新列表方法
-                this.forms.submission.formOpers = ProjectAudit.buttons
-                this.forms.submission.rules = ProjectAudit.rules
+            if (step === 'project') {
+                this.projectAudit[type].comp = this //设置当前组件,用于回调刷新列表方法
+                this.forms[type].formOpers = this.projectAudit[type].buttons
+                this.forms[type].rules = this.projectAudit[type].rules
             } else if (step === 'assigned') {
-                AllocApprove.comp = this
-                this.forms.submission.formOpers = AllocApprove.buttons
+                this.allocApprove[type].comp = this
+                this.forms[type].formOpers = this.allocApprove[type].buttons
             } else if (step === 'reject') {
-                RejectedOper.comp = this
-                this.forms.submission.formOpers = RejectedOper.buttons
+                this.rejectedOper[type].comp = this
+                this.forms[type].formOpers = this.rejectedOper[type].buttons
+                this.forms[type].rules = this.rejectedOper[type].rules
             } else if (step === 'surveyPrepare') {
                 SurveyPrepare.comp = this
                 this.forms.submission.formOpers = SurveyPrepare.buttons
@@ -255,18 +309,18 @@ export default {
                 ArgueResolve.comp = this
                 this.forms.submission.formOpers = ArgueResolve.buttons
             } else if (step === 'auditFirst') {
-                AuditFirst.comp = this
-                this.forms.submission.formOpers = AuditFirst.buttons
-                this.forms.submission.rules = AuditFirst.rules
+                this.auditFirst[type].comp = this
+                this.forms[type].formOpers = this.auditFirst[type].buttons
+                this.forms[type].rules = this.auditFirst[type].rules
             } else if (step === 'auditSecond') {
-                AuditSecond.comp = this
-                this.forms.submission.formOpers = AuditSecond.buttons
-                this.forms.submission.rules = AuditSecond.rules
+                this.auditSecond[type].comp = this
+                this.forms[type].formOpers = this.auditSecond[type].buttons
+                this.forms[type].rules = this.auditSecond[type].rules
             } else {
-                this.forms.submission.formOpers = []
+                this.forms[type].formOpers = []
             }
             this.formId = row.targetId
-            this.forms.submission.stepCode = Config.stepCode[step]
+            this.forms[type].stepCode = this.stepCode[type][step]
         },
         queryList: function () {
             this.list(this.query)
@@ -290,8 +344,9 @@ export default {
             })
         },
         operSuccess() {
-            this.forms.submission.visible = false
-            this.forms.alloc.visible = false
+            for (let formType in this.forms) {
+                this.forms[formType].visible = false
+            }
             this.$message({
                 message: '操作成功',
                 type: 'success'
@@ -304,7 +359,8 @@ export default {
     components: {
         TableComponent,
         SubmissionForm,
-        AllocForm
+        AllocForm,
+        BidForm
     }
 }
 </script>

@@ -73,7 +73,7 @@
             <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
         </el-form-item>
 
-        <el-button type="primary" @click="queryList">查询</el-button>
+        <el-button type="primary" @click="queryList" >查询</el-button>
         <el-button @click="$refs['query'].resetFields()">重置</el-button>
         <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name">
             {{ btn.name }}

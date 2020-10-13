@@ -96,7 +96,6 @@ export default {
         let comp = this;
         Menu.getMenu().then(res => {
             comp.menus = res.menus
-            console.log(res.menus)
             comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
         })
 

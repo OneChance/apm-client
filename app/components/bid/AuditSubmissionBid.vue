@@ -14,7 +14,7 @@
                   v-bind:formRules="rules"
                   v-bind:formRules2="rules2"
                   v-bind:formOpers="formOpers"
-                  v-bind:step="'submission'"
+                  v-bind:step="'bid'"
                   v-bind:stepCode="stepCode"
                   v-bind:formId="formId">
         </bid-form>
@@ -25,7 +25,6 @@
 
 import TableComponent from "../TableComponent";
 import Config from "../../script/config";
-import FormValidator from "../../script/client/formValidator";
 import BidForm from "./BidForm";
 import BidQuery from "./BidQuery";
 import ClientCall from "../../script/client/bid/clientCall";

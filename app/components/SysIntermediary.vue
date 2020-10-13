@@ -7,7 +7,7 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
-                    <el-button type="success" @click="add" v-if="type!=='sysuser'">新增</el-button>
+                    <el-button type="success" @click="add">新增</el-button>
                 </el-form-item>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig"></table-component>

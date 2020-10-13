@@ -1,7 +1,6 @@
 /*客户端调用方法,封装服务端调用,包含待办和业务列表都会调用的提交方法*/
 
 import Bid from "../../server/bid";
-import Workitem from "../../server/workitem"
 import User from "../../server/user"
 
 export default {
@@ -19,7 +18,7 @@ export default {
     //审计立项
     audit(approve, form) {
         return Bid.saveAuditProject({
-            target: 'submission',
+            target: 'bid',
             type: approve,
             targetId: form.targetId,
             content: form.content,

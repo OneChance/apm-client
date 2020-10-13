@@ -10,7 +10,7 @@
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
-        <bid-form v-bind:visible="submissionFormVisible"
+        <bid-form v-bind:visible="bidFormVisible"
                   v-bind:from="'editform'"
                   v-bind:formOpers="formOpers"
                   v-bind:step="'alloc'"
@@ -44,7 +44,7 @@ export default {
         return {
             stepCode: Config.stepCodeBid.alloced,
             allocFormVisible: false,
-            submissionFormVisible: false,
+            bidFormVisible: false,
             opers: [
                 {name: '分配', color: 'success', event: this.batchAlloc}
             ],
@@ -65,7 +65,6 @@ export default {
                     {prop: 'auditNo', label: '审计编号', width: '150'},
                     {prop: 'contractNo', label: '合同编码', width: '150'},
                     {prop: 'projectName', label: '工程项目', width: '220'},
-                    {prop: 'constructionUnit', label: '施工单位', width: '220'},
                 ],
                 oper: [
                     {
@@ -82,6 +81,8 @@ export default {
     methods: {
         checkBoxChange(val) {
             this.listChecks = val
+            this.bidFormVisible = false
+            this.allocFormVisible = false
         },
         commitCallback(form) {
             ClientCall.batchAlloc(form, this.listChecks.map(form => form.id), 1).then(() => {
@@ -103,7 +104,7 @@ export default {
                 })
             } else {
                 if (approve === 1) {
-                    this.submissionFormVisible = false
+                    this.bidFormVisible = false
                     this.allocFormVisible = false
                     this.allocFormVisible = true
                 } else {
@@ -115,8 +116,8 @@ export default {
         },
         editRow: function (row) {
             this.allocFormVisible = false
-            this.submissionFormVisible = false
-            this.submissionFormVisible = true
+            this.bidFormVisible = false
+            this.bidFormVisible = true
             this.formId = row.id
         },
         operSuccess() {

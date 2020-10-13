@@ -16,9 +16,6 @@
         <el-form-item prop="auditNo">
             <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
         </el-form-item>
-        <el-form-item prop="contractNo">
-            <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
-        </el-form-item>
         <el-form-item prop="projectName">
             <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
         </el-form-item>
@@ -34,7 +31,7 @@
             </el-select>
         </el-form-item>
         <el-form-item prop="auditType"
-                      v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced].indexOf(stepCode)===-1 ">
+                      v-if="[stepCodes.save,stepCodes.auditProject,stepCodes.alloced].indexOf(stepCode)===-1 ">
             <el-select v-model="query.auditType" filterable placeholder="审计方式" style="width: 110px;">
                 <el-option
                     v-for="aType in auditTypes"
@@ -74,14 +71,14 @@ import User from "../../script/server/user";
 import ConstructionUnit from "../../script/server/constructionUnit";
 import Common from "../../script/common";
 import Config from "../../script/config";
-import Audit from "../../script/server/audit";
+import Bid from "../../script/server/bid";
 
 export default {
     name: "BidQuery",
     props: ['stepCode', 'tableConfigObject', 'checkedList', 'buttons'],
     data: function () {
         return {
-            stepCodes: Config.stepCode,
+            stepCodes: Config.stepCodeBid,
             query: {
                 projectName: '',
                 status: '',
@@ -106,17 +103,13 @@ export default {
                 {value: 0, label: '所有'},
                 {value: -10, label: '送审保存'},
                 {value: -20, label: '送审打回'},
-                {value: -30, label: '争议处理'},
                 {value: 10, label: '审计立项'},
                 {value: 20, label: '审计分配'},
                 {value: 30, label: '分配审核'},
-                {value: 40, label: '勘察准备'},
-                {value: 50, label: '现场勘察'},
-                {value: 60, label: '争议处理'},
-                {value: 70, label: '初审'},
-                {value: 80, label: '复审'},
-                {value: 90, label: '完成'},
-                {value: 100, label: '归档'},
+                {value: 40, label: '初审'},
+                {value: 50, label: '复审'},
+                {value: 60, label: '完成'},
+                {value: 70, label: '归档'},
             ],
         }
     },
@@ -141,7 +134,6 @@ export default {
             }).then(res => {
                 this.inters = []
                 res.list.content.forEach(user => {
-                    console.log(user)
                     this.inters.push({
                         value: user.id,
                         label: user.name
@@ -177,7 +169,7 @@ export default {
 
             this.tableConfigObject.currentPage = data.page
 
-            Audit.getSubmissions(data).then(res => {
+            Bid.getSubmissions(data).then(res => {
 
                 if (this.checkedList) {
                     this.checkedList = []

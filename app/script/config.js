@@ -11,7 +11,7 @@ export default {
         argueDeal: -30,//争议处理中
         reject: -20,
         submissionSave: -10, //送审保存
-        auditProject: 10, //审计立项
+        project: 10, //审计立项
         alloced: 20, //分配
         assigned: 30, //分配审核
         surveyPrepare: 40, //勘察准
@@ -25,7 +25,7 @@ export default {
     stepCodeBid: {
         reject: -20,
         save: -10, //送审保存
-        auditProject: 10, //审计立项
+        project: 10, //当前处于审计立项阶段
         alloced: 20, //分配
         assigned: 30, //分配审核
         auditFirst: 40, //初审阶段
