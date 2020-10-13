@@ -936,9 +936,9 @@ import {
 } from "element-ui";
 import MaterialFile from "../../script/server/materialFile";
 import Upload from "../../script/server/upload";
-import Audit from "../../script/server/audit";
 import Comment from "../../script/server/comment";
-import ClientCall from "../../script/client/project/clientCall"
+import ClientCallProject from "../../script/client/project/clientCall"
+import ClientCallCommon from "../../script/client/clientCall"
 import Env from "../../script/server/env"
 import ConstructionUnit from "../../script/server/constructionUnit";
 
@@ -992,7 +992,7 @@ export default {
                     } else if (this.from === 'editform') {
 
                         if (this.stepCode >= 50) {
-                            ClientCall.getEmps().then(result => {
+                            ClientCallCommon.getEmps().then(result => {
                                 this.users = []
                                 result.list.content.forEach(user => {
                                     this.users.push({
@@ -1003,7 +1003,7 @@ export default {
                             })
                         }
                         //加载form
-                        Audit.getSubmission({
+                        ClientCallProject.getSubmission({
                             id: this.formId
                         }).then(result => {
 

@@ -73,7 +73,7 @@
             <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
         </el-form-item>
 
-        <el-button type="primary" @click="queryList" >查询</el-button>
+        <el-button type="primary" @click="queryList">查询</el-button>
         <el-button @click="$refs['query'].resetFields()">重置</el-button>
         <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name">
             {{ btn.name }}
@@ -83,11 +83,10 @@
 
 <script>
 
-import User from "../../script/server/user";
-import ConstructionUnit from "../../script/server/constructionUnit";
 import Common from "../../script/common";
 import Config from "../../script/config";
-import Audit from "../../script/server/audit";
+import ClientCallProject from "../../script/client/project/clientCall";
+import ClientCallCommon from "../../script/client/clientCall";
 
 export default {
     name: "SubmissionQuery",
@@ -111,10 +110,7 @@ export default {
             },
             units: [],
             inters: [],
-            auditTypes: [
-                {value: '内审', label: '内审'},
-                {value: '外审', label: '外审'},
-            ],
+            auditTypes: Config.auditTypes,
             statusList: [
                 {value: 0, label: '所有'},
                 {value: -10, label: '送审保存'},
@@ -135,10 +131,7 @@ export default {
     },
     mounted: function () {
 
-        ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        }).then(res => {
+        ClientCallCommon.getConstructionUnits().then(res => {
             this.units = []
             res.list.content.forEach(user => {
                 this.units.push({
@@ -147,11 +140,7 @@ export default {
                 })
             })
 
-            User.getUsers({
-                page: 1,
-                pageSize: 999999,
-                thirdParty: true
-            }).then(res => {
+            ClientCallCommon.getIntermediary().then(res => {
                 this.inters = []
                 res.list.content.forEach(user => {
                     this.inters.push({
@@ -189,7 +178,7 @@ export default {
 
             this.tableConfigObject.currentPage = data.page
 
-            Audit.getSubmissions(data).then(res => {
+            ClientCallProject.getSubmissions(data).then(res => {
 
                 if (this.checkedList) {
                     this.checkedList = []

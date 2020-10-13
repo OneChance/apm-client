@@ -38,10 +38,7 @@ export default {
         return {
             stepCode: Config.stepCode.survey,
             dialogVisible: false,
-            auditTypes: [
-                {value: 'in', label: '内审'},
-                {value: 'out', label: '外审'},
-            ],
+            auditTypes: Config.auditTypes,
             formOpers: [],
             tableConfig: {
                 data: [],

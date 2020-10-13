@@ -8,11 +8,14 @@ const oper = {
         {name: '重新提交', color: 'warning', event: recommit},
     ],
     rules: {
-        contractNo: [
-            {required: true, message: '请输入合同编码', trigger: 'blur'},
+        bidUnit: [
+            {required: true, message: '请输入编制单位名称', trigger: 'blur'},
         ],
         projectName: [
             {required: true, message: '请输入工程项目名称', trigger: 'blur'},
+        ],
+        bidMan: [
+            {required: true, message: '请输入编标人', trigger: 'blur'},
         ],
         startDate: [
             {required: true, message: '请选择预计开工时间', trigger: 'blur'}

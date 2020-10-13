@@ -67,11 +67,10 @@
 
 <script>
 
-import User from "../../script/server/user";
-import ConstructionUnit from "../../script/server/constructionUnit";
 import Common from "../../script/common";
 import Config from "../../script/config";
-import Bid from "../../script/server/bid";
+import ClientCallBid from "../../script/client/bid/clientCall";
+import ClientCallCommon from "../../script/client/clientCall"
 
 export default {
     name: "BidQuery",
@@ -95,10 +94,7 @@ export default {
             },
             units: [],
             inters: [],
-            auditTypes: [
-                {value: '内审', label: '内审'},
-                {value: '外审', label: '外审'},
-            ],
+            auditTypes: Config.auditTypes,
             statusList: [
                 {value: 0, label: '所有'},
                 {value: -10, label: '送审保存'},
@@ -114,35 +110,15 @@ export default {
         }
     },
     mounted: function () {
-
-        ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        }).then(res => {
-            this.units = []
+        ClientCallCommon.getIntermediary().then(res => {
+            this.inters = []
             res.list.content.forEach(user => {
-                this.units.push({
+                this.inters.push({
                     value: user.id,
                     label: user.name
                 })
             })
-
-            User.getUsers({
-                page: 1,
-                pageSize: 999999,
-                thirdParty: true
-            }).then(res => {
-                this.inters = []
-                res.list.content.forEach(user => {
-                    this.inters.push({
-                        value: user.id,
-                        label: user.name
-                    })
-                })
-            })
-
             this.list()
-
         })
     },
     methods: {
@@ -169,7 +145,7 @@ export default {
 
             this.tableConfigObject.currentPage = data.page
 
-            Bid.getSubmissions(data).then(res => {
+            ClientCallBid.getSubmissions(data).then(res => {
 
                 if (this.checkedList) {
                     this.checkedList = []

@@ -43,7 +43,7 @@ export default {
     },
     data: function () {
         return {
-            stepCode: Config.stepCodeBid.auditProject,
+            stepCode: Config.stepCodeBid.project,
             dialogVisible: false,
             buttons: [
                 //{name: '批量审核通过', color: 'success', event: this.batchAuditAgree},

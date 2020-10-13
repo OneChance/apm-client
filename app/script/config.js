@@ -32,5 +32,9 @@ export default {
         auditSecond: 50, //复审阶段
         auditComplete: 60, //完成阶段
         auditArc: 70, //归档阶段
-    }
+    },
+    auditTypes: [
+        {value: '内审', label: '内审'},
+        {value: '外审', label: '外审'},
+    ]
 }

@@ -132,6 +132,8 @@ export default {
             }).then(result => {
                 this.downFiles = []
                 result.bid.details.forEach(fileType => this.addToFileList(fileType))
+                result.bid.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
+                result.bid.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
             })
         },
         addToFileList(fileType) {

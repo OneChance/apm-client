@@ -55,7 +55,7 @@
 
 import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
-import Audit from "../../script/server/audit";
+import ClientCallProject from "../../script/client/project/clientCall";
 import Env from "../../script/server/env"
 import SubmissionQuery from "./SubmissionQuery";
 import JSZip from 'jszip'
@@ -130,7 +130,7 @@ export default {
             this.fileListVisible = false
             this.fileListVisible = true
 
-            Audit.getSubmission({
+            ClientCallProject.getSubmission({
                 id: row.id
             }).then(result => {
                 this.downFiles = []

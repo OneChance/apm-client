@@ -12,7 +12,6 @@
         <bid-form v-bind:visible="dialogVisible"
                   v-bind:from="from"
                   v-bind:formRules="rules"
-                  v-bind:formRules2="rules2"
                   v-bind:formOpers="formOpers"
                   v-bind:step="'bid'"
                   v-bind:stepCode="stepCode"
@@ -28,6 +27,7 @@ import Config from "../../script/config";
 import BidForm from "./BidForm";
 import BidQuery from "./BidQuery";
 import ClientCall from "../../script/client/bid/clientCall";
+import RejectedOper from "../../script/client/bid/rejectedOper"   //使用同一个校验规则
 
 export default {
     name: "AuditSubmissionBid",
@@ -78,21 +78,7 @@ export default {
                     }
                 ]
             },
-            rules: {
-                contractNo: [
-                    {required: true, message: '请输入合同编码', trigger: 'blur'},
-                ],
-                projectName: [
-                    {required: true, message: '请输入工程项目名称', trigger: 'blur'},
-                ],
-                startDate: [
-                    {required: true, message: '请选择预计开工时间', trigger: 'blur'}
-                ],
-                materialGroup: [
-                    {required: true, message: '请选择资料清单组', trigger: 'blur'},
-                ],
-            },
-            rules2: {}
+            rules: RejectedOper.rules,
         }
     },
     methods: {

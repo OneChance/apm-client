@@ -143,7 +143,8 @@
 </template>
 
 <script>
-import Audit from "../../script/server/audit.js"
+
+import ClientCallProject from "../../script/client/project/clientCall"
 import Common from "../../script/common.js"
 
 export default {
@@ -153,7 +154,7 @@ export default {
         visible: function (newVal) {
             if (newVal) {
                 //加载form
-                Audit.getSubmission({
+                ClientCallProject.getSubmission({
                     id: this.formId
                 }).then(result => {
                     let now = new Date();

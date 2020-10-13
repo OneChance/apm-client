@@ -67,6 +67,14 @@ const oper = {
             {required: true, message: '请选择付款情况', trigger: 'blur'},
         ],
     },
+    rules2: {
+        payTypeOther: [
+            {required: true, message: '请输入具体结算方式', trigger: 'blur'},
+        ],
+        payConditionOther: [
+            {required: true, message: '请输入具体付款情况', trigger: 'blur'},
+        ],
+    }
 }
 
 export default oper

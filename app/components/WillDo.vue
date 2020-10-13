@@ -21,6 +21,7 @@
         <submission-form v-bind:visible="forms.submission.visible" v-bind:from="'editform'"
                          v-bind:formOpers="forms.submission.formOpers"
                          v-bind:formRules="forms.submission.rules"
+                         v-bind:formRules2="forms.submission.rules2"
                          v-bind:stepCode="forms.submission.stepCode"
                          v-bind:step="forms.submission.step" v-bind:formId="formId">
         </submission-form>
@@ -88,6 +89,7 @@ export default {
                     step: '',
                     stepCode: '',
                     rules: [],
+                    rules2: [],
                 },
                 bid: {
                     visible: false,
@@ -95,6 +97,7 @@ export default {
                     step: '',
                     stepCode: '',
                     rules: [],
+                    rules2: [],
                 }
             },
             tableConfig: {
@@ -139,7 +142,7 @@ export default {
             listChecks: [],
             formId: -1,
             clientCall: {'submission': ClientCallProject, 'bid': ClientCallBid},
-            projectAudit: {'submission': ProjectAuditProject, 'bid': ProjectAuditBid},
+            projectAudit: {'submission': ProjectAuditProject, 'bid': ProjectAuditBid},    //不同类型的送审表调用各自的立项审计脚本
             allocApprove: {'submission': AllocApproveProject, 'bid': AllocApproveBid},
             rejectedOper: {'submission': RejectedOperProject, 'bid': RejectedOperBid},
             auditFirst: {'submission': AuditFirstProject, 'bid': AuditFirstBid},
@@ -250,39 +253,43 @@ export default {
                 }
             }
         },
+        stepNameConvert(serverStage) {
+            switch (serverStage) {
+                case 'distribution':
+                    return 'alloced';
+                case 'check':
+                    return 'assigned';
+                case 'survey_prepare':
+                    return 'surveyPrepare';
+                case 'survey_scene':
+                    return 'survey';
+                case 'argue':
+                    return 'argueHandle';
+                case 'argue_reject':
+                    return 'argueDeal';
+                case 'audit_first':
+                    return 'auditFirst';
+                case 'audit_second':
+                    return 'auditSecond';
+                case 'complete':
+                    return 'auditComplete';
+                case 'filed':
+                    return 'auditArc';
+                default:
+                    return serverStage;
+            }
+        },
         editRow: function (row) {
-            let step = row.stage
+
+            let step = this.stepNameConvert(row.stage)
             let type = row.target
+
+            this.forms[type].step = step
 
             for (let formType in this.forms) {
                 this.forms[formType].visible = false
             }
-
             this.forms[type].visible = true
-
-            if (row.stage === 'check') {
-                step = 'assigned'
-            } else if (row.stage === 'survey_prepare') {
-                step = 'surveyPrepare'
-            } else if (row.stage === 'survey_scene') {
-                step = 'survey'
-            } else if (row.stage === 'argue') {
-                step = 'argueHandle'
-            } else if (row.stage === 'audit_first') {
-                step = 'auditFirst'
-            } else if (row.stage === 'audit_second') {
-                step = 'auditSecond'
-            } else if (row.stage === 'argue_reject') {
-                step = 'argueDeal'
-            } else if (row.stage === 'complete') {
-                step = 'auditComplete'
-            } else if (row.stage === 'filed') {
-                step = 'auditArc'
-            } else if (row.stage === 'distribution') {
-                step = 'alloced'
-            }
-
-            this.forms[type].step = step
 
             if (step === 'project') {
                 this.projectAudit[type].comp = this //设置当前组件,用于回调刷新列表方法
@@ -295,6 +302,7 @@ export default {
                 this.rejectedOper[type].comp = this
                 this.forms[type].formOpers = this.rejectedOper[type].buttons
                 this.forms[type].rules = this.rejectedOper[type].rules
+                this.forms[type].rules2 = this.rejectedOper[type].rules2
             } else if (step === 'surveyPrepare') {
                 SurveyPrepare.comp = this
                 this.forms.submission.formOpers = SurveyPrepare.buttons

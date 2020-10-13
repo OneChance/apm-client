@@ -420,7 +420,7 @@ import ConstructionUnit from "../../script/server/constructionUnit";
 
 export default {
     name: "BidForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'stepCode'],
     watch: {
         'bidForm.submissionPrice': function () {
             this.calAuditFirst()
@@ -618,7 +618,6 @@ export default {
             },
             comment: '',
             comments: [],
-            users: [],
         }
     },
     methods: {

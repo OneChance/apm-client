@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="工程结算审计通知单" class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
+    <el-dialog :title="招标控制价通知单" class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
             <div class="form">
                 <el-form :model="noteForm" :rules="rules" ref="submissionForm">
@@ -119,7 +119,7 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                               4.该建议招标控制价不含暂列金额;
+                                4.该建议招标控制价不含暂列金额;
                             </td>
                         </tr>
                         <tr>
@@ -163,7 +163,8 @@
 </template>
 
 <script>
-import Audit from "../../script/server/audit.js"
+
+import ClientCallBid from "../../script/client/bid/clientCall"
 import Common from "../../script/common.js"
 
 export default {
@@ -173,7 +174,7 @@ export default {
         visible: function (newVal) {
             if (newVal) {
                 //加载form
-                Audit.getSubmission({
+                ClientCallBid.getSubmission({
                     id: this.formId
                 }).then(result => {
                     let now = new Date();

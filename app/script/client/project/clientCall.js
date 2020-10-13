@@ -1,14 +1,20 @@
 /*客户端调用方法,封装服务端调用,包含待办和业务列表都会调用的提交方法*/
 
 import Audit from "../../server/audit";
-import Workitem from "../../server/workitem"
-import User from "../../server/user"
-import Net from "../../server/net";
 
 export default {
     //保存送审
     saveSubmission: function (data) {
         return Audit.saveSubmission(data)
+    },
+    getSubmissions: function (data) {
+        return Audit.getSubmissions(data)
+    },
+    getSubmission: function (data) {
+        return Audit.getSubmission(data)
+    },
+    deleteSubmission: function (data) {
+        return Audit.deleteSubmission(data)
     },
     //审计立项
     audit(approve, form) {
@@ -74,14 +80,6 @@ export default {
     //复审
     commitAuditSecond: function (form) {
         return Audit.commitAuditSecond(form)
-    },
-    getEmps() {
-        let data = {
-            page: 1,
-            pageSize: 99999999,
-            thirdParty: false
-        }
-        return User.getUsers(data)
     },
     batchArc(comment, checks, approve) {
         return Audit.arc({

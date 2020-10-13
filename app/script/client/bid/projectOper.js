@@ -10,7 +10,7 @@ const oper = {
     ],
     rules: {
         auditNo: [
-            {required: true, message: '请填写审计编号', trigger: 'blur'}
+            {required: true, validator: FormValidator.auditNoValidator, trigger: 'blur'}
         ],
     },
 }
