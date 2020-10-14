@@ -51,11 +51,6 @@
                       stepCodes.surveyPrepare,stepCodes.survey,stepCodes.argueHandle,stepCodes.auditFirst].indexOf(stepCode)===-1 ">
             <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
         </el-form-item>
-        <el-form-item prop="auditFee"
-                      v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced,
-                      stepCodes.surveyPrepare,stepCodes.survey,stepCodes.argueHandle,stepCodes.auditFirst].indexOf(stepCode)===-1 ">
-            <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
-        </el-form-item>
 
         <el-button type="primary" @click="queryList">查询</el-button>
         <el-button @click="$refs['query'].resetFields()">重置</el-button>

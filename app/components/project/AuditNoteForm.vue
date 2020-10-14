@@ -172,13 +172,7 @@ export default {
                         "/" + (now.getMonth() + 1) + "/" + now.getDate();
 
                     this.auditNoteForm.auditFee = result.submission.auditFee
-
-                    if (result.submission.assigned.thirdParty) {
-                        this.auditNoteForm.auditUnit = result.submission.assigned.thirdPartyName
-                    } else {
-                        this.auditNoteForm.auditUnit = result.submission.assigned.name
-                    }
-
+                    this.auditNoteForm.auditUnit = result.submission.assigned.name
                     this.auditNoteForm.payType = result.submission.payType
                     this.auditNoteForm.auditNote = result.submission.auditNote
                 })

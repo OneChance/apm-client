@@ -13,7 +13,7 @@
                             <th>项目编号</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNo">
-                                    <el-input v-model="noteForm.projectNo"></el-input>
+                                    <el-input v-model="noteForm.projectNo" placeholder="填写项目编号"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -21,7 +21,7 @@
                             <th>建设单位</th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
-                                    <el-input v-model="noteForm.constructionUnit"></el-input>
+                                    <el-input v-model="noteForm.constructionUnit" placeholder="填写建设单位"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -29,7 +29,7 @@
                             <th>设计单位</th>
                             <td colspan="3">
                                 <el-form-item prop="disignUnit">
-                                    <el-input v-model="noteForm.disignUnit"></el-input>
+                                    <el-input v-model="noteForm.disignUnit" placeholder="填写设计单位"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -69,13 +69,13 @@
                             <th>送审价</th>
                             <td>
                                 <el-form-item prop="subMoney">
-                                    <el-input v-model.number="noteForm.subMoney"></el-input>
+                                    <el-input v-model.number="noteForm.subMoney" :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
                             <th>核增</th>
                             <td>
                                 <el-form-item prop="add">
-                                    <el-input v-model.number="noteForm.add"></el-input>
+                                    <el-input v-model.number="noteForm.add" :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
 
@@ -84,13 +84,13 @@
                             <th>审核价</th>
                             <td>
                                 <el-form-item prop="auditMoney">
-                                    <el-input v-model.number="noteForm.auditMoney"></el-input>
+                                    <el-input v-model.number="noteForm.auditMoney" :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
                             <th>核减</th>
                             <td>
                                 <el-form-item prop="sub">
-                                    <el-input v-model.number="noteForm.sub"></el-input>
+                                    <el-input v-model.number="noteForm.sub" :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -141,7 +141,6 @@
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;年&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;月&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日
                                         </td>
                                         <td>
-                                        <td>
                                             经办人:<br><br><br>
                                             <br><br><br>
                                             <br><br><br>
@@ -178,9 +177,14 @@ export default {
                     id: this.formId
                 }).then(result => {
                     let now = new Date();
-                    this.noteForm.auditNo = result.bid.auditNo
+
+                    console.log(result.bid)
+
+                    this.noteForm.projectNo = result.bid.itemCode
                     this.noteForm.projectName = result.bid.projectName
-                    this.noteForm.subMoney = result.bid.subMoney
+                    this.noteForm.bidUnit = result.bid.bidUnit
+                    this.noteForm.subMoney = result.bid.submissionPrice
+                    this.noteForm.budget = result.bid.budget
                     this.noteForm.auditMoney = result.bid.secondAuditPrice
                     this.noteForm.sub = result.bid.subtractPrice
                     this.noteForm.auditInfo = result.bid.bidUnit + "\n     你单位送来的该工程，经审核，建议招标控制价为" + this.noteForm.auditMoney + "元。大写:" + Common.priceCN(
@@ -191,16 +195,10 @@ export default {
                         "                                                                                  " + now.getFullYear() +
                         "/" + (now.getMonth() + 1) + "/" + now.getDate();
 
-                    this.noteForm.auditFee = result.submission.auditFee
+                    this.noteForm.auditFee = result.bid.auditFee
+                    this.noteForm.auditNote = result.bid.auditNote
+                    this.noteForm.auditUnit = result.bid.assigned.name
 
-                    if (result.submission.assigned.thirdParty) {
-                        this.noteForm.auditUnit = result.submission.assigned.thirdPartyName
-                    } else {
-                        this.noteForm.auditUnit = result.submission.assigned.name
-                    }
-
-                    this.noteForm.payType = result.submission.payType
-                    this.noteForm.auditNote = result.submission.auditNote
                 })
             }
         },
@@ -216,15 +214,15 @@ export default {
                 projectNo: '',
                 arcNo: '',
                 projectName: '',
-                floorArea: '',
+                bidUnit: '',
                 submissionMoney: 0,
                 auditMoney: 0,
+                budget: 0,
                 sub: 0,
                 add: 0,
                 auditInfo: '',
                 auditFee: 0,
                 auditUnit: '',
-                payType: '',
                 auditNote: '',
             },
         }

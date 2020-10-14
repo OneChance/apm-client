@@ -27,7 +27,7 @@
                         <el-input v-model="form.password"></el-input>
                     </el-form-item>
                     <el-form-item label="单位名称" prop="name" style="width:580px">
-                        <el-input v-model="form.name" style="width:500px" :disabled="loginUser.id !== 1"></el-input>
+                        <el-input v-model="form.name" style="width:500px" :disabled="!loginUser.admin"></el-input>
                     </el-form-item>
 
                     <div v-for="(link,index) in form.links">

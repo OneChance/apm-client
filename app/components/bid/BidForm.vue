@@ -835,7 +835,11 @@ export default {
                     'uid': content.file.uid,
                     'name': content.file.name
                 }
+
                 if (comp.step === 'auditFirst') {
+                    console.log(comp.uploadParams.id)
+                    console.log(comp.bidForm.auditFirstFiles)
+                    console.log(comp.bidForm.auditFirstFiles.filter(f => f.mId === comp.uploadParams.id)[0])
                     comp.bidForm.auditFirstFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
                 } else if (comp.step === 'auditSecond') {
                     comp.bidForm.auditSecondFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)

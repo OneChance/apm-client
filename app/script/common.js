@@ -20,7 +20,7 @@ export default {
         }
     },
     priceCN: function (n) {
-        console.log(n)
+
         let fraction = ['角', '分'];
         let digit = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
         let unit = [

@@ -51,15 +51,11 @@ export default {
                 cols: [
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
-                    {prop: 'contractNo', label: '合同编码', width: '150'},
                     {prop: 'projectName', label: '工程项目', width: '220'},
-                    {prop: 'constructionUnit', label: '施工单位', width: '220'},
-                    {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
-                    {prop: 'assigned.thirdPartyName', label: '中介机构', width: '220'},
+                    {prop: 'assigned.name', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150'},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
-                    {prop: 'auditFee', label: '惩罚性费用', width: '150'},
                 ],
                 oper: [
                     {
