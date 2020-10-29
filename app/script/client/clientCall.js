@@ -9,6 +9,10 @@ export default {
     getWillDo(data) {
         return Workitem.getWillDo(data)
     },
+    //获得待办
+    getDone(data) {
+        return Workitem.getDone(data)
+    },
     //获取员工
     getEmps() {
         return User.getUsers({

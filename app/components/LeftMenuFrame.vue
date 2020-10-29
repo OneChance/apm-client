@@ -67,6 +67,7 @@ import SysUser from "./SysUser";
 import SysIntermediary from "./SysIntermediary";
 import MissionAlloc from "./project/MissionAlloc";
 import WillDo from "./WillDo";
+import Done from "./Done";
 import SurveyPrepare from "./project/SurveyPrepare"
 import Survey from "./project/Survey"
 import AuditComplete from "./project/AuditComplete";
@@ -104,17 +105,17 @@ export default {
         menus: function (newVal) {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
-            if (newVal.length === 4) {
-                this.leftActiveIndex = 'willDo'
-                this.currentComponent = 'willDo'
 
+            this.leftActiveIndex = 'willDo'
+            this.currentComponent = 'willDo'
+
+            if (newVal.length === 1) {//我的事项菜单
                 ClientCall.getWillDo({
                     page: 1,
                     pageSize: 99999999
                 }).then(res => {
                     this.willDoCount = res.list.totalElements
                 })
-
             } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
@@ -150,6 +151,7 @@ export default {
         SysUser,
         SysIntermediary,
         WillDo,
+        Done,
         SurveyPrepare,
         Survey,
         AuditComplete,

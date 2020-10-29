@@ -1,13 +1,13 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" class="demo-form-inline">
-                <el-form-item>
+            <el-form :inline="true" class="demo-form-inline query-form">
+                <!--<el-form-item>
                     <el-input v-model="query.workitemName" placeholder="待办名称"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="queryList">查询</el-button>
-                </el-form-item>
+                </el-form-item>-->
                 <el-form-item>
                     <el-button type="success" @click="batchOper(1)">批量处理</el-button>
                 </el-form-item>
@@ -112,22 +112,30 @@ export default {
                     {
                         prop: 'targetStr',
                         label: '送审类型',
-                        width: '150',
+                        width: '100',
+                    },
+                    {
+                        prop: 'auditNo',
+                        label: '审计编号',
+                        width: '100',
+                    },
+                    {
+                        prop: 'projectName',
+                        label: '项目名称',
                     },
                     {
                         prop: 'stageStr',
                         label: '待办名称',
-                        width: '150'
+                        width: '100'
                     },
                     {
                         prop: 'creator.name',
                         label: '送审人',
-                        width: '150'
+                        width: '100'
                     },
                     {
                         prop: 'createTime',
                         label: '送审时间',
-                        width: '250'
                     },
                 ],
                 oper: [{
@@ -138,6 +146,7 @@ export default {
                     },
                     event: this.editRow,
                 },],
+                operWidth: 80
             },
             listChecks: [],
             formId: -1,

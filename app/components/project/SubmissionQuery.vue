@@ -204,7 +204,5 @@ export default {
 </script>
 
 <style scoped>
-.query-form {
-    margin-bottom: 10px;
-}
+
 </style>

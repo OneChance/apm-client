@@ -45,11 +45,14 @@ body {
   padding-right: 0 !important;
 }
 
+.query-form {
+  margin-bottom: 10px;
+}
+
 .card-content {
   display: -webkit-flex; /* Safari */
   display: flex;
   justify-content: center;
-  padding-top: 30px;
 }
 
 .line {

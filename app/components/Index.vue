@@ -15,13 +15,17 @@
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
+                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id === 6">
+                        {{ menu.label }}
+                    </el-menu-item>
                     <el-submenu :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id === 2">
                         <template slot="title">{{ menu.label }}</template>
                         <el-menu-item :index="m.value" v-for="m in menu.children" :key="m.value">
                             {{ m.label }}
                         </el-menu-item>
                     </el-submenu>
-                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id !== 2">
+                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value"
+                                  v-if="menu.id !== 2 && menu.id !==6">
                         {{ menu.label }}
                     </el-menu-item>
                 </el-menu>
@@ -65,7 +69,7 @@
 </template>
 
 <script>
-require('../style/css/anim.scss');
+
 import Menu from '../script/server/menu.js'
 import Account from '../script/server/account.js'
 import App from '../script/app.js'
@@ -77,7 +81,6 @@ export default {
     },
     data: function () {
         return {
-            img: require("../assets/images/header.jpg"),
             menus: [],
             leftMenus: [],
             activeMenuIndex: 'my',

@@ -7,12 +7,12 @@ module.exports = merge(common, {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[hash].js',
-        publicPath: 'http://demo.ceeg.cn/',  //192.168.1.200:8888
+        publicPath: 'http://apm.ceeg.cn/',
         chunkFilename: '[name].[hash].js'
     },
     devtool: 'inline-source-map',
     devServer: {
-        port: 8888,
+        port: 8891,
         disableHostCheck: true,
         compress: true, //启动gzip压缩,加快启动速度
         hot: true //开启HMR，只重新打包修改的模块
