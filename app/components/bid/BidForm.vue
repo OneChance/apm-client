@@ -433,6 +433,9 @@ export default {
         },
         visible: function (newVal) {
             if (newVal) {
+
+                this.uploads = new Map()
+
                 MaterialFile.getMaterialGroups().then(res => {
                     this.materialGroups = res.list
                 })
@@ -618,6 +621,7 @@ export default {
             },
             comment: '',
             comments: [],
+            uploads: {}, //用于暂存上传的附件所对应的类别
         }
     },
     methods: {
@@ -822,6 +826,9 @@ export default {
             let comp = this
             let fd = new FormData()
             fd.append('formFile', content.file)
+
+            this.uploads.set(content.file.uid, this.uploadParams.id)
+
             Upload.upload(comp.uploadParams.id, fd, (event) => {
                 let num = event.loaded / event.total * 100 | 0;
                 content.onProgress({
@@ -837,16 +844,15 @@ export default {
                 }
 
                 if (comp.step === 'auditFirst') {
-                    console.log(comp.uploadParams.id)
-                    console.log(comp.bidForm.auditFirstFiles)
-                    console.log(comp.bidForm.auditFirstFiles.filter(f => f.mId === comp.uploadParams.id)[0])
-                    comp.bidForm.auditFirstFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.bidForm.auditFirstFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else if (comp.step === 'auditSecond') {
-                    comp.bidForm.auditSecondFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.bidForm.auditSecondFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else {
                     //送审阶段上传的资料清单
-                    comp.bidForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.bidForm.details.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 }
+            }).catch(res => {
+                comp.bidForm.details.filter(f => f.mId === this.uploads.get(res.get('formFile').uid))[0].mFiles = comp.bidForm.details.filter(f => f.mId === this.uploads.get(res.get('formFile').uid))[0].mFiles.filter(f => f.uid !== res.get('formFile').uid)
             })
         },
     },

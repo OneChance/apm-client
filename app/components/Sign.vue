@@ -10,7 +10,7 @@
                         <el-input v-model="name" placeholder="用户名"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-input v-model="password" placeholder="密码"></el-input>
+                        <el-input type="password" v-model="password" placeholder="密码"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="danger" class="sign-btn sign-local-btn" @click="signIn" disabled="disabled">
@@ -23,7 +23,7 @@
                 </el-form>
             </el-card>
         </div>
-        <div class="foot">2020 版权所有 TEST</div>
+        <div class="foot">2020 版权所有</div>
     </div>
 </template>
 

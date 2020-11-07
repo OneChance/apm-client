@@ -3,23 +3,20 @@
         <template>
             <div class="form">
                 <el-form :model="auditNoteForm" :rules="rules" ref="submissionForm">
+                    <p class="title">工程结算审计通知单</p>
+                    <p>审计编号:{{ auditNoteForm.auditNo }}</p>
                     <table class="form-table">
                         <tr>
-                            <th colspan="4">
-                                工程结算审计通知单
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>审计编号</th>
+                            <th>建设单位</th>
                             <td>
-                                <el-form-item prop="auditNo">
-                                    <el-input v-model="auditNoteForm.auditNo" :disabled="true"></el-input>
+                                <el-form-item prop="buildUnit">
+                                    <el-input v-model="auditNoteForm.buildUnit"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>档案编号</th>
+                            <th>施工单位</th>
                             <td>
-                                <el-form-item prop="arcNo">
-                                    <el-input v-model="auditNoteForm.arcNo"></el-input>
+                                <el-form-item prop="constructionUnit">
+                                    <el-input v-model="auditNoteForm.constructionUnit" :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -146,6 +143,7 @@
 
 import ClientCallProject from "../../script/client/project/clientCall"
 import Common from "../../script/common.js"
+import ConstructionUnit from "../../script/server/constructionUnit"
 
 export default {
     name: "AuditNoteForm",
@@ -154,30 +152,33 @@ export default {
         visible: function (newVal) {
             if (newVal) {
                 //加载form
+
                 ClientCallProject.getSubmission({
                     id: this.formId
                 }).then(result => {
-                    let now = new Date();
+
                     this.auditNoteForm.auditNo = result.submission.auditNo
                     this.auditNoteForm.projectName = result.submission.projectName
                     this.auditNoteForm.submissionMoney = result.submission.submissionPrice
                     this.auditNoteForm.auditMoney = result.submission.secondAuditPrice
                     this.auditNoteForm.sub = result.submission.subtractPrice
-                    this.auditNoteForm.auditInfo = "你单位送来的该工程，经审计，核定工程造价为" + this.auditNoteForm.auditMoney + "元。大写:" + Common.priceCN(
-                        this.auditNoteForm.auditMoney) + "。\n" +
-                        "请按审计结果办理结算手续。\n" +
-                        "特此通知。\n " +
-                        "                                                                                  审计处\n" +
-                        "                                                                                  " + now.getFullYear() +
-                        "/" + (now.getMonth() + 1) + "/" + now.getDate();
-
+                    this.auditNoteForm.auditInfo = this.setInfo('')
                     this.auditNoteForm.auditFee = result.submission.auditFee
                     this.auditNoteForm.auditUnit = result.submission.assigned.name
                     this.auditNoteForm.payType = result.submission.payType
                     this.auditNoteForm.auditNote = result.submission.auditNote
+
+                    ConstructionUnit.getConstructionUnit({
+                        id: result.submission.constructionUnit,
+                    }).then(res => {
+                        this.auditNoteForm.constructionUnit = res.construction.name
+                    })
                 })
             }
         },
+        "auditNoteForm.buildUnit": function (val) {
+            this.auditNoteForm.auditInfo = this.setInfo(val)
+        }
     },
     mounted: function () {
 
@@ -200,7 +201,10 @@ export default {
                 auditUnit: '',
                 payType: '',
                 auditNote: '',
+                constructionUnit: '',
+                buildUnit: ''
             },
+            units: [],
         }
     },
     methods: {
@@ -209,10 +213,23 @@ export default {
                 importCSS: false
             })
         },
+        setInfo: function (buildUnit) {
+            let now = new Date();
+            return buildUnit + "\n  你单位送来的该工程，经审计，核定工程造价为" + this.auditNoteForm.auditMoney + "元。大写:" + Common.priceCN(
+                this.auditNoteForm.auditMoney) + "。\n" +
+                "请按审计结果办理结算手续。\n" +
+                "特此通知。\n " +
+                "                                                                                  审计处\n" +
+                "                                                                                  " + now.getFullYear() +
+                "/" + (now.getMonth() + 1) + "/" + now.getDate();
+        }
     },
 }
 </script>
 
 <style scoped>
-
+.title {
+    text-align: center;
+    font-size: 20px;
+}
 </style>

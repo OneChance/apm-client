@@ -39,9 +39,6 @@ const oper = {
         constructionUnitTel: [
             {required: true, message: '请填写施工单位联系电话', trigger: 'blur'}
         ],
-        inspectUnitApplyFee: [
-            {required: true, message: '请填写监理单位报审金额', trigger: 'blur'}
-        ],
         inspectUnitProjectMan: [
             {required: true, message: '请填写监理单位项目负责人', trigger: 'blur'}
         ],

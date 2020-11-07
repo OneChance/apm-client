@@ -83,15 +83,22 @@ let request = function (api, type, data, progress) {
                 title: '错误',
                 message: '服务器响应超时'
             });
+            return new Promise((resolve, reject) => {
+                reject()
+            })
         }
         return response.data;
     }).catch(function (e) {
         Notification.error({
             title: '错误',
-            message: e.response.data.error_msg
+            message: e.response.data.error_msg ? e.response.data.error_msg : '服务器异常'
         });
         if (e.response.data.error_code === 10000) {
             App.router.$router.push('/sign');
         }
+
+        return new Promise((resolve, reject) => {
+            reject(data)
+        })
     })
 };

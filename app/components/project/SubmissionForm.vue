@@ -102,7 +102,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th rowspan="2">中标合同金额</th>
+                            <th rowspan="2" class="form-required">中标合同金额</th>
                             <td rowspan="2">
                                 <el-form-item prop="contractMoney">
                                     <el-input v-model="submissionForm.contractMoney"
@@ -373,6 +373,7 @@
                                                        :with-credentials="true" :on-preview="handlePreview"
                                                        :on-remove="handleRemove" :before-remove="beforeRemove"
                                                        :on-success="afterUpload" :data="uploadParams"
+                                                       :on-error="uploadError"
                                                        multiple :on-exceed="handleExceed"
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
@@ -947,14 +948,14 @@ export default {
     props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'], //formRules2只在某些条件下验证
     watch: {
         'submissionForm.constructionUnitApplyFee': function (newVal) {
-            this.submissionForm.inspectUnitCheckFee = newVal - this.submissionForm.inspectUnitApplyFee
-            this.submissionForm.buildUnitCheckFee = newVal - this.submissionForm.buildUnitApplyFee
+            this.submissionForm.inspectUnitCheckFee = (newVal - this.submissionForm.inspectUnitApplyFee).toFixed(2)
+            this.submissionForm.buildUnitCheckFee = (newVal - this.submissionForm.buildUnitApplyFee).toFixed(2)
         },
         'submissionForm.inspectUnitApplyFee': function (newVal) {
-            this.submissionForm.inspectUnitCheckFee = this.submissionForm.constructionUnitApplyFee - newVal
+            this.submissionForm.inspectUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)
         },
         'submissionForm.buildUnitApplyFee': function (newVal) {
-            this.submissionForm.buildUnitCheckFee = this.submissionForm.constructionUnitApplyFee - newVal
+            this.submissionForm.buildUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)
         },
         'submissionForm.submissionPrice': function () {
             this.calAuditFirst()
@@ -967,9 +968,13 @@ export default {
         },
         visible: function (newVal) {
             if (newVal) {
+
+                this.uploads = new Map()
+
                 MaterialFile.getMaterialGroups().then(res => {
                     this.materialGroups = res.list
                 })
+
                 ConstructionUnit.getConstructionUnits({
                     page: 1,
                     pageSize: 999999,
@@ -1313,7 +1318,6 @@ export default {
                 //争议处理，申请人补充上传资料
                 supplementFiles: [],
                 /*--------------------------submission end -----------------------------------*/
-                /*--------------------------aaa start -----------------------------------*/
             },
             materialGroups: [],
             uploadParams: {
@@ -1324,6 +1328,7 @@ export default {
             users: [],
             units: [],
             projectMans: [],
+            uploads: {}, //用于暂存上传的附件所对应的类别
         }
     },
     methods: {
@@ -1610,10 +1615,13 @@ export default {
             //上传之前暂存当前要上传文件所属的清单组Id
             this.uploadParams.id = typeId
         },
-        upload(content) {
+        upload(content, fileList) {
             let comp = this
             let fd = new FormData()
             fd.append('formFile', content.file)
+
+            this.uploads.set(content.file.uid, this.uploadParams.id)
+
             Upload.upload(comp.uploadParams.id, fd, (event) => {
                 let num = event.loaded / event.total * 100 | 0;
                 content.onProgress({
@@ -1621,6 +1629,7 @@ export default {
                 })
             }).then(res => {
                 content.onSuccess()
+
                 //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
                 let fileData = {
                     'id': res.id,
@@ -1629,20 +1638,25 @@ export default {
                 }
 
                 if (comp.step === 'survey') {//现场勘察阶段上传的勘察资料
-                    comp.submissionForm.surveyFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.submissionForm.surveyFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else if (comp.step === 'argueDeal') {
-                    comp.submissionForm.supplementFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.submissionForm.supplementFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else if (comp.step === 'argueHandle') {
-                    comp.submissionForm.argueFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.submissionForm.argueFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else if (comp.step === 'auditFirst') {
-                    comp.submissionForm.auditFirstFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.submissionForm.auditFirstFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else if (comp.step === 'auditSecond') {
-                    comp.submissionForm.auditSecondFiles.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.submissionForm.auditSecondFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 } else {
                     //送审阶段上传的资料清单
-                    comp.submissionForm.details.filter(f => f.mId === comp.uploadParams.id)[0].mFiles.push(fileData)
+                    comp.submissionForm.details.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
                 }
+            }).catch(res => {
+                comp.submissionForm.details.filter(f => f.mId === this.uploads.get(res.get('formFile').uid))[0].mFiles = comp.submissionForm.details.filter(f => f.mId === this.uploads.get(res.get('formFile').uid))[0].mFiles.filter(f => f.uid !== res.get('formFile').uid)
             })
+        },
+        uploadError(err, file, fileList) {
+
         },
         payConditionChange(val) {
             if (val === '其他') {
