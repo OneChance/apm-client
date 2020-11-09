@@ -149,11 +149,14 @@
                                                                       v-if="fileType.mRequired">*</span>
                                         </td>
                                         <td>
-                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
-                                                       :with-credentials="true" :on-preview="handlePreview"
-                                                       :on-remove="handleRemove" :before-remove="beforeRemove"
-                                                       :on-success="afterUpload" :data="uploadParams"
-                                                       multiple :on-exceed="handleExceed"
+                                            <el-upload class="upload-demo"
+                                                       action="noAction"
+                                                       :http-request="upload"
+                                                       :with-credentials="true"
+                                                       :on-preview="handlePreview"
+                                                       :on-remove="handleRemove"
+                                                       :before-remove="beforeRemove"
+                                                       multiple
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="stepCode<0"
@@ -240,11 +243,14 @@
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td :class="stepCode===40?'editing':''">
-                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
-                                                       :with-credentials="true" :on-preview="handlePreview"
-                                                       :on-remove="handleRemoveAuditFirst"
-                                                       :before-remove="beforeRemoveAuditFirst" :on-success="afterUpload"
-                                                       multiple :on-exceed="handleExceed"
+                                            <el-upload class="upload-demo"
+                                                       action="noAction"
+                                                       :http-request="upload"
+                                                       :with-credentials="true"
+                                                       :on-preview="handlePreview"
+                                                       :on-remove="handleRemove"
+                                                       :before-remove="beforeRemoveAuditFirst"
+                                                       multiple
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='auditFirst'" @click="toUpload(fileType.mId)">
@@ -313,12 +319,14 @@
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
                                         </td>
                                         <td :class="stepCode===50?'editing':''">
-                                            <el-upload class="upload-demo" action="noAction" :http-request="upload"
-                                                       :with-credentials="true" :on-preview="handlePreview"
-                                                       :on-remove="handleRemoveAuditSecond"
+                                            <el-upload class="upload-demo"
+                                                       action="noAction"
+                                                       :http-request="upload"
+                                                       :with-credentials="true"
+                                                       :on-preview="handlePreview"
+                                                       :on-remove="handleRemove"
                                                        :before-remove="beforeRemoveAuditSecond"
-                                                       :on-success="afterUpload"
-                                                       multiple :on-exceed="handleExceed"
+                                                       multiple
                                                        :file-list="fileType.mFiles">
                                                 <el-button size="small" type="primary" class="upload-btn"
                                                            v-if="step ==='auditSecond'" @click="toUpload(fileType.mId)">
@@ -407,16 +415,13 @@
 </template>
 
 <script>
-import {
-    Notification
-} from "element-ui";
+
 import MaterialFile from "../../script/server/materialFile";
 import Upload from "../../script/server/upload";
 import Bid from "../../script/server/bid";
 import Comment from "../../script/server/comment";
-import ClientCall from "../../script/client/project/clientCall"
 import Env from "../../script/server/env"
-import ConstructionUnit from "../../script/server/constructionUnit";
+import ClientCallCommon from "../../script/client/clientCall"
 
 export default {
     name: "BidForm",
@@ -434,13 +439,14 @@ export default {
         visible: function (newVal) {
             if (newVal) {
 
-                this.uploads = new Map()
+                this.uploadFiles = []
 
                 MaterialFile.getMaterialGroups().then(res => {
                     this.materialGroups = res.list
                 })
 
                 this.bidForm.details = []
+
                 this.$nextTick(() => {
                     if (this.from === 'addform') {
                         this.$refs['bidForm'].resetFields();
@@ -562,6 +568,15 @@ export default {
                                     this.bidForm.secondAuditPrice = this.bidForm.firstAuditPrice
                                 }
                             }
+
+                            //初始化附件
+                            if (this.step === 'auditFirst') {
+                                ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditFirstFiles)
+                            } else if (this.step === 'auditSecond') {
+                                ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditSecondFiles)
+                            } else if (this.step === 'bid' || this.step === 'reject') {
+                                ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.details)
+                            }
                         })
                     }
                     $(".print-info").hide()
@@ -621,7 +636,7 @@ export default {
             },
             comment: '',
             comments: [],
-            uploads: {}, //用于暂存上传的附件所对应的类别
+            uploadFiles: []
         }
     },
     methods: {
@@ -639,33 +654,17 @@ export default {
                 this.step === 'reject' ||
                 this.step === 'auditFirst' ||
                 this.step === 'auditSecond') {
+
+                let _this = this
+
                 //需要验证表单的提交
                 this.$refs['bidForm'].validate((valid) => {
                     if (valid) {
                         if (this.step === 'bid' || this.step === 'reject') {
-                            //验证资料组清单附件上传情况
-                            let fileOk = true
-                            for (let type of this.bidForm.details) {
-                                if (type.mRequired) {
-                                    if ((!type.mFiles || type.mFiles.length === 0) && (!type.mNote || type.mNote.match(/^[ ]*$/))) {
-                                        setTimeout(function () {
-                                            Notification.error({
-                                                title: '提交失败!',
-                                                message: type.mName + '必须上传附件或填写备注！',
-                                                duration: 5000
-                                            })
-                                        }, 100);
-                                        fileOk = false
-                                    }
-                                }
+                            ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.details)
+                            if (ClientCallCommon.checkFileOrNote(this.bidForm.details)) {
+                                event(this.bidForm)
                             }
-
-                            if (!fileOk) {
-                                return
-                            }
-
-                            this.fileIdsConstruct(this.bidForm.details)
-                            event(this.bidForm)
                         } else if (this.step === 'project') {
                             event({
                                 targetId: this.bidForm.id,
@@ -673,9 +672,8 @@ export default {
                                 auditNo: this.bidForm.auditNo
                             })
                         } else if (this.step === 'auditFirst') {
-                            //验证现场勘察附件上传情况
-                            if (this.fileListCheck(this.bidForm.auditFirstFiles)) {
-                                this.fileIdsConstruct(this.bidForm.auditFirstFiles)
+                            ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.auditFirstFiles)
+                            if (ClientCallCommon.fileListCheck(this.bidForm.auditFirstFiles)) {
                                 event({
                                     targetId: this.bidForm.id,
                                     type: 2,
@@ -687,8 +685,8 @@ export default {
                                 })
                             }
                         } else if (this.step === 'auditSecond') {
-                            if (this.fileListCheck(this.bidForm.auditSecondFiles)) {
-                                this.fileIdsConstruct(this.bidForm.auditSecondFiles)
+                            ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.auditSecondFiles)
+                            if (ClientCallCommon.fileListCheck(this.bidForm.auditSecondFiles)) {
                                 event({
                                     targetId: this.bidForm.id,
                                     type: 2,
@@ -701,7 +699,7 @@ export default {
                             }
                         }
                     } else {
-                        Notification.error({
+                        _this.$notify.error({
                             title: '提交失败!',
                             message: '表单信息有误,请检查!',
                             duration: 2000
@@ -712,7 +710,7 @@ export default {
             } else {
                 if (this.step === 'bid') {
                     //保存不验证必填
-                    this.fileIdsConstruct(this.bidForm.details)
+                    ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.details)
                     event(this.bidForm)
                 } else {
                     event(this.comment, this.bidForm.id)
@@ -726,134 +724,50 @@ export default {
                 importCSS: false
             })
         },
-        //验证附件上传
-        fileListCheck(list) {
-            let fileOk = true
-            for (let type of list) {
-                if (!type.mFiles || type.mFiles.length === 0) {
-                    setTimeout(function () {
-                        Notification.error({
-                            title: '提交失败!',
-                            message: type.mName + '必须上传附件！',
-                            duration: 5000
-                        })
-                    }, 100);
-                    fileOk = false
-                }
-            }
-            return fileOk
-        },
-        //拼接附件id
-        fileIdsConstruct(list) {
-            for (let types of list) {
-                let ids = ''
-                for (let file of types.mFiles) {
-                    ids = ids + ',' + file.id
-                }
-                types.mFileIds = ids.substr(1)
-            }
-        },
         //资料清单移除方法
         handleRemove(file) {
-            this.removeFileFromList(file, this.bidForm.details)
+            this.removeFileFromList(file)
         },
         beforeRemove(file) {
             return this.removeableConfirm(file, ['bid', 'reject'], '当前阶段不可移除资料清单附件!')
         },
-        //初审资料移除方法
-        handleRemoveAuditFirst(file) {
-            this.removeFileFromList(file, this.bidForm.auditFirstFiles)
-        },
         beforeRemoveAuditFirst(file) {
             return this.removeableConfirm(file, ['auditFirst'], '当前阶段不可移除初审资料附件!')
-        },
-        //复审资料移除方法
-        handleRemoveAuditSecond(file) {
-            this.removeFileFromList(file, this.bidForm.auditSecondFiles)
         },
         beforeRemoveAuditSecond(file) {
             return this.removeableConfirm(file, ['auditSecond'], '当前阶段不可移除复审资料附件!')
         },
         removeableConfirm(file, steps, message) {
-            if (steps.indexOf(this.step) < 0) {
-                Notification.error({
-                    title: '操作失败!',
-                    message: message,
-                    duration: 2000
-                })
-                return false;
-            }
-            return this.$confirm(`确定移除 ${file.name}？`);
+            return ClientCallCommon.removeableConfirm(file, steps, message, this.step)
         },
-        removeFileFromList(file, list) {
-            for (let types of list) {
-                let size = types.mFiles.length
-                if (size !== 0) {
-                    types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
-                    if (types.mFiles.length < size) {
-                        break
-                    }
-                }
-            }
+        removeFileFromList(file) {
+            ClientCallCommon.removeFile(file, this.uploadFiles)
         },
         handlePreview(file) {
             window.open(Env.baseURL + file.url)
         },
         materialGroupChange: function (value) {
             //根据选择的清单组，初始化附加列表
-            let comp = this
-            MaterialFile.getMaterialGroup({
-                id: value
-            }).then(res => {
-                comp.bidForm.details.length = []
-                for (let fType of res.materialGroup.details) {
-                    comp.bidForm.details.push({
-                        mRequired: fType.required,
-                        mId: fType.material.id, //清单类型id
-                        mName: fType.material.name,
-                        mFiles: [], //上传的文件列表
-                        mFileIds: '', //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
-                        mNote: '' //上传文件的备注
-                    })
-                }
-            })
+            ClientCallCommon.materialGroupChange(value, this.bidForm.details)
         },
         toUpload(typeId) {
             //上传之前暂存当前要上传文件所属的清单组Id
             this.uploadParams.id = typeId
         },
         upload(content) {
-            let comp = this
-            let fd = new FormData()
-            fd.append('formFile', content.file)
 
-            this.uploads.set(content.file.uid, this.uploadParams.id)
+            let failRefeshList = []
 
-            Upload.upload(comp.uploadParams.id, fd, (event) => {
-                let num = event.loaded / event.total * 100 | 0;
-                content.onProgress({
-                    percent: num
-                })
-            }).then(res => {
-                content.onSuccess()
-                //在对应的清单组的附件列表中添加上传文件的信息{上传成功服务器返回的id,列表控件里的uid}
-                let fileData = {
-                    'id': res.id,
-                    'uid': content.file.uid,
-                    'name': content.file.name
-                }
+            if (this.step === 'auditFirst') {
+                failRefeshList = this.bidForm.auditFirstFiles
+            } else if (this.step === 'auditSecond') {
+                failRefeshList = this.bidForm.auditSecondFiles
+            } else {
+                failRefeshList = this.bidForm.details
+            }
 
-                if (comp.step === 'auditFirst') {
-                    comp.bidForm.auditFirstFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
-                } else if (comp.step === 'auditSecond') {
-                    comp.bidForm.auditSecondFiles.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
-                } else {
-                    //送审阶段上传的资料清单
-                    comp.bidForm.details.filter(f => f.mId === this.uploads.get(content.file.uid))[0].mFiles.push(fileData)
-                }
-            }).catch(res => {
-                comp.bidForm.details.filter(f => f.mId === this.uploads.get(res.get('formFile').uid))[0].mFiles = comp.bidForm.details.filter(f => f.mId === this.uploads.get(res.get('formFile').uid))[0].mFiles.filter(f => f.uid !== res.get('formFile').uid)
-            })
+            ClientCallCommon.upload(content, this.uploadParams.id, this.uploadFiles, failRefeshList)
+
         },
     },
 }

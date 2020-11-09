@@ -9,6 +9,14 @@ export default {
             callback();
         }
     },
+    priceValidatorNoRequire: function (rule, value, callback) {
+        let reg = /^[+]?(0|([1-9]\d*))(\.\d+)?$/g;
+        if (value && !reg.test(value)) {
+            callback(new Error('请输入大于等于0的数字'));
+        } else {
+            callback();
+        }
+    },
     auditNoValidator: function (rule, value, callback) {
         let reg = /^[1-9]\d*$/g;
         if (value === '') {

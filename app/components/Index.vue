@@ -104,7 +104,7 @@ export default {
 
         Account.getLoginUser().then(res => {
             this.userOper[0].name = res.user.name
-            this.__proto__.__proto__.loginUser = res.user
+            this.global.loginUser = res.user
         })
 
         this.$nextTick(() => {
@@ -116,14 +116,14 @@ export default {
 
         window.onresize = () => {
             return (() => {
-                App.hub.$emit('windowResize', document.body.clientWidth)
+                App.vueG.$emit('windowResize', document.body.clientWidth)
             })();
         };
     },
     methods: {
         signOut: function () {
             Account.logOut().then(() => {
-                App.router.$router.push('/sign').catch(err => err);
+                App.vueG.$router.push('/sign').catch(err => err);
             })
             this.$cookie.delete('apm_token');
             localStorage.removeItem("apm_token");

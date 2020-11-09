@@ -1,23 +1,8 @@
-import Vue from 'vue'
-import VueCookie from 'vue-cookie'
 import App from '../app.js'
 import Env from './env.js'
-import axios from 'axios'
 
 const qs = require('qs');
-import VueAxios from 'vue-axios'
-import {Notification} from 'element-ui';
 
-axios.defaults.withCredentials = true;
-
-Vue.use(VueAxios, axios)
-Vue.use(VueCookie)
-
-//附件请求
-let axiosUpload = Vue.axios.create({
-    baseURL: Env.baseURL,
-    headers: {"Content-Type": "multipart/form-data"},
-})
 
 export default {
     get(api, data) {
@@ -42,33 +27,43 @@ let request = function (api, type, data, progress) {
 
     let axiosRequest;
     let fullURL = Env.baseURL + api;
-    let token = localStorage.getItem("apm_token")
 
+    //获取token
+    let token = localStorage.getItem('apm_token');
     if (!token) {
-        token = Vue.cookie.get('apm_token')
+        token = App.vueG.$cookie.get('apm_token')
+    }
+    if (!token) {
+        token = '';
     }
 
     if (type === 'download') {
-        axiosRequest = Vue.axios.get(api, {
+        axiosRequest = App.vueG.axios.get(api, {
             headers: {'Authorization': 'Bearer ' + token},
             responseType: 'blob',
         });
     } else if (type === 'file') {
-        axiosRequest = axiosUpload.post(fullURL, data, {
-            headers: {'Authorization': 'Bearer ' + token},
+        axiosRequest = App.vueG.axios.create({
+            baseURL: Env.baseURL,
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Authorization': 'Bearer ' + token
+            },
             onUploadProgress: progress
+        }).post(fullURL, data.file, {
+            cancelToken: data.file.get('formFile').source.token
         });
     } else if (type === 'get') {
-        axiosRequest = Vue.axios.get(fullURL, {
+        axiosRequest = App.vueG.axios.get(fullURL, {
             headers: {'Authorization': 'Bearer ' + token},
             params: data,
         });
     } else if (type === 'json_post') {
-        axiosRequest = Vue.axios.post(fullURL, data, {
+        axiosRequest = App.vueG.axios.post(fullURL, data, {
             headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}
         });
     } else {
-        axiosRequest = Vue.axios.post(fullURL, null, {
+        axiosRequest = App.vueG.axios.post(fullURL, null, {
             headers: {'Authorization': 'Bearer ' + token},
             params: data,
             paramsSerializer: function (params) {
@@ -79,7 +74,7 @@ let request = function (api, type, data, progress) {
 
     return axiosRequest.then((response) => {
         if (!response) {
-            Notification.error({
+            App.vueG.$notify.error({
                 title: '错误',
                 message: '服务器响应超时'
             });
@@ -87,14 +82,29 @@ let request = function (api, type, data, progress) {
                 reject()
             })
         }
+        if (type === 'file') {
+            response.data.info = data.info
+        }
         return response.data;
     }).catch(function (e) {
-        Notification.error({
-            title: '错误',
-            message: e.response.data.error_msg ? e.response.data.error_msg : '服务器异常'
-        });
-        if (e.response.data.error_code === 10000) {
-            App.router.$router.push('/sign');
+
+        if (e.message && e.message === 'cancel-upload') {
+
+        } else {
+            let msg = '服务器异常'
+
+            if (e.response && e.response.data.error_msg) {
+                msg = e.response.data.error_msg
+            }
+
+            App.vueG.$notify.error({
+                title: '错误',
+                message: msg
+            });
+
+            if (e.response && e.response.data.error_code === 10000) {
+                App.vueG.$router.push('/sign');
+            }
         }
 
         return new Promise((resolve, reject) => {

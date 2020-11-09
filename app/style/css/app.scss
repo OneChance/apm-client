@@ -22,7 +22,7 @@ body {
 }
 
 #left-menu {
-  min-height: 800px;
+  height: calc(100vh - 60px);
 }
 
 .box-card {
@@ -391,4 +391,13 @@ body {
       color: #e1184a !important;
     }
   }
+}
+
+//打印
+.survey-th {
+  width: 20%;
+}
+
+.table-select {
+  width: 100%;
 }

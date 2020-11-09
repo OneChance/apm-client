@@ -3,25 +3,27 @@ import VueRouter from 'vue-router'
 import Sign from '../components/Sign.vue';
 import Index from '../components/Index.vue'
 import cookie from 'vue-cookie'
-
-//设置COOKIE工具
-Vue.prototype.$cookie = cookie;
-Vue.prototype.loginUser = {}
-
-//局部打印插件
-import printArea from '../plugin/printarea/jquery.PrintArea'
-
-//ElementUI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
+import axios from 'axios';
+import VueAxios from 'vue-axios';
+import Global from "./global"
+//局部打印
+import printArea from '../plugin/printarea/jquery.PrintArea'
 //使用路由插件
 Vue.use(VueRouter);
+//网络工具
+axios.defaults.withCredentials = true;
+Vue.use(VueAxios, axios);
+//ElementUI
 Vue.use(ElementUI)
+// 设置COOKIE工具
+Vue.use(cookie)
+//自定义全局变量
+Vue.prototype.global = Global;
 
 export default {
-    router: null,
-    hub: null,
+    vueG: null,
     init: function () {
         if (!this.router) {
             const routes = [
@@ -37,11 +39,9 @@ export default {
                 routes
             });
 
-            this.router = new Vue({
+            this.vueG = new Vue({
                 router
             });
-
-            this.hub = new Vue();
         }
     }
 }

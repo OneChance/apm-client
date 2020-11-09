@@ -30,7 +30,6 @@
 <script>
 
 import Account from '../script/server/account.js'
-import App from '../script/app.js'
 import md5 from 'js-md5';
 
 export default {
@@ -70,7 +69,7 @@ export default {
                 //保存token
                 localStorage.setItem("apm_token", res.token);
                 this.$cookie.set('apm_token', res.token);
-                App.router.$router.push('index').catch(err => err)
+                this.$router.push('index').catch(err => err)
             }
         },
     },

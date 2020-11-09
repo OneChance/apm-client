@@ -21,13 +21,14 @@
             <template>
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="true">
                     <el-form-item label="用户名" prop="username">
-                        <el-input v-model="form.username" :disabled="loginUser.id !== 1"></el-input>
+                        <el-input v-model="form.username" :disabled="!global.loginUser.admin"></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password">
                         <el-input v-model="form.password"></el-input>
                     </el-form-item>
                     <el-form-item label="单位名称" prop="name" style="width:580px">
-                        <el-input v-model="form.name" style="width:500px" :disabled="!loginUser.admin"></el-input>
+                        <el-input v-model="form.name" style="width:500px"
+                                  :disabled="!global.loginUser.admin"></el-input>
                     </el-form-item>
 
                     <div v-for="(link,index) in form.links">

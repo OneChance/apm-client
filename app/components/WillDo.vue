@@ -319,6 +319,7 @@ export default {
             } else if (step === 'survey') {
                 Survey.comp = this
                 this.forms.submission.formOpers = Survey.buttons
+                this.forms.submission.rules = Survey.rules
             } else if (step === 'argueHandle') {
                 Argue.comp = this
                 this.forms.submission.formOpers = Argue.buttons

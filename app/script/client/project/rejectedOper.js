@@ -31,7 +31,7 @@ const oper = {
             {required: true, message: '请选择竣工时间', trigger: 'blur'}
         ],
         constructionUnitApplyFee: [
-            {required: true, message: '请填写施工单位报审金额', trigger: 'blur'}
+            {required: true, validator: FormValidator.priceValidator,  trigger: 'blur'}
         ],
         constructionUnitProjectMan: [
             {required: true, message: '请选择施工单位项目负责人', trigger: 'blur'}
@@ -46,7 +46,10 @@ const oper = {
             {required: true, message: '请填写监理单位联系电话', trigger: 'blur'}
         ],
         buildUnitApplyFee: [
-            {required: true, message: '请填写建设单位报审金额', trigger: 'blur'}
+            {required: true, validator: FormValidator.priceValidator,  trigger: 'blur'}
+        ],
+        inspectUnitApplyFee: [
+            {validator: FormValidator.priceValidatorNoRequire,  trigger: 'blur'}
         ],
         buildUnitProjectMan: [
             {required: true, message: '请填写建设单位项目负责人', trigger: 'blur'}

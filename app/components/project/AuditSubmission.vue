@@ -37,7 +37,9 @@ export default {
 
     },
     mounted() {
-
+        if (this.global.loginUser.thirdParty) {
+            this.buttons = []
+        }
     },
     watch: {},
     data: function () {
