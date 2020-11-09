@@ -90,7 +90,7 @@ export default {
         for (let types of list) {
             let size = types.mFiles.length
             if (size !== 0) {
-                types.mFiles = types.mFiles.filter(f => f.id !== file.id)
+                types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
                 if (types.mFiles.length < size) {
                     break
                 }
@@ -131,9 +131,7 @@ export default {
                 if (type.mFiles && type.mFiles.length > 0) {
                     let mFiles = []
                     type.mFiles.forEach(file => {
-                        mFiles.push({
-                            id: file.id
-                        })
+                        mFiles.push(file)
                     })
                     uploadList.push({
                         mId: type.mId,
