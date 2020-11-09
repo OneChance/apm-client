@@ -3,12 +3,8 @@
         <template>
             <div class="form" id="submission">
                 <el-form :model="submissionForm" :rules="formRules" ref="submissionForm">
+                    <p class="title">工程结算送审表</p>
                     <table class="form-table">
-                        <tr>
-                            <th colspan="4">
-                                工程结算送审表
-                            </th>
-                        </tr>
                         <tr>
                             <th>立项代码</th>
                             <td>
@@ -67,6 +63,7 @@
                                     <el-select v-model="submissionForm.constructionUnit"
                                                :disabled="step!=='submission' && step!=='reject'"
                                                filterable
+                                               class="form-select"
                                                @change="unitChange"
                                                placeholder="填写施工单位名称" style="width: 220px;">
                                         <el-option
@@ -241,6 +238,8 @@
                                             <el-form-item prop="constructionUnitProjectMan">
                                                 <el-select v-model="submissionForm.constructionUnitProjectMan"
                                                            @change="projectManChange"
+                                                           allow-create
+                                                           filterable
                                                            :disabled="step!=='submission' && step!=='reject'"
                                                            placeholder="请选择项目负责人">
                                                     <el-option
@@ -949,11 +948,19 @@ export default {
     props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'], //formRules2只在某些条件下验证
     watch: {
         'submissionForm.constructionUnitApplyFee': function (newVal) {
-            this.submissionForm.inspectUnitCheckFee = (newVal - this.submissionForm.inspectUnitApplyFee).toFixed(2)
+            if (this.submissionForm.inspectUnitApplyFee && this.submissionForm.inspectUnitApplyFee > 0) {
+                this.submissionForm.inspectUnitCheckFee = (newVal - this.submissionForm.inspectUnitApplyFee).toFixed(2)
+            } else {
+                this.submissionForm.inspectUnitCheckFee = ''
+            }
             this.submissionForm.buildUnitCheckFee = (newVal - this.submissionForm.buildUnitApplyFee).toFixed(2)
         },
         'submissionForm.inspectUnitApplyFee': function (newVal) {
-            this.submissionForm.inspectUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)
+            if (newVal && newVal > 0) {
+                this.submissionForm.inspectUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)
+            } else {
+                this.submissionForm.inspectUnitCheckFee = ''
+            }
         },
         'submissionForm.buildUnitApplyFee': function (newVal) {
             this.submissionForm.buildUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)

@@ -82,7 +82,8 @@ export default {
                         event: this.deleteRow,
                         check: true
                     }
-                ]
+                ],
+                operWidth: 100
             },
             rules: RejectedOper.rules,
             rules2: RejectedOper.rules2

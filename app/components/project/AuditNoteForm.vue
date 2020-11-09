@@ -228,8 +228,5 @@ export default {
 </script>
 
 <style scoped>
-.title {
-    text-align: center;
-    font-size: 20px;
-}
+
 </style>
