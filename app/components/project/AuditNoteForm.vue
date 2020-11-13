@@ -1,7 +1,7 @@
 <template>
     <el-dialog :title="工程结算审计通知单" class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="form">
+            <div class="note-form">
                 <el-form :model="auditNoteForm" :rules="rules" ref="submissionForm">
                     <p class="title">工程结算审计通知单</p>
                     <p>审计编号:{{ auditNoteForm.auditNo }}</p>
@@ -209,7 +209,7 @@ export default {
     },
     methods: {
         print: function () {
-            $(".form").printArea({
+            $(".note-form").printArea({
                 importCSS: false
             })
         },

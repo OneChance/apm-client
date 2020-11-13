@@ -69,7 +69,6 @@ export default {
     data: function () {
         return {
             small: false,
-            maxHeight: 620,
             deleteConfirm: false,
             deleteOper: {event: {}, row: {}},
         }

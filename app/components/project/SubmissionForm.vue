@@ -358,9 +358,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">资料清单</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">资料清单</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.details">
                                         <td>
@@ -383,7 +383,9 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote"
+                                            <el-input type="textarea"
+                                                      autosize
+                                                      v-model="fileType.mNote"
                                                       :disabled="step!=='submission' && step!=='reject'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
@@ -524,9 +526,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">现场勘察资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">现场勘察资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.surveyFiles">
                                         <td>
@@ -548,7 +550,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='survey'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='survey'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
@@ -560,9 +563,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">争议处理资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">争议处理资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.argueFiles">
                                         <td>
@@ -585,7 +588,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='argueHandle'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='argueHandle'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
@@ -720,9 +724,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">初审资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">初审资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditFirstFiles">
                                         <td>
@@ -744,7 +748,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditFirst'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='auditFirst'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
@@ -795,9 +800,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">复审资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">复审资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditSecondFiles">
                                         <td>
@@ -819,7 +824,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditSecond'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='auditSecond'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
@@ -831,9 +837,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">补充资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">补充资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.supplementFiles">
                                         <td>
@@ -855,7 +861,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='argueDeal'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='argueDeal'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>

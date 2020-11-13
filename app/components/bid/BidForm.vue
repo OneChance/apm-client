@@ -139,9 +139,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">资料清单</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">资料清单</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.details">
                                         <td>
@@ -165,7 +165,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote"
                                                       :disabled="stepCode>0"
                                                       placeholder="填写备注"></el-input>
                                         </td>
@@ -234,9 +235,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">初审资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">初审资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditFirstFiles">
                                         <td>
@@ -259,7 +260,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditFirst'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='auditFirst'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>
@@ -310,9 +312,9 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:20%">复审资料</th>
-                                        <th style="width:30%">附件</th>
-                                        <th style="width:50%">备注</th>
+                                        <th class="upload-type">复审资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditSecondFiles">
                                         <td>
@@ -335,7 +337,8 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input v-model="fileType.mNote" :disabled="step!=='auditSecond'"
+                                            <el-input type="textarea"
+                                                      autosize v-model="fileType.mNote" :disabled="step!=='auditSecond'"
                                                       placeholder="填写备注"></el-input>
                                         </td>
                                     </tr>

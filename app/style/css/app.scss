@@ -252,6 +252,10 @@ body {
   width: 100% !important;
 }
 
+.el-upload-list__item-name {
+  white-space: normal !important; //防止上传的附件名字太长出现省略号
+}
+
 //表格表单
 .form-table {
   width: 100%;
@@ -297,6 +301,14 @@ body {
   .compact-td {
     padding: 1px;
   }
+}
+
+.upload-type {
+  width: 30%
+}
+
+.upload-note {
+  width: 30%;
 }
 
 //分页导航

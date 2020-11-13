@@ -1,7 +1,7 @@
 <template>
     <el-dialog :title="招标控制价通知单" class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="form">
+            <div class="note-form">
                 <el-form :model="noteForm" :rules="rules" ref="submissionForm">
                     <table class="form-table">
                         <tr>
@@ -229,7 +229,7 @@ export default {
     },
     methods: {
         print: function () {
-            $(".form").printArea({
+            $(".note-form").printArea({
                 importCSS: false
             })
         },
