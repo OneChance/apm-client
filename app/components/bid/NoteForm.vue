@@ -3,12 +3,8 @@
         <template>
             <div class="note-form">
                 <el-form :model="noteForm" :rules="rules" ref="submissionForm">
+                    <p class="title">招标控制价审核通知单</p>
                     <table class="form-table">
-                        <tr>
-                            <th colspan="4">
-                                招标控制价审核通知单
-                            </th>
-                        </tr>
                         <tr>
                             <th>项目编号</th>
                             <td colspan="3">

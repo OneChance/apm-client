@@ -7,6 +7,10 @@ export default {
         page: 1,
         pageSize: 10
     },
+    pageAll: {
+        page: 1,
+        pageSize: 99999999
+    },
     stepCode: {
         argueDeal: -30,//争议处理中
         reject: -20,

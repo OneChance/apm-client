@@ -115,6 +115,11 @@ export default {
                         width: '100',
                     },
                     {
+                        prop: 'targetStr',
+                        label: '下一步',
+                        width: '100',
+                    },
+                    {
                         prop: 'auditNo',
                         label: '审计编号',
                         width: '100',

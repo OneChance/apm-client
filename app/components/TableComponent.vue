@@ -19,7 +19,8 @@
             <el-table-column v-for="col in tableConfig.cols" :prop="col.prop" :label="col.label" :key="col.prop"
                              :fixed="col.fixed"
                              :formatter="col.formatter" :sortable="col.sortable"
-                             :width="col.width"></el-table-column>
+                             :width="col.width">
+            </el-table-column>
             <el-table-column
                 prop="roleOper"
                 fixed="right"

@@ -25,6 +25,15 @@
                     <el-form-item label="密码" prop="password">
                         <el-input v-model="form.password"></el-input>
                     </el-form-item>
+                    <el-form-item label="是否登陆" prop="login">
+                        <el-switch
+                            v-model="form.login"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949"
+                            active-value="true"
+                            inactive-value="false">
+                        </el-switch>
+                    </el-form-item>
                     <el-form-item label="姓名" prop="name">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
@@ -33,6 +42,18 @@
                     </el-form-item>
                     <el-form-item label="联系方式" prop="telphone">
                         <el-input v-model="form.telphone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="角色" prop="roles">
+                        <el-select
+                            class="form-select"
+                            v-model="form.roles" multiple placeholder="请选择">
+                            <el-option
+                                v-for="role in roles"
+                                :key="role.id"
+                                :label="role.name"
+                                :value="role.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-form>
             </template>
@@ -51,9 +72,19 @@ import Common from "../script/common";
 import Config from "../script/config";
 import TableComponent from "./TableComponent";
 import md5 from 'js-md5';
+import Role from "../script/server/role"
 
 export default {
     name: "SysUser",
+    watch: {
+        userInfoDialogVisible: function (vis) {
+            if (vis) {
+                Role.getRoles(Config.pageAll).then(res => {
+                    this.roles = res.list.content
+                })
+            }
+        }
+    },
     data: function () {
         return {
             query: {
@@ -66,6 +97,8 @@ export default {
                 email: '',
                 telphone: '',
                 thirdParty: false,
+                roles: '',
+                login: false
             },
             rules: {
                 username: [
@@ -102,7 +135,8 @@ export default {
                     }
                 ]
             },
-            userInfoDialogVisible: false
+            userInfoDialogVisible: false,
+            roles: []
         }
     },
     mounted: function () {
@@ -113,10 +147,11 @@ export default {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     this.form.password = md5(this.form.password)
-                    User.saveUser(this.form).then(() => {
+                    console.log(this.form)
+                    /*User.saveUser(this.form).then(() => {
                         this.operSuccess(this)
                         this.userInfoDialogVisible = false;
-                    })
+                    })*/
                 }
             })
         },

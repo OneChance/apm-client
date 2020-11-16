@@ -6,7 +6,7 @@
                     <p class="title">工程结算送审表</p>
                     <table class="form-table">
                         <tr>
-                            <th>立项代码</th>
+                            <th class="first-th">立项代码</th>
                             <td>
                                 <el-form-item prop="itemCode">
                                     <el-input v-model="submissionForm.itemCode"
@@ -111,8 +111,7 @@
                             <td>
                                 <el-form-item prop="constructMoney">
                                     <el-input v-model="submissionForm.constructMoney"
-                                              :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写土建金额"></el-input>
+                                              :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -121,8 +120,7 @@
                             <td>
                                 <el-form-item prop="installMoney">
                                     <el-input v-model="submissionForm.installMoney"
-                                              :disabled="step!=='submission' && step!=='reject'"
-                                              placeholder="填写安装金额"></el-input>
+                                              :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -214,9 +212,9 @@
                         </tr>
                         <tr>
                             <td colspan="4" class="compact-td">
-                                <table class="form-table">
+                                <table class="form-table inner-table">
                                     <tr>
-                                        <th style="width:15%">报审单位</th>
+                                        <th class="first-th">报审单位</th>
                                         <th>报审金额（元）</th>
                                         <th>核减金额（元）</th>
                                         <th>项目负责人</th>
@@ -358,7 +356,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">资料清单</th>
+                                        <th class="first-th">资料清单</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -462,7 +460,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="survey-th">相关单位</th>
+                                        <th class="first-th">相关单位</th>
                                         <th>现场查看人员</th>
                                     </tr>
                                     <tr>
@@ -471,6 +469,7 @@
                                             <el-form-item prop="viewPeoplesAuditUnit">
                                                 <el-select v-model="submissionForm.viewPeoplesAuditUnit"
                                                            class="table-select" filterable
+                                                           allow-create
                                                            multiple placeholder="请选择"
                                                            :disabled="step!=='survey'">
                                                     <el-option v-for="item in users" :key="item.value"
@@ -497,6 +496,7 @@
                                             <el-form-item prop="viewPeoplesConstructUnit">
                                                 <el-select v-model="submissionForm.viewPeoplesConstructUnit"
                                                            class="table-select" filterable
+                                                           allow-create
                                                            multiple placeholder="请选择"
                                                            :disabled="step!=='survey'">
                                                     <el-option
@@ -526,7 +526,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">现场勘察资料</th>
+                                        <th class="first-th">现场勘察资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -559,11 +559,21 @@
                             </td>
                         </tr>
 
+                        <tr class="comment" v-if="stepCode===50">
+                            <th>下一阶段</th>
+                            <td colspan="3">
+                                <el-select v-model="submissionForm.nextStep" placeholder="请选择下一阶段">
+                                    <el-option key="60" label="争议处理" value="60">争议处理</el-option>
+                                    <el-option key="70" label="审计初审" value="70">审计初审</el-option>
+                                </el-select>
+                            </td>
+                        </tr>
+
                         <tr v-if="stepCode>=60 || stepCode === -30">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">争议处理资料</th>
+                                        <th class="first-th">争议处理资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -625,7 +635,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="survey-th">相关单位</th>
+                                        <th class="first-th">相关单位</th>
                                         <th>现场查看人员(初审)</th>
                                     </tr>
                                     <tr>
@@ -724,7 +734,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">初审资料</th>
+                                        <th class="first-th">初审资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -795,12 +805,11 @@
                             </td>
                         </tr>
 
-
                         <tr v-if="stepCode>=80">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">复审资料</th>
+                                        <th class="first-th">复审资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -837,7 +846,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">补充资料</th>
+                                        <th class="first-th">补充资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -874,9 +883,9 @@
                             <td colspan="4" class="comment compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:12%">审批阶段</th>
-                                        <th style="width:12%">审批人</th>
-                                        <th style="width:12%">审批意见</th>
+                                        <th class="first-th">审批阶段</th>
+                                        <th>审批人</th>
+                                        <th>审批意见</th>
                                         <th>审批内容</th>
                                     </tr>
                                     <tr v-for="comment in comments" :key="comment.id">
@@ -936,7 +945,9 @@
             <el-button v-for="oper in formOpers" :type="oper.color" @click="commit(oper.event)" :key="oper.name">
                 {{ oper.name }}
             </el-button>
-            <el-button @click="visible = false;print()">打印</el-button>
+            <el-button v-if="step !== 'submission' && step !== 'reject'" @click="print()"
+                       :loading="printLoading">打印
+            </el-button>
         </div>
     </el-dialog>
 </template>
@@ -955,22 +966,15 @@ export default {
     props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'], //formRules2只在某些条件下验证
     watch: {
         'submissionForm.constructionUnitApplyFee': function (newVal) {
-            if (this.submissionForm.inspectUnitApplyFee && this.submissionForm.inspectUnitApplyFee > 0) {
-                this.submissionForm.inspectUnitCheckFee = (newVal - this.submissionForm.inspectUnitApplyFee).toFixed(2)
-            } else {
-                this.submissionForm.inspectUnitCheckFee = ''
-            }
-            this.submissionForm.buildUnitCheckFee = (newVal - this.submissionForm.buildUnitApplyFee).toFixed(2)
+            this.calInspectUnitCheckFee(newVal, this.submissionForm.inspectUnitApplyFee)
+            this.calBuildUnitCheckFee(newVal, this.submissionForm.inspectUnitApplyFee, this.submissionForm.buildUnitApplyFee)
         },
         'submissionForm.inspectUnitApplyFee': function (newVal) {
-            if (newVal && newVal > 0) {
-                this.submissionForm.inspectUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)
-            } else {
-                this.submissionForm.inspectUnitCheckFee = ''
-            }
+            this.calInspectUnitCheckFee(this.submissionForm.constructionUnitApplyFee, newVal)
+            this.calBuildUnitCheckFee(this.submissionForm.constructionUnitApplyFee, newVal, this.submissionForm.buildUnitApplyFee)
         },
         'submissionForm.buildUnitApplyFee': function (newVal) {
-            this.submissionForm.buildUnitCheckFee = (this.submissionForm.constructionUnitApplyFee - newVal).toFixed(2)
+            this.calBuildUnitCheckFee(this.submissionForm.constructionUnitApplyFee, this.submissionForm.inspectUnitApplyFee, newVal)
         },
         'submissionForm.submissionPrice': function () {
             this.calAuditFirst()
@@ -984,6 +988,7 @@ export default {
         visible: function (newVal) {
             if (newVal) {
 
+                this.printLoading = true
                 this.uploadFiles = []
 
                 MaterialFile.getMaterialGroups().then(res => {
@@ -1253,6 +1258,12 @@ export default {
                     }
                     $(".print-info").hide()
                 });
+
+                //延时两秒可打印,防止页面元素没有加载完成,样式错误
+                setTimeout(() => {
+                    this.printLoading = false
+                }, 2000)
+
             } else {
                 $(".upload-btn").show()
             }
@@ -1278,8 +1289,8 @@ export default {
                 startDate: '',
                 endDate: '',
                 contractMoney: 0,
-                constructMoney: 0,
-                installMoney: 0,
+                constructMoney: '',
+                installMoney: '',
                 payType: '',
                 payTypeOther: '',
                 payCondition: '',
@@ -1340,6 +1351,7 @@ export default {
                 auditSecondFiles: [],
                 //争议处理，申请人补充上传资料
                 supplementFiles: [],
+                nextStep: '',
                 /*--------------------------submission end -----------------------------------*/
             },
             materialGroups: [],
@@ -1351,10 +1363,25 @@ export default {
             users: [],
             units: [],
             projectMans: [],
-            uploadFiles: [] //由于上传完成后修改upload的file-list存在列表刷新问题，所以用这个数组来存放已上传附件,不修改file-list
+            uploadFiles: [], //由于上传完成后修改upload的file-list存在列表刷新问题，所以用这个数组来存放已上传附件,不修改file-list
+            printLoading: true
         }
     },
     methods: {
+        calInspectUnitCheckFee(constructionUnitApplyFee, inspectApplyFee) {
+            if (inspectApplyFee && inspectApplyFee > 0) {
+                this.submissionForm.inspectUnitCheckFee = (constructionUnitApplyFee - inspectApplyFee).toFixed(2)
+            } else {
+                this.submissionForm.inspectUnitCheckFee = ''
+            }
+        },
+        calBuildUnitCheckFee(constructionUnitApplyFee, inspectApplyFee, buildUnitApplyFee) {
+            if (inspectApplyFee && inspectApplyFee > 0) {
+                this.submissionForm.buildUnitCheckFee = (inspectApplyFee - buildUnitApplyFee).toFixed(2)
+            } else {
+                this.submissionForm.buildUnitCheckFee = (constructionUnitApplyFee - buildUnitApplyFee).toFixed(2)
+            }
+        },
         calAuditFirst: function () {
             this.submissionForm.auditFirstSub = this.submissionForm.submissionPrice - this.submissionForm.firstAuditPrice
             this.submissionForm.auditFirstSubRatio = (this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(4) * 100

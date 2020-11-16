@@ -1,16 +1,12 @@
 <template>
     <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="form" id="bid">
+            <div class="bin-form" id="bid">
                 <el-form :model="bidForm" :rules="formRules" ref="bidForm">
+                    <p class="title">招标控制价审核送审表</p>
                     <table class="form-table">
                         <tr>
-                            <th colspan="4">
-                                招标控制价审核送审表
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>立项代码</th>
+                            <th class="first-th">立项代码</th>
                             <td>
                                 <el-form-item prop="itemCode">
                                     <el-input v-model="bidForm.itemCode"
@@ -139,7 +135,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">资料清单</th>
+                                        <th class="first-th">资料清单</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -235,7 +231,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">初审资料</th>
+                                        <th class="first-th">初审资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -312,7 +308,7 @@
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th class="upload-type">复审资料</th>
+                                        <th class="first-th">复审资料</th>
                                         <th>附件</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
@@ -350,9 +346,9 @@
                             <td colspan="4" class="comment compact-td">
                                 <table class="form-table">
                                     <tr>
-                                        <th style="width:12%">审批阶段</th>
-                                        <th style="width:12%">审批人</th>
-                                        <th style="width:12%">审批意见</th>
+                                        <th class="first-th">审批阶段</th>
+                                        <th>审批人</th>
+                                        <th>审批意见</th>
                                         <th>审批内容</th>
                                     </tr>
                                     <tr v-for="comment in comments" :key="comment.id">
@@ -723,7 +719,7 @@ export default {
         print: function () {
             $(".upload-btn").hide()
             $(".print-info").show()
-            $(".form").printArea({
+            $(".bin-form").printArea({
                 importCSS: false
             })
         },

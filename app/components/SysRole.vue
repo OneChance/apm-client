@@ -67,15 +67,8 @@ export default {
                 page: true,
                 pageMethod: this.toPage,
                 cols: [
-                    {prop: 'name', label: '名称', width: '180'},
+                    {prop: 'name', label: '名称', width: '580'},
                 ],
-                oper: [
-                    {
-                        class: 'fa fa fa-user-o fa-lg click-fa primary-fa',
-                        tip: {content: '分配用户', placement: 'right'},
-                        event: this.roleUsers,
-                    },
-                ]
             },
         }
     },
