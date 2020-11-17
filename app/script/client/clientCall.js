@@ -8,13 +8,12 @@ import App from "../app"
 import MaterialFile from "../server/materialFile";
 
 export default {
-    //获得待办
-    getWillDo(data) {
-        return Workitem.getWillDo(data)
-    },
-    //获得待办
-    getDone(data) {
-        return Workitem.getDone(data)
+    getWorkitems(data, type) {
+        if (type === 'done') {
+            return Workitem.getDone(data)
+        } else if (type === 'willDo') {
+            return Workitem.getWillDo(data)
+        }
     },
     //获取员工
     getEmps() {
@@ -188,5 +187,32 @@ export default {
                 })
             }
         })
+    },
+    //前后端阶段名转换
+    stepNameConvert(serverStage) {
+        switch (serverStage) {
+            case 'distribution':
+                return 'alloced';
+            case 'check':
+                return 'assigned';
+            case 'survey_prepare':
+                return 'surveyPrepare';
+            case 'survey_scene':
+                return 'survey';
+            case 'argue':
+                return 'argueHandle';
+            case 'argue_reject':
+                return 'argueDeal';
+            case 'audit_first':
+                return 'auditFirst';
+            case 'audit_second':
+                return 'auditSecond';
+            case 'complete':
+                return 'auditComplete';
+            case 'filed':
+                return 'auditArc';
+            default:
+                return serverStage;
+        }
     },
 }

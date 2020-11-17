@@ -348,6 +348,7 @@
                                     <tr>
                                         <th class="first-th">审批阶段</th>
                                         <th>审批人</th>
+                                        <th>审批时间</th>
                                         <th>审批意见</th>
                                         <th>审批内容</th>
                                     </tr>
@@ -357,6 +358,9 @@
                                         </td>
                                         <td>
                                             {{ comment.creator.name }}
+                                        </td>
+                                        <td>
+                                            {{ comment.createTime }}
                                         </td>
                                         <td>
                                             {{ comment.typeStr }}

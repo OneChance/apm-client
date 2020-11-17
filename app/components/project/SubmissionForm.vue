@@ -13,7 +13,7 @@
                                               :disabled="step!=='submission' && step!=='reject'"></el-input>
                                 </el-form-item>
                             </td>
-                            <th :class="stepCode===10?'form-required':''">审计编号</th>
+                            <th :class="stepCode===10?'form-required':''" class="first-th">审计编号</th>
                             <td :class="stepCode===10?'editing':''">
                                 <el-form-item prop="auditNo">
                                     <el-input v-model="submissionForm.auditNo"
@@ -885,6 +885,7 @@
                                     <tr>
                                         <th class="first-th">审批阶段</th>
                                         <th>审批人</th>
+                                        <th>审批时间</th>
                                         <th>审批意见</th>
                                         <th>审批内容</th>
                                     </tr>
@@ -894,6 +895,9 @@
                                         </td>
                                         <td>
                                             {{ comment.creator.name }}
+                                        </td>
+                                        <td>
+                                            {{ comment.createTime }}
                                         </td>
                                         <td>
                                             {{ comment.typeStr }}

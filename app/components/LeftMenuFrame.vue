@@ -87,6 +87,7 @@ import AuditCompleteBid from "./bid/AuditCompleteBid";
 import AuditFirstBid from "./bid/AuditFirstBid";
 import AuditSecondBid from "./bid/AuditSecondBid";
 import AuditArcBid from "./bid/AuditArcBid";
+import Config from "../script/config"
 
 export default {
     name: "leftMenuFrame",
@@ -110,10 +111,7 @@ export default {
             this.currentComponent = 'willDo'
 
             if (newVal.length === 1) {//我的事项菜单
-                ClientCall.getWillDo({
-                    page: 1,
-                    pageSize: 99999999
-                }).then(res => {
+                ClientCall.getWorkitems(Config.pageAll, 'willDo').then(res => {
                     this.willDoCount = res.list.totalElements
                 })
             } else {

@@ -130,7 +130,6 @@ export default {
         }
     },
     mounted: function () {
-
         ClientCallCommon.getConstructionUnits().then(res => {
             this.units = []
             res.list.content.forEach(user => {
@@ -139,7 +138,6 @@ export default {
                     label: user.name
                 })
             })
-
             ClientCallCommon.getIntermediary().then(res => {
                 this.inters = []
                 res.list.content.forEach(user => {
@@ -149,9 +147,7 @@ export default {
                     })
                 })
             })
-
             this.list()
-
         })
     },
     methods: {

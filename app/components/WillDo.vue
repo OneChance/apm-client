@@ -1,20 +1,12 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" class="demo-form-inline query-form">
-                <!--<el-form-item>
-                    <el-input v-model="query.workitemName" placeholder="待办名称"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="queryList">查询</el-button>
-                </el-form-item>-->
-                <el-form-item>
-                    <el-button type="success" @click="batchOper(1)">批量处理</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="danger" @click="batchOper(0)">批量打回</el-button>
-                </el-form-item>
-            </el-form>
+            <workitem-query ref="query"
+                            v-bind:tableConfigObject="tableConfig"
+                            v-bind:buttons="buttons"
+                            v-bind:checkedList="checkedList"
+                            v-bind:type="'willDo'">
+            </workitem-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -41,14 +33,10 @@
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./project/SubmissionForm";
 import AllocForm from "./AllocForm";
-import Common from '../script/common'
 import ClientCallProject from "../script/client/project/clientCall"
 import ClientCallBid from "../script/client/bid/clientCall"
-import ClientCall from "../script/client/clientCall"
+import ClientCallCommon from "../script/client/clientCall"
 import Config from "../script/config";
-import {
-    Notification
-} from "element-ui";
 import ProjectAuditProject from "../script/client/project/projectOper"
 import AllocApproveProject from "../script/client/project/allocApproveOper"
 import RejectedOperProject from "../script/client/project/rejectedOper"
@@ -58,13 +46,13 @@ import Argue from "../script/client/project/argue.js"
 import AuditFirstProject from "../script/client/project/auditFirst.js"
 import AuditSecondProject from "../script/client/project/auditSecond.js"
 import ArgueResolve from "../script/client/project/argueResolve"
-
 import BidForm from "./bid/BidForm";
 import ProjectAuditBid from "../script/client/bid/projectOper"
 import AllocApproveBid from "../script/client/bid/allocApproveOper"
 import RejectedOperBid from "../script/client/bid/rejectedOper"
 import AuditFirstBid from "../script/client/bid/auditFirst.js"
 import AuditSecondBid from "../script/client/bid/auditSecond.js"
+import WorkitemQuery from "./WorkitemQuery";
 
 export default {
     name: "WillDo",
@@ -72,13 +60,14 @@ export default {
 
     },
     mounted() {
-        this.list()
+
     },
     data: function () {
         return {
-            query: {
-                workitemName: '',
-            },
+            buttons: [
+                {name: '批量处理', color: 'success', event: this.batchAllocAgree},
+                {name: '批量打回', color: 'danger', event: this.batchAllocReject},
+            ],
             forms: {
                 alloc: {
                     visible: false
@@ -178,9 +167,15 @@ export default {
             }
             this.listChecks = val
         },
+        batchAllocAgree() {
+            this.batchOper(1)
+        },
+        batchAllocReject() {
+            this.batchOper(0)
+        },
         batchOper(approve) { //待办的批量处理
             if (this.listChecks.length === 0) {
-                Notification.error({
+                this.$notify.error({
                     title: '操作失败!',
                     message: '请先选择行！',
                     duration: 3000
@@ -193,13 +188,13 @@ export default {
                     typeSet.add(c.target)
                 })
                 if (typeSet.size > 1) {
-                    Notification.error({
+                    this.$notify.error({
                         title: '操作失败!',
                         message: '选中的待办属于不同类型送审表,无法批量处理！',
                         duration: 3000
                     })
                 } else if (stageSet.size > 1) {
-                    Notification.error({
+                    this.$notify.error({
                         title: '操作失败!',
                         message: '选中的待办处于不同阶段,无法批量处理！',
                         duration: 3000
@@ -215,7 +210,7 @@ export default {
                                 }
                             })
                         } else {
-                            Notification.error({
+                            this.$notify.error({
                                 title: '操作失败!',
                                 message: '审计立项阶段需要填写审计编号,不可批量审核同意！',
                                 duration: 3000
@@ -247,7 +242,7 @@ export default {
                         }
                     } else if (stage === 'filed') {
                         if (approve === 1) {
-                            Notification.error({
+                            this.$notify.error({
                                 title: '操作失败!',
                                 message: '归档阶段无法进入下一阶段！',
                                 duration: 3000
@@ -258,7 +253,7 @@ export default {
                             })
                         }
                     } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second'].indexOf(stage) !== -1) {
-                        Notification.error({
+                        this.$notify.error({
                             title: '操作失败!',
                             message: '当前阶段不可批量操作！',
                             duration: 3000
@@ -267,35 +262,9 @@ export default {
                 }
             }
         },
-        stepNameConvert(serverStage) {
-            switch (serverStage) {
-                case 'distribution':
-                    return 'alloced';
-                case 'check':
-                    return 'assigned';
-                case 'survey_prepare':
-                    return 'surveyPrepare';
-                case 'survey_scene':
-                    return 'survey';
-                case 'argue':
-                    return 'argueHandle';
-                case 'argue_reject':
-                    return 'argueDeal';
-                case 'audit_first':
-                    return 'auditFirst';
-                case 'audit_second':
-                    return 'auditSecond';
-                case 'complete':
-                    return 'auditComplete';
-                case 'filed':
-                    return 'auditArc';
-                default:
-                    return serverStage;
-            }
-        },
         editRow: function (row) {
 
-            let step = this.stepNameConvert(row.stage)
+            let step = ClientCallCommon.stepNameConvert(row.stage)
             let type = row.target
 
             this.forms[type].step = step
@@ -345,26 +314,8 @@ export default {
             this.formId = row.targetId
             this.forms[type].stepCode = this.stepCode[type][step]
         },
-        queryList: function () {
-            this.list(this.query)
-        },
         toPage: function (val) {
-            this.list({
-                page: val
-            })
-        },
-        list(config) {
-            let data = Common.copyObject(Config.page)
-            for (let prop in config) {
-                data[prop] = config[prop]
-            }
-            this.tableConfig.currentPage = data.page
-            ClientCall.getWillDo(data).then(res => {
-                //如果以后多选框,清除所选数据
-                this.listChecks = []
-                this.tableConfig.data = res.list.content
-                this.tableConfig.total = res.list.totalElements
-            })
+            this.$refs.query.list({page: val})
         },
         operSuccess() {
             for (let formType in this.forms) {
@@ -374,16 +325,15 @@ export default {
                 message: '操作成功',
                 type: 'success'
             });
-            this.list({
-                page: 1
-            })
+            this.$refs.query.list({page: 1})
         }
     },
     components: {
         TableComponent,
         SubmissionForm,
         AllocForm,
-        BidForm
+        BidForm,
+        WorkitemQuery
     }
 }
 </script>
