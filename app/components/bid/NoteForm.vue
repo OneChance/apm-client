@@ -152,7 +152,8 @@
         </template>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取 消</el-button>
-            <el-button @click="visible = false;print()">打印</el-button>
+            <el-button @click="save" type="success">保存</el-button>
+            <el-button @click="print()">打印</el-button>
         </div>
     </el-dialog>
 </template>
@@ -168,6 +169,8 @@ export default {
     watch: {
         visible: function (newVal) {
             if (newVal) {
+                //先加载通知单，如果没有，加载送审单信息初始化
+
                 //加载form
                 ClientCallBid.getSubmission({
                     id: this.formId
@@ -229,6 +232,9 @@ export default {
                 importCSS: false
             })
         },
+        save: function () {
+            console.log(this.noteForm)
+        }
     },
 }
 </script>

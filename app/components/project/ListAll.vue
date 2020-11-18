@@ -31,6 +31,11 @@
                         width="55">
                     </el-table-column>
                     <el-table-column
+                        prop="step"
+                        label="阶段"
+                        width="100">
+                    </el-table-column>
+                    <el-table-column
                         prop="type"
                         label="附件类型">
                     </el-table-column>
@@ -56,6 +61,7 @@
 import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import ClientCallProject from "../../script/client/project/clientCall";
+import ClientCallCommon from "../../script/client/clientCall"
 import Env from "../../script/server/env"
 import SubmissionQuery from "./SubmissionQuery";
 import JSZip from 'jszip'
@@ -115,6 +121,7 @@ export default {
             },
             downFiles: [],
             filesToDownload: [],
+            mTypes: []
         }
     },
     methods: {
@@ -130,15 +137,18 @@ export default {
             this.fileListVisible = false
             this.fileListVisible = true
 
-            ClientCallProject.getSubmission({
-                id: row.id
-            }).then(result => {
-                this.downFiles = []
-                result.submission.details.forEach(fileType => this.addToFileList(fileType))
-                result.submission.surveyFiles.forEach(fileType => this.addToFileList(fileType))
-                result.submission.argueFiles.forEach(fileType => this.addToFileList(fileType))
-                result.submission.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
-                result.submission.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
+            ClientCallCommon.materialFileTypes().then(result => {
+                this.mTypes = result.list
+                ClientCallProject.getSubmission({
+                    id: row.id
+                }).then(result => {
+                    this.downFiles = []
+                    result.submission.details.forEach(fileType => this.addToFileList(fileType))
+                    result.submission.surveyFiles.forEach(fileType => this.addToFileList(fileType))
+                    result.submission.argueFiles.forEach(fileType => this.addToFileList(fileType))
+                    result.submission.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
+                    result.submission.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
+                })
             })
         },
         addToFileList(fileType) {
@@ -146,9 +156,37 @@ export default {
                 this.downFiles.push({
                     type: fileType.mName,
                     name: file.name,
-                    url: Env.baseURL + file.url
+                    url: Env.baseURL + file.url,
+                    step: this.getStep(fileType.mName)
                 })
             })
+        },
+        getStep(mName) {
+            if (this.mTypes.map(t => t.name).includes(mName)) {
+                return '送审'
+            } else {
+                switch (mName) {
+                    case '勘察记录':
+                    case '勘察照片':
+                        return '现场勘察'
+                    case '争议处理':
+                        return '争议处理'
+                    case '审定单(初)':
+                    case '初审报告(初)':
+                    case '审计工作底稿(初)':
+                    case '计价文本(初)':
+                        return '初审'
+                    case '审定单(复)':
+                    case '初审报告(复)':
+                    case '审计工作底稿(复)':
+                    case '计价文本(复)':
+                        return '复审'
+                    case '补充资料':
+                        return '争议解决'
+                    default:
+                        return ''
+                }
+            }
         },
         handleSelectionChange(val) {
             this.filesToDownload = val;

@@ -47,7 +47,7 @@
                                               placeholder="填写经费来源"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>预算(万元)</th>
+                            <th>预算</th>
                             <td>
                                 <el-form-item prop="budget">
                                     <el-input v-model="submissionForm.budget"
@@ -392,7 +392,7 @@
                             </td>
                         </tr>
                         <tr class="allocMan" v-if="stepCode>=30">
-                            <th>审计方式{{ stepCode }}</th>
+                            <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.auditType" disabled></el-input>
                             </td>
@@ -641,7 +641,9 @@
                                         <th>现场查看人员(初审)</th>
                                     </tr>
                                     <tr>
-                                        <td>审核单位</td>
+                                        <th v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">外审单位
+                                        </th>
+                                        <th v-else>内审单位</th>
                                         <td colspan="3" :class="stepCode===70?'editing':''">
                                             <el-form-item prop="viewPeoplesAuditUnit2">
                                                 <el-select v-model="submissionForm.viewPeoplesAuditUnit2"
@@ -657,7 +659,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>建设单位</td>
+                                        <th>建设单位</th>
                                         <td colspan="3" :class="stepCode===70?'editing':''">
                                             <el-form-item prop="viewPeoplesBuildUnitIds2">
                                                 <el-input type="text"
@@ -667,7 +669,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>施工单位</td>
+                                        <th>施工单位</th>
                                         <td colspan="3" :class="stepCode===70?'editing':''">
                                             <el-form-item prop="viewPeoplesConstructUnit2">
                                                 <el-select v-model="submissionForm.viewPeoplesConstructUnit2"
@@ -684,8 +686,8 @@
                                             </el-form-item>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>委托单位</td>
+                                    <tr v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">
+                                        <th>内审单位</th>
                                         <td colspan="3" :class="stepCode===70?'editing':''">
                                             <el-form-item prop="viewPeoplesEntrustUnitIds2">
                                                 <el-input type="text"
@@ -718,13 +720,13 @@
                         <tr v-if="stepCode>=70">
                             <th class="form-required">初审核减额</th>
                             <td :class="stepCode===70?'editing':''">
-                                <el-form-item prop="submissionPrice">
+                                <el-form-item prop="auditFirstSub">
                                     <el-input v-model="submissionForm.auditFirstSub" disabled></el-input>
                                 </el-form-item>
                             </td>
                             <th class="form-required">初审核减率</th>
                             <td :class="stepCode===70?'editing':''">
-                                <el-form-item prop="firstAuditPrice">
+                                <el-form-item prop="auditFirstSubRatio">
                                     <el-input v-model="submissionForm.auditFirstSubRatio+'%'"
                                               disabled
                                     ></el-input>
@@ -1074,28 +1076,28 @@ export default {
                                 result.submission.auditFirstFiles = [
                                     {
                                         mId: '-4',
-                                        mName: '审定单',
+                                        mName: '审定单(初)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
                                     },
                                     {
                                         mId: '-5',
-                                        mName: '初审报告',
+                                        mName: '初审报告(初)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
                                     },
                                     {
                                         mId: '-6',
-                                        mName: '审计工作底稿',
+                                        mName: '审计工作底稿(初)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
                                     },
                                     {
                                         mId: '-7',
-                                        mName: '计价文本',
+                                        mName: '计价文本(初)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
@@ -1107,28 +1109,28 @@ export default {
                                 result.submission.auditSecondFiles = [
                                     {
                                         mId: '-8',
-                                        mName: '审定单',
+                                        mName: '审定单(复)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
                                     },
                                     {
                                         mId: '-9',
-                                        mName: '初审报告',
+                                        mName: '初审报告(复)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
                                     },
                                     {
                                         mId: '-10',
-                                        mName: '审计工作底稿',
+                                        mName: '审计工作底稿(复)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''
                                     },
                                     {
                                         mId: '-11',
-                                        mName: '计价文本',
+                                        mName: '计价文本(复)',
                                         mFiles: [],
                                         mFileIds: '',
                                         mNote: ''

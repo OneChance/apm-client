@@ -134,6 +134,7 @@
         </template>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取 消</el-button>
+            <el-button @click="save" type="success">保存</el-button>
             <el-button @click="visible = false;print()">打印</el-button>
         </div>
     </el-dialog>
@@ -222,6 +223,9 @@ export default {
                 "                                                                                  审计处\n" +
                 "                                                                                  " + now.getFullYear() +
                 "/" + (now.getMonth() + 1) + "/" + now.getDate();
+        },
+        save: function () {
+            console.log(this.auditNoteForm)
         }
     },
 }

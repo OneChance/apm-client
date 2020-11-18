@@ -213,4 +213,7 @@ export default {
                 return serverStage;
         }
     },
+    materialFileTypes() {
+        return MaterialFile.getMaterialTypes()
+    }
 }

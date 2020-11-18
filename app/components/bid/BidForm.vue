@@ -80,7 +80,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>预算金额(万元)</th>
+                            <th>预算金额</th>
                             <td>
                                 <el-form-item prop="budget">
                                     <el-input v-model="bidForm.budget"
@@ -98,7 +98,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>报审金额(万元)</th>
+                            <th>报审金额</th>
                             <td>
                                 <el-form-item prop="subMoney">
                                     <el-input v-model="bidForm.subMoney"
@@ -223,6 +223,23 @@
                                 <el-form-item prop="firstAuditPrice">
                                     <el-input v-model="bidForm.firstAuditPrice" :disabled="step!=='auditFirst'"
                                               placeholder="填写土建金额"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=40">
+                            <th class="form-required">初审核减额</th>
+                            <td :class="stepCode===40?'editing':''">
+                                <el-form-item prop="auditFirstSub">
+                                    <el-input v-model="bidForm.auditFirstSub" disabled></el-input>
+                                </el-form-item>
+                            </td>
+                            <th class="form-required">初审核减率</th>
+                            <td :class="stepCode===40?'editing':''">
+                                <el-form-item prop="auditFirstSubRatio">
+                                    <el-input v-model="bidForm.auditFirstSubRatio+'%'"
+                                              disabled
+                                    ></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -607,8 +624,8 @@ export default {
                 budget: 0,
                 startDate: '',
                 subMoney: 0,
-                constructMoney: 0,
-                installMoney: 0,
+                constructMoney: '',
+                installMoney: '',
                 materialGroup: '',
                 details: [], //资料清单信息
                 status: 0,
