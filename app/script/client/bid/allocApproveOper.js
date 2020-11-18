@@ -4,8 +4,8 @@ import ClientCall from "./clientCall";
 const oper = {
     comp: {},
     buttons: [
-        {name: '同意分配', color: 'success', event: agree},
-        {name: '打回', color: 'danger', event: reject}
+        {name: '同意', color: 'success', event: agree},
+        {name: '不同意', color: 'danger', event: reject}
     ],
 }
 

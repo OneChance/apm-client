@@ -3,7 +3,7 @@
         <el-card class="box-card">
             <el-form :inline="true" class="demo-form-inline">
                 <el-form-item>
-                    <el-input v-model="query.userName" placeholder="单位名称"></el-input>
+                    <el-input v-model="query.name" placeholder="单位名称"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -20,12 +20,6 @@
                    :close-on-click-modal="false">
             <template>
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="true">
-                    <el-form-item label="用户名" prop="username">
-                        <el-input v-model="form.username" :disabled="!global.loginUser.admin"></el-input>
-                    </el-form-item>
-                    <el-form-item label="密码" prop="password">
-                        <el-input v-model="form.password"></el-input>
-                    </el-form-item>
                     <el-form-item label="单位名称" prop="name" style="width:580px">
                         <el-input v-model="form.name" style="width:500px"
                                   :disabled="!global.loginUser.admin"></el-input>
@@ -60,22 +54,18 @@
 
 <script>
 
-import User from "../script/server/user";
+import Intermediary from "../script/server/intermediary";
 import Common from "../script/common";
 import Config from "../script/config";
 import TableComponent from "./TableComponent";
-import md5 from 'js-md5';
 
 export default {
     name: "SysIntermediary",
     data: function () {
         return {
-            query: {
-                userName: ''
-            },
+            query: {},
             form: {
-                username: '',
-                password: '888888',
+                id: '',
                 name: '',
                 thirdParty: true,
                 links: [{
@@ -85,12 +75,6 @@ export default {
                 }],
             },
             rules: {
-                username: [
-                    {required: true, message: '请输入用户名', trigger: 'blur'},
-                ],
-                password: [
-                    {required: true, message: '请输入密码', trigger: 'blur'},
-                ],
                 name: [
                     {required: true, message: '请输入单位名称', trigger: 'blur'},
                 ],
@@ -144,8 +128,7 @@ export default {
         commit: function () {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
-                    this.form.password = md5(this.form.password)
-                    User.saveUser(this.form).then(() => {
+                    Intermediary.save(this.form).then(() => {
                         this.operSuccess(this)
                         this.userInfoDialogVisible = false;
                     })
@@ -160,16 +143,24 @@ export default {
             this.form.links.length = 1
             this.$nextTick(() => {
                 this.$refs['form'].resetFields();
+                this.form.id = ''
+                this.form.links = [{
+                    contact: '',
+                    telphone: '',
+                    email: '',
+                }]
             });
         },
         edit: function (row) {
-            User.getUser({id: row.id}).then(result => {
+            Intermediary.get({id: row.id}).then(result => {
                 this.userInfoDialogVisible = true
-                this.form = result.user
+                this.$nextTick(() => {
+                    this.form = result.thirdparty
+                });
             })
         },
         delete: function (row) {
-            User.deleteUser({id: row.id}).then(() => {
+            Intermediary.delete({id: row.id}).then(() => {
                 this.operSuccess(this)
             })
         },
@@ -188,7 +179,7 @@ export default {
             }
             this.tableConfig.currentPage = data.page
             data.thirdParty = true;
-            User.getUsers(data).then(res => {
+            Intermediary.gets(data).then(res => {
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements
             })

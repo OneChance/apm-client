@@ -54,7 +54,7 @@
 
 <script>
 
-import Personal from '../components/Personal.vue'
+import WorkitemDashboard from '../components/WorkitemDashboard.vue'
 import SysCampOrg from '../components/SysCampOrg.vue'
 import SysRight from '../components/SysRight.vue'
 import SysRole from '../components/SysRole.vue'
@@ -68,6 +68,8 @@ import SysIntermediary from "./SysIntermediary";
 import MissionAlloc from "./project/MissionAlloc";
 import WillDo from "./WillDo";
 import Done from "./Done";
+import MyWork from "./MyWork";
+import MyCreate from "./MyCreate";
 import SurveyPrepare from "./project/SurveyPrepare"
 import Survey from "./project/Survey"
 import AuditComplete from "./project/AuditComplete";
@@ -107,10 +109,10 @@ export default {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
 
-            this.leftActiveIndex = 'willDo'
-            this.currentComponent = 'willDo'
+            this.leftActiveIndex = 'workitemDashboard'
+            this.currentComponent = 'workitemDashboard'
 
-            if (newVal.length === 1) {//我的事项菜单
+            if (newVal.length === 2) {//我的事项菜单
                 ClientCall.getWorkitems(Config.pageAll, 'willDo').then(res => {
                     this.willDoCount = res.list.totalElements
                 })
@@ -136,7 +138,7 @@ export default {
         }
     },
     components: {
-        Personal,
+        WorkitemDashboard,
         SysCampOrg,
         SysRight,
         SysRole,
@@ -150,6 +152,8 @@ export default {
         SysIntermediary,
         WillDo,
         Done,
+        MyWork,
+        MyCreate,
         SurveyPrepare,
         Survey,
         AuditComplete,

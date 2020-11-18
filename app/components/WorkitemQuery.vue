@@ -1,16 +1,18 @@
 <template>
     <el-form :inline="true" :model='query' ref='query' class="demo-form-inline query-form">
-        <el-form-item prop="auditNo">
+        <el-form-item prop="auditNo" v-if="!formName">
             <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
         </el-form-item>
-        <el-form-item prop="projectName">
+        <el-form-item prop="projectName" v-if="!formName">
             <el-input v-model="query.projectName" placeholder="项目名称" style="width: 300px;"></el-input>
         </el-form-item>
-        <el-button type="primary" @click="queryList">查询</el-button>
-        <el-button @click="$refs['query'].resetFields()">重置</el-button>
-        <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name">
+        <el-button type="primary" @click="queryList" v-if="!formName">查询</el-button>
+        <el-button @click="$refs['query'].resetFields()" v-if="!formName">重置</el-button>
+        <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name"
+                   :size="btnSize">
             {{ btn.name }}
         </el-button>
+        <el-button v-if="formName==='done'" size="mini" class="hold-btn">占位</el-button>
     </el-form>
 </template>
 
@@ -22,7 +24,7 @@ import ClientCall from "../script/client/clientCall";
 
 export default {
     name: "WorkitemQuery",
-    props: ['type', 'tableConfigObject', 'checkedList', 'buttons'],
+    props: ['type', 'tableConfigObject', 'checkedList', 'buttons', 'formName'],
     data: function () {
         return {
             stepCodes: Config.stepCode,
@@ -31,10 +33,14 @@ export default {
                 status: '',
                 auditNo: '',
             },
+            btnSize: ''
         }
     },
     mounted: function () {
         this.list()
+        if (this.formName) {
+            this.btnSize = 'mini'
+        }
     },
     methods: {
         btnClick: function (event) {

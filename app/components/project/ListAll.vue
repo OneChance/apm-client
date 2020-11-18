@@ -86,7 +86,7 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'status', label: '审计状态', width: '150', fixed: true},
+                    {prop: 'status', label: '审计状态', width: '150', fixed: true, popProgress: true},
                     {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
                     {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
@@ -109,7 +109,7 @@ export default {
                         class: 'fa fa-file-text-o  click-fa primary-fa',
                         tip: {content: '附件清单', placement: 'top'},
                         event: this.fileList,
-                    }
+                    },
                 ],
                 operWidth: 100,
             },

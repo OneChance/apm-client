@@ -47,6 +47,29 @@ body {
   }
 }
 
+.el-table {
+  th {
+    padding: 5px !important;
+  }
+
+  td {
+    padding: 5px !important;
+  }
+}
+
+//工作dashboard-----------------------------
+.work-dashboard {
+  .box-card {
+    margin-bottom: 10px;
+  }
+
+  .el-card__body {
+    padding: 10px !important;
+  }
+}
+
+//--------------------------------------------
+
 .el-popup-parent--hidden {
   padding-right: 0 !important;
 }
@@ -263,16 +286,11 @@ body {
   border-bottom: 0 !important;
 
   .form-table {
-
     border-bottom: 0 !important;
 
     th {
       border-top-width: 0 !important;
       border-right-width: 0 !important;
-    }
-
-    th:last-child {
-      border-bottom-width: 0 !important;
     }
   }
 }
@@ -286,6 +304,10 @@ body {
   border-width: 1px;
   border-color: #666666;
   border-collapse: collapse;
+
+  .el-input.is-disabled .el-input__inner {
+    background-color: white !important;
+  }
 
   .first-th {
     width: 105px;
@@ -301,7 +323,6 @@ body {
 
   td {
     border-width: 1px;
-    padding: 8px;
     border-style: solid;
     border-color: #666666;
     background-color: #ffffff;
@@ -321,6 +342,14 @@ body {
 
   .el-form-item__error {
     position: relative;
+  }
+}
+
+.comment {
+  .form-table {
+    td {
+      padding: 5px;
+    }
   }
 }
 
@@ -443,4 +472,11 @@ body {
 
 .table-select {
   width: 100%;
+}
+
+//占位按钮
+.hold-btn {
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+  cursor: auto !important;
 }

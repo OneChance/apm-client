@@ -10,7 +10,7 @@ export default {
     getUser: function (data) {
         return Net.get('/user/get/', data);
     },
-    deleteUser: function (data) {
-        return Net.post('/user/delete/', data);
+    updateState: function (data) {
+        return Net.post('/user/updateState/', data);
     }
 }

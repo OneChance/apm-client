@@ -5,8 +5,8 @@ import FormValidator from "../formValidator";
 const oper = {
     comp: {}, //基本是列表所在控件,加载时候赋值,用于操作完毕后调用其上方法
     buttons: [
-        {name: '审核', color: 'success', event: auditAgree},
-        {name: '打回修改', color: 'danger', event: auditReject}
+        {name: '同意', color: 'success', event: auditAgree},
+        {name: '不同意', color: 'danger', event: auditReject}
     ],
     rules: {
         auditNo: [

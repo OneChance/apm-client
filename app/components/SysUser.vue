@@ -25,14 +25,29 @@
                     <el-form-item label="密码" prop="password">
                         <el-input v-model="form.password"></el-input>
                     </el-form-item>
-                    <el-form-item label="是否登陆" prop="login">
-                        <el-switch
-                            v-model="form.login"
-                            active-color="#13ce66"
-                            inactive-color="#ff4949"
-                            active-value="true"
-                            inactive-value="false">
-                        </el-switch>
+                    <el-form-item label="状态" prop="state">
+                        <el-radio-group v-model="form.state">
+                            <el-radio-button label="NORMAL">正常</el-radio-button>
+                            <el-radio-button label="DISABLE">禁用</el-radio-button>
+                            <el-radio-button label="DELETE">删除</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="分组" prop="type">
+                        <el-radio-group v-model="form.type" @change="groupChange">
+                            <el-radio-button label="INSIDE">内部</el-radio-button>
+                            <el-radio-button label="OUTSIDE">外部</el-radio-button>
+                            <el-radio-button label="THIRDPARTY">中介</el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="中介机构" prop="thirdparty.id" v-if="form.type === 'THIRDPARTY'">
+                        <el-select v-model="form.thirdparty.id" filterable placeholder="请选择中介机构" class="table-select">
+                            <el-option
+                                v-for="inter in inters"
+                                :key="inter.id"
+                                :label="inter.name"
+                                :value="inter.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="姓名" prop="name">
                         <el-input v-model="form.name"></el-input>
@@ -73,6 +88,7 @@ import Config from "../script/config";
 import TableComponent from "./TableComponent";
 import md5 from 'js-md5';
 import Role from "../script/server/role"
+import ClientCallCommon from "../script/client/clientCall";
 
 export default {
     name: "SysUser",
@@ -81,6 +97,10 @@ export default {
             if (vis) {
                 Role.getRoles(Config.pageAll).then(res => {
                     this.roles = res.list.content
+                })
+
+                ClientCallCommon.getIntermediary().then(res => {
+                    this.inters = res.list.content
                 })
             }
         }
@@ -91,14 +111,18 @@ export default {
                 userName: ''
             },
             form: {
+                id: '',
                 username: '',
                 password: '888888',
                 name: '',
                 email: '',
                 telphone: '',
-                thirdParty: false,
+                thirdparty: {
+                    id: ''
+                },
                 roles: '',
-                login: false
+                state: 'NORMAL',
+                type: '',
             },
             rules: {
                 username: [
@@ -110,16 +134,22 @@ export default {
                 name: [
                     {required: true, message: '请输入姓名', trigger: 'blur'},
                 ],
+                type: [
+                    {required: true, message: '请选择分组', trigger: 'blur'},
+                ],
+                'thirdparty.id': [
+                    {required: true, message: '请选择中介机构', trigger: 'blur'},
+                ],
             },
             tableConfig: {
                 data: [],
                 page: true,
                 pageMethod: this.toPage,
                 cols: [
-                    {prop: 'username', label: '用户名', width: '180'},
-                    {prop: 'name', label: '姓名', width: '180'},
-                    {prop: 'telphone', label: '联系方式', width: '180'},
-                    {prop: 'email', label: '邮箱', width: '180'},
+                    {prop: 'username', label: '用户名'},
+                    {prop: 'name', label: '姓名'},
+                    {prop: 'state', label: '状态', formatter: this.stateFormatter},
+                    {prop: 'type', label: '分组', formatter: this.typeFormatter},
                 ],
                 oper: [
                     {
@@ -133,25 +163,51 @@ export default {
                         event: this.delete,
                         check: true
                     }
-                ]
+                ],
+                operWidth: 90
             },
             userInfoDialogVisible: false,
-            roles: []
+            roles: [],
+            inters: [],
         }
     },
     mounted: function () {
         this.list()
     },
     methods: {
+        stateFormatter(value) {
+            switch (value) {
+                case 'NORMAL':
+                    return '正常'
+                case 'DISABLE':
+                    return '禁用'
+                case 'DELETE':
+                    return '删除'
+                default:
+                    return ''
+            }
+        },
+        typeFormatter(value) {
+            switch (value) {
+                case 'INSIDE':
+                    return '内部'
+                case 'OUTSIDE':
+                    return '外部'
+                case 'THIRDPARTY':
+                    return '中介机构'
+                default:
+                    return ''
+            }
+        },
         commit: function () {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     this.form.password = md5(this.form.password)
                     console.log(this.form)
-                    /*User.saveUser(this.form).then(() => {
+                    User.saveUser(this.form).then(() => {
                         this.operSuccess(this)
                         this.userInfoDialogVisible = false;
-                    })*/
+                    })
                 }
             })
         },
@@ -162,16 +218,23 @@ export default {
             this.userInfoDialogVisible = true
             this.$nextTick(() => {
                 this.$refs['form'].resetFields();
+                this.form.id = ''
             });
         },
         edit: function (row) {
             User.getUser({id: row.id}).then(result => {
                 this.userInfoDialogVisible = true
-                this.form = result.user
+                this.$nextTick(() => {
+                    for (let prop in result.user) {
+                        if (result.user[prop]) {
+                            this.form[prop] = result.user[prop]
+                        }
+                    }
+                })
             })
         },
         delete: function (row) {
-            User.deleteUser({id: row.id}).then(() => {
+            User.updateState({id: row.id, state: 'DELETE'}).then(() => {
                 this.operSuccess(this)
             })
         },
@@ -189,8 +252,7 @@ export default {
                 data[prop] = config[prop]
             }
             this.tableConfig.currentPage = data.page
-            //过滤用户类别
-            data.thirdParty = false;
+
             User.getUsers(data).then(res => {
                 this.tableConfig.data = res.list.content
                 this.tableConfig.total = res.list.totalElements

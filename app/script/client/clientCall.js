@@ -6,6 +6,9 @@ import ConstructionUnit from "../server/constructionUnit"
 import Upload from "../server/upload";
 import App from "../app"
 import MaterialFile from "../server/materialFile";
+import Intermediary from "../server/intermediary"
+import Config from "../config"
+import Common from "../common";
 
 export default {
     getWorkitems(data, type) {
@@ -13,30 +16,25 @@ export default {
             return Workitem.getDone(data)
         } else if (type === 'willDo') {
             return Workitem.getWillDo(data)
+        } else if (type === 'my') {
+            return Workitem.getDone(data)
+        } else if (type === 'create') {
+            return Workitem.getDone(data)
         }
     },
     //获取员工
     getEmps() {
-        return User.getUsers({
-            page: 1,
-            pageSize: 99999999,
-            thirdParty: false
-        })
+        let data = Common.copyObject(Config.pageAll)
+        data.type = 'INSIDE'
+        return User.getUsers(data)
     },
     //获取施工单位
     getConstructionUnits() {
-        return ConstructionUnit.getConstructionUnits({
-            page: 1,
-            pageSize: 999999,
-        })
+        return ConstructionUnit.getConstructionUnits(Config.pageAll)
     },
     //获取中介机构
     getIntermediary() {
-        return User.getUsers({
-            page: 1,
-            pageSize: 999999,
-            thirdParty: true
-        })
+        return Intermediary.gets(Config.pageAll)
     },
     upload(content, typeId, uploadList, failRefeshList) {
 

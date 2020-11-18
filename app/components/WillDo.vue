@@ -1,7 +1,11 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
+            <div slot="header" class="clearfix header" v-if="formName">
+                <span class="sign-title">待办事项</span>
+            </div>
             <workitem-query ref="query"
+                            v-bind:formName="formName"
                             v-bind:tableConfigObject="tableConfig"
                             v-bind:buttons="buttons"
                             v-bind:checkedList="checkedList"
@@ -15,7 +19,8 @@
                          v-bind:formRules="forms.submission.rules"
                          v-bind:formRules2="forms.submission.rules2"
                          v-bind:stepCode="forms.submission.stepCode"
-                         v-bind:step="forms.submission.step" v-bind:formId="formId">
+                         v-bind:step="forms.submission.step" v-bind:formId="formId"
+                         v-bind:formName="formName">
         </submission-form>
         <alloc-form v-bind:visible="forms.alloc.visible" v-bind:commitCallback="allocCallback">
         </alloc-form>
@@ -24,7 +29,9 @@
                   v-bind:formOpers="forms.bid.formOpers"
                   v-bind:formRules="forms.bid.rules"
                   v-bind:stepCode="forms.bid.stepCode"
-                  v-bind:step="forms.bid.step" v-bind:formId="formId">
+                  v-bind:step="forms.bid.step"
+                  v-bind:formId="formId"
+                  v-bind:formName="formName">
         </bid-form>
     </div>
 </template>
@@ -56,11 +63,50 @@ import WorkitemQuery from "./WorkitemQuery";
 
 export default {
     name: "WillDo",
+    props: ['cols', 'formName'],
     created: function () {
 
     },
     mounted() {
-
+        if (this.cols) {
+            this.tableConfig.cols = this.cols
+        } else {
+            this.tableConfig.cols = [
+                {
+                    prop: 'targetStr',
+                    label: '送审类型',
+                    width: '100',
+                },
+                {
+                    prop: 'stageStr',
+                    label: '待办名称',
+                    width: '100'
+                },
+                {
+                    prop: 'targetStr',
+                    label: '下一步',
+                    width: '100',
+                },
+                {
+                    prop: 'auditNo',
+                    label: '审计编号',
+                    width: '120',
+                },
+                {
+                    prop: 'projectName',
+                    label: '项目名称',
+                },
+                {
+                    prop: 'creator.name',
+                    label: '送审人',
+                    width: '100'
+                },
+                {
+                    prop: 'createTime',
+                    label: '送审时间',
+                },
+            ]
+        }
     },
     data: function () {
         return {
@@ -97,41 +143,7 @@ export default {
                 pageMethod: this.toPage,
                 checkBoxChange: this.checkBoxChange,
                 checkable: true,
-                cols: [
-                    {
-                        prop: 'targetStr',
-                        label: '送审类型',
-                        width: '100',
-                    },
-                    {
-                        prop: 'targetStr',
-                        label: '下一步',
-                        width: '100',
-                    },
-                    {
-                        prop: 'auditNo',
-                        label: '审计编号',
-                        width: '100',
-                    },
-                    {
-                        prop: 'projectName',
-                        label: '项目名称',
-                    },
-                    {
-                        prop: 'stageStr',
-                        label: '待办名称',
-                        width: '100'
-                    },
-                    {
-                        prop: 'creator.name',
-                        label: '送审人',
-                        width: '100'
-                    },
-                    {
-                        prop: 'createTime',
-                        label: '送审时间',
-                    },
-                ],
+                cols: [],
                 oper: [{
                     class: 'fa fa-pencil-square-o fa-lg click-fa primary-fa',
                     tip: {

@@ -59,6 +59,7 @@ export default {
                 userName: ''
             },
             form: {
+                id: '',
                 name: '',
                 links: [{
                     contact: '',
@@ -128,6 +129,11 @@ export default {
             this.form.links.length = 1
             this.$nextTick(() => {
                 this.$refs['form'].resetFields();
+                this.form.id = ''
+                this.form.links = [{
+                    contact: '',
+                    telphone: '',
+                }]
             });
         },
         edit: function (row) {

@@ -20,6 +20,24 @@
                              :fixed="col.fixed"
                              :formatter="col.formatter" :sortable="col.sortable"
                              :width="col.width">
+                <template slot-scope="scope">
+                    <div v-if="col.popProgress">
+                        <el-popover trigger="hover" placement="top" width="1000">
+                            <el-steps :active="getIndex(scope.row[col.prop])" finish-status="success">
+                                <el-step v-for="step in showSteps" :key="step" :title="step"></el-step>
+                            </el-steps>
+                            <div slot="reference" class="name-wrapper">
+                                {{ scope.row[col.prop] }}
+                            </div>
+                        </el-popover>
+                    </div>
+                    <div v-if="!col.popProgress && col.formatter">
+                        {{ col.formatter(scope.row[col.prop]) }}
+                    </div>
+                    <div v-if="!col.popProgress && !col.formatter">
+                        {{ scope.row[col.prop] }}
+                    </div>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="roleOper"
@@ -72,11 +90,30 @@ export default {
             small: false,
             deleteConfirm: false,
             deleteOper: {event: {}, row: {}},
+            steps: [
+                {label: '送审保存', step: '送审', index: 0},
+                {label: '送审打回', step: '送审', index: 0},
+                {label: '处理争议', step: '送审', index: 0},
+                {label: '审计立项', step: '审计立项', index: 1},
+                {label: '审计分配', step: '审计分配', index: 2},
+                {label: '分配审核', step: '分配审核', index: 3},
+                {label: '勘察准备', step: '勘察准备', index: 4},
+                {label: '现场勘察', step: '现场勘察', index: 5},
+                {label: '争议处理', step: '争议处理', index: 6},
+                {label: '初审', step: '初审', index: 7},
+                {label: '复审', step: '复审', index: 8},
+                {label: '完成', step: '完成', index: 9},
+                {label: '归档', step: '归档', index: 10},
+            ],
+            showSteps: []
         }
     },
     props: ['tableConfig'],
     watch: {},
     methods: {
+        getIndex(value) {
+            return this.steps.filter(s => s.label === value)[0].index
+        },
         click(row, event, check) {
             if (check) {
                 this.deleteConfirm = true
@@ -98,9 +135,14 @@ export default {
     },
     mounted: function () {
         let comp = this
-        comp.elementSize(document.body.clientWidth)
+        comp.elementSize(this.$el.clientWidth)
         App.vueG.$on('windowResize', (width) => {
             comp.elementSize(width)
+        })
+
+        this.showSteps = new Set()
+        this.steps.forEach(s => {
+            this.showSteps.add(s.step)
         })
     },
 }

@@ -117,7 +117,7 @@ export default {
         moveUp() {
             if (this.checkOperChoose()) {
                 let i = this.alloced.indexOf(this.allocSets[0])
-                if (i == 0) {
+                if (i === 0) {
                     this.$message.error('无法上移');
                     return;
                 }
@@ -129,7 +129,7 @@ export default {
         moveDown() {
             if (this.checkOperChoose()) {
                 let i = this.alloced.indexOf(this.allocSets[0])
-                if (i == this.alloced.length - 1) {
+                if (i === this.alloced.length - 1) {
                     this.$message.error('无法下移');
                     return;
                 }

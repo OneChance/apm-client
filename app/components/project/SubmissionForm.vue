@@ -1,7 +1,7 @@
 <template>
     <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="form" id="submission">
+            <div :id="formName?formName+'sub':'submission'">
                 <el-form :model="submissionForm" :rules="formRules" ref="submissionForm">
                     <p class="title">工程结算送审表</p>
                     <table class="form-table">
@@ -361,10 +361,10 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.details">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; "
                                                                       v-if="fileType.mRequired">*</span>
-                                        </td>
+                                        </th>
                                         <td>
                                             <el-upload class="upload-demo"
                                                        action="noAction" :http-request="upload"
@@ -392,7 +392,7 @@
                             </td>
                         </tr>
                         <tr class="allocMan" v-if="stepCode>=30">
-                            <th>审计方式</th>
+                            <th>审计方式{{ stepCode }}</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.auditType" disabled></el-input>
                             </td>
@@ -400,8 +400,8 @@
 
                         <tr class="allocMan"
                             v-if="stepCode>=30 && submissionForm.assigned">
-                            <th v-if="submissionForm.assigned.thirdParty">分配审计单位</th>
-                            <th v-if="!submissionForm.assigned.thirdParty">分配审计人员</th>
+                            <th v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">分配审计单位</th>
+                            <th v-else>分配审计人员</th>
                             <td>
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
                             </td>
@@ -423,13 +423,13 @@
                             </td>
                         </tr>
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr class="comment" v-if="step==='project' || step === 'assigned'">
+                        <tr v-if="step==='project' || step === 'assigned'">
                             <th>审计意见</th>
                             <td colspan="3" :class="stepCode===10||stepCode===30?'editing':''">
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="stepCode>=40">
+                        <tr v-if="stepCode>=40">
                             <th class="form-required">约看现场时间
                             </th>
                             <td :class="stepCode===40?'editing':''" colspan="3">
@@ -443,7 +443,7 @@
                             </td>
                         </tr>
 
-                        <tr class="comment" v-if="stepCode>=50">
+                        <tr v-if="stepCode>=50">
                             <th class="form-required">现场查看时间</th>
                             <td :class="stepCode===50?'editing':''" colspan="3">
                                 <el-form-item prop="viewDate">
@@ -456,7 +456,7 @@
                             </td>
                         </tr>
 
-                        <tr class="comment" v-if="stepCode>=50">
+                        <tr v-if="stepCode>=50">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -464,7 +464,9 @@
                                         <th>现场查看人员</th>
                                     </tr>
                                     <tr>
-                                        <td>审核单位</td>
+                                        <th v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">外审单位
+                                        </th>
+                                        <th v-else>内审单位</th>
                                         <td colspan="3" :class="stepCode===50?'editing':''">
                                             <el-form-item prop="viewPeoplesAuditUnit">
                                                 <el-select v-model="submissionForm.viewPeoplesAuditUnit"
@@ -481,7 +483,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>建设单位</td>
+                                        <th>建设单位</th>
                                         <td colspan="3" :class="stepCode===50?'editing':''">
                                             <el-form-item prop="viewPeoplesBuildUnitIds">
                                                 <el-input type="text"
@@ -491,7 +493,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>施工单位</td>
+                                        <th>施工单位</th>
                                         <td colspan="3" :class="stepCode===50?'editing':''">
                                             <el-form-item prop="viewPeoplesConstructUnit">
                                                 <el-select v-model="submissionForm.viewPeoplesConstructUnit"
@@ -509,8 +511,8 @@
                                             </el-form-item>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>委托单位</td>
+                                    <tr v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">
+                                        <th>内审单位</th>
                                         <td colspan="3" :class="stepCode===50?'editing':''">
                                             <el-form-item prop="viewPeoplesEntrustUnitIds">
                                                 <el-input type="text"
@@ -531,9 +533,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.surveyFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td :class="stepCode===50?'editing':''">
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -559,7 +561,7 @@
                             </td>
                         </tr>
 
-                        <tr class="comment" v-if="stepCode===50">
+                        <tr v-if="stepCode===50">
                             <th>下一阶段</th>
                             <td colspan="3">
                                 <el-select v-model="submissionForm.nextStep" placeholder="请选择下一阶段">
@@ -578,9 +580,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.argueFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td :class="stepCode===60?'editing':''">
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -608,7 +610,7 @@
                         </tr>
 
 
-                        <tr class="comment" v-if="stepCode>=70">
+                        <tr v-if="stepCode>=70">
                             <th class="form-required">约看现场时间(初审)</th>
                             <td :class="stepCode===70?'editing':''">
                                 <el-form-item prop="prepareViewDate2">
@@ -631,7 +633,7 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr class="comment" v-if="stepCode>=70">
+                        <tr v-if="stepCode>=70">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -739,9 +741,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditFirstFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td :class="stepCode===70?'editing':''">
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -814,9 +816,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.auditSecondFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td :class="stepCode===80?'editing':''">
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -851,9 +853,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.supplementFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td>
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -911,17 +913,17 @@
                         </tr>
 
                         <tr class="print-info">
-                            <th>送审部门盖章</th>
+                            <th>送审部门(盖章)</th>
                             <td style="height: 100px;">
 
                             </td>
-                            <th>审计部门盖章</th>
+                            <th></th>
                             <td style="height: 100px;">
 
                             </td>
                         </tr>
                         <tr class="print-info">
-                            <th>项目负责人</th>
+                            <th>初审人</th>
                             <td>
 
                             </td>
@@ -964,10 +966,11 @@ import ClientCallProject from "../../script/client/project/clientCall"
 import ClientCallCommon from "../../script/client/clientCall"
 import Env from "../../script/server/env"
 import ConstructionUnit from "../../script/server/constructionUnit";
+import Config from "../../script/config"
 
 export default {
     name: "SubmissionForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode'], //formRules2只在某些条件下验证
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'formRules2', 'stepCode', 'formName'], //formRules2只在某些条件下验证
     watch: {
         'submissionForm.constructionUnitApplyFee': function (newVal) {
             this.calInspectUnitCheckFee(newVal, this.submissionForm.inspectUnitApplyFee)
@@ -992,6 +995,7 @@ export default {
         visible: function (newVal) {
             if (newVal) {
 
+                this.submissionForm.id = ''
                 this.printLoading = true
                 this.uploadFiles = []
 
@@ -1221,16 +1225,18 @@ export default {
                                     this.submissionForm.viewPeoplesEntrustUnitIds2 = viewPeoplesEntrustUnitIds
 
                                 } else {
-
                                     this.submissionForm.viewPeoplesAuditUnit2 = []
-                                    this.submissionForm.viewPeoplesAuditUnitIds2.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
-                                    })
-
+                                    if (this.submissionForm.viewPeoplesAuditUnitIds2) {
+                                        this.submissionForm.viewPeoplesAuditUnitIds2.split(',').forEach(id => {
+                                            this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
+                                        })
+                                    }
                                     this.submissionForm.viewPeoplesConstructUnit2 = []
-                                    this.submissionForm.viewPeoplesConstructUnitIds2.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoplesConstructUnit2.push(id - 0)
-                                    })
+                                    if (this.submissionForm.viewPeoplesConstructUnitIds2) {
+                                        this.submissionForm.viewPeoplesConstructUnitIds2.split(',').forEach(id => {
+                                            this.submissionForm.viewPeoplesConstructUnit2.push(id - 0)
+                                        })
+                                    }
                                 }
 
                                 //送审价=建设单位报审金额
@@ -1527,7 +1533,8 @@ export default {
         print: function () {
             $(".upload-btn").hide()
             $(".print-info").show()
-            $(".form").printArea({
+            let formName = this.formName ? this.formName + 'sub' : 'submission'
+            $("#" + formName).printArea({
                 importCSS: false
             })
         },
@@ -1560,7 +1567,7 @@ export default {
             ClientCallCommon.removeFile(file, this.uploadFiles)
         },
         handlePreview(file) {
-            window.open(Env.baseURL + file.url)
+            window.open(Config.ATTACH_URL + Env.baseURL + file.url)
         },
         materialGroupChange: function (value) {
             //根据选择的清单组，初始化附加列表

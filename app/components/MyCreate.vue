@@ -1,5 +1,5 @@
 <template>
-    <workitems v-bind:type="'done'" v-bind:cols="cols" v-bind:formName="formName"></workitems>
+    <workitems v-bind:type="'create'" v-bind:cols="cols" v-bind:formName="formName"></workitems>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
 import Workitems from './Workitems'
 
 export default {
-    name: "WillDo",
+    name: "MyCreate",
     props: ['cols', 'formName'],
     created: function () {
 

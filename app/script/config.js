@@ -40,5 +40,6 @@ export default {
     auditTypes: [
         {value: '内审', label: '内审'},
         {value: '外审', label: '外审'},
-    ]
+    ],
+    ATTACH_URL: 'https://view.officeapps.live.com/op/view.aspx?src='
 }

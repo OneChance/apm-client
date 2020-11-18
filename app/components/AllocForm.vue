@@ -22,7 +22,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="link" v-if="allocForm.auditType === '外审'">
-                    <el-select v-model="allocForm.link" filterable placeholder="请选择审计人员"
+                    <el-select v-model="allocForm.link" filterable placeholder="请选择组长"
                                @change="chooseLink">
                         <el-option
                             v-for="l in links"
@@ -51,6 +51,9 @@
 <script>
 
 import User from "../script/server/user";
+import Common from "../script/common";
+import Config from "../script/config";
+import ClientCallCommon from "../script/client/clientCall";
 
 export default {
     name: "AllocForm",
@@ -102,25 +105,35 @@ export default {
             this.allocForm.tel = ''
             let thirdParty = false
             if (val === '内审') {
-                this.targetPlaceholder = '请选择人员'
+                this.targetPlaceholder = '请选择组长'
             } else {
                 this.targetPlaceholder = '请选择审计单位'
                 thirdParty = true
             }
-            User.getUsers({
-                page: 1,
-                pageSize: 999999,
-                thirdParty: thirdParty
-            }).then(res => {
-                this.targets = []
-                res.list.content.forEach(user => {
-                    let label = user.name + '(' + user.username + ")"
-                    this.targets.push({
-                        value: user.id,
-                        label: label
+
+            let data = Common.copyObject(Config.page)
+            if (thirdParty) {
+                ClientCallCommon.getIntermediary().then(res => {
+                    this.targets = []
+                    res.list.content.forEach(user => {
+                        this.targets.push({
+                            value: user.id,
+                            label: user.name
+                        })
                     })
                 })
-            })
+            } else {
+                User.getUsers(data).then(res => {
+                    this.targets = []
+                    res.list.content.forEach(user => {
+                        let label = user.name + '(' + user.username + ")"
+                        this.targets.push({
+                            value: user.id,
+                            label: label
+                        })
+                    })
+                })
+            }
         },
         chooseTarget(val) {
             User.getUser({id: val}).then(result => {

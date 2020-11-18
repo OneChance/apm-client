@@ -115,7 +115,7 @@ export default {
                 {value: 0, label: '所有'},
                 {value: -10, label: '送审保存'},
                 {value: -20, label: '送审打回'},
-                {value: -30, label: '争议处理'},
+                {value: -30, label: '处理争议'},
                 {value: 10, label: '审计立项'},
                 {value: 20, label: '审计分配'},
                 {value: 30, label: '分配审核'},

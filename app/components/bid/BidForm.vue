@@ -1,7 +1,7 @@
 <template>
     <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="bin-form" id="bid">
+            <div :id="formName?formName+'bid':'bid'">
                 <el-form :model="bidForm" :rules="formRules" ref="bidForm">
                     <p class="title">招标控制价审核送审表</p>
                     <table class="form-table">
@@ -140,10 +140,10 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.details">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; "
                                                                       v-if="fileType.mRequired">*</span>
-                                        </td>
+                                        </th>
                                         <td>
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -203,7 +203,7 @@
                             </td>
                         </tr>
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr class="comment" v-if="step==='project' || step === 'assigned'">
+                        <tr v-if="step==='project' || step === 'assigned'">
                             <th>审批意见</th>
                             <td colspan="3" :class="stepCode===10||stepCode===30?'editing':''">
                                 <el-input type="textarea" v-model="comment"></el-input>
@@ -236,9 +236,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditFirstFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td :class="stepCode===40?'editing':''">
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -313,9 +313,9 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditSecondFiles">
-                                        <td>
+                                        <th>
                                             {{ fileType.mName }}<span style="color: red; ">*</span>
-                                        </td>
+                                        </th>
                                         <td :class="stepCode===50?'editing':''">
                                             <el-upload class="upload-demo"
                                                        action="noAction"
@@ -374,11 +374,11 @@
                         </tr>
 
                         <tr class="print-info">
-                            <th>送审部门盖章</th>
+                            <th>送审部门（盖章）</th>
                             <td style="height: 100px;">
 
                             </td>
-                            <th>审计部门盖章</th>
+                            <th>审计部门（盖章）</th>
                             <td style="height: 100px;">
 
                             </td>
@@ -412,7 +412,7 @@
             <el-button v-for="oper in formOpers" :type="oper.color" @click="commit(oper.event)" :key="oper.name">
                 {{ oper.name }}
             </el-button>
-            <el-button @click="visible = false;print()">打印</el-button>
+            <el-button @click="print()">打印</el-button>
         </div>
     </el-dialog>
 </template>
@@ -428,7 +428,7 @@ import ClientCallCommon from "../../script/client/clientCall"
 
 export default {
     name: "BidForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'stepCode'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'stepCode', 'formName'],
     watch: {
         'bidForm.submissionPrice': function () {
             this.calAuditFirst()
@@ -723,7 +723,8 @@ export default {
         print: function () {
             $(".upload-btn").hide()
             $(".print-info").show()
-            $(".bin-form").printArea({
+            let formName = this.formName ? this.formName + 'bid' : 'bid'
+            $("#" + formName).printArea({
                 importCSS: false
             })
         },
