@@ -40,7 +40,7 @@ export default {
                 {
                     prop: 'auditNo',
                     label: '审计编号',
-                    width: '200',
+                    width: '100',
                 },
                 {
                     prop: 'projectName',
@@ -72,7 +72,7 @@ export default {
                 {
                     prop: 'auditNo',
                     label: '审计编号',
-                    width: '200',
+                    width: '100',
                 },
                 {
                     prop: 'projectName',

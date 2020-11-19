@@ -130,21 +130,22 @@
                                 <el-form-item prop="payType">
                                     <el-radio v-model="submissionForm.payType" label="按实结算"
                                               border
+                                              size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payTypeChange">
                                         按实结算
                                     </el-radio>
-                                    <el-radio v-model="submissionForm.payType" label="中标价+变更价" border
+                                    <el-radio v-model="submissionForm.payType" label="中标价+变更价" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payTypeChange">
                                         中标价+变更价
                                     </el-radio>
-                                    <el-radio v-model="submissionForm.payType" label="固定单价" border
+                                    <el-radio v-model="submissionForm.payType" label="固定单价" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payTypeChange">
                                         固定单价
                                     </el-radio>
-                                    <el-radio v-model="submissionForm.payType" label="其他" border
+                                    <el-radio v-model="submissionForm.payType" label="其他" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payTypeChange">
                                         其他
@@ -171,22 +172,22 @@
                             <th class="form-required">付款情况</th>
                             <td colspan="3" v-if="step === 'submission' || step === 'reject'">
                                 <el-form-item prop="payCondition">
-                                    <el-radio v-model="submissionForm.payCondition" label="未付款" border
+                                    <el-radio v-model="submissionForm.payCondition" label="未付款" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payConditionChange">
                                         未付款
                                     </el-radio>
-                                    <el-radio v-model="submissionForm.payCondition" label="合同价50%" border
+                                    <el-radio v-model="submissionForm.payCondition" label="合同价50%" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payConditionChange">
                                         合同价50%
                                     </el-radio>
-                                    <el-radio v-model="submissionForm.payCondition" label="合同价70%" border
+                                    <el-radio v-model="submissionForm.payCondition" label="合同价70%" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payConditionChange">
                                         合同价70%
                                     </el-radio>
-                                    <el-radio v-model="submissionForm.payCondition" label="其他" border
+                                    <el-radio v-model="submissionForm.payCondition" label="其他" border size="small"
                                               :disabled="step!=='submission' && step!=='reject'"
                                               @change="payConditionChange">
                                         其他

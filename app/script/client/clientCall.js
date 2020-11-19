@@ -17,9 +17,9 @@ export default {
         } else if (type === 'willDo') {
             return Workitem.getWillDo(data)
         } else if (type === 'my') {
-            return Workitem.getDone(data)
+            return Workitem.getMyWork(data)
         } else if (type === 'create') {
-            return Workitem.getDone(data)
+            return Workitem.getMyCreate(data)
         }
     },
     //获取员工

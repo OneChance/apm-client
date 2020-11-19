@@ -1,12 +1,30 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <el-form :inline="true" class="demo-form-inline">
-                <el-form-item>
+            <el-form :inline="true" class="demo-form-inline" ref='query' :model='query'>
+                <el-form-item prop="userName">
                     <el-input v-model="query.userName" placeholder="用户名"></el-input>
                 </el-form-item>
+                <el-form-item prop="name">
+                    <el-input v-model="query.name" placeholder="姓名"></el-input>
+                </el-form-item>
+                <el-form-item prop="state">
+                    <el-select v-model="query.state" placeholder="状态" style="width:100px">
+                        <el-option key="NORMAL" label="正常" value="NORMAL"></el-option>
+                        <el-option key="DISABLE" label="禁用" value="DISABLE"></el-option>
+                        <el-option key="DELETE" label="删除" value="DELETE"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item prop="type">
+                    <el-select v-model="query.type" placeholder="分组" style="width:100px">
+                        <el-option key="INSIDE" label="内部" value="INSIDE"></el-option>
+                        <el-option key="OUTSIDE" label="外部" value="OUTSIDE"></el-option>
+                        <el-option key="THIRDPARTY" label="中介" value="THIRDPARTY"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查询</el-button>
+                    <el-button type="primary" @click="queryList">查询</el-button>
+                    <el-button @click="$refs['query'].resetFields()">重置</el-button>
                     <el-button type="success" @click="add">新增</el-button>
                 </el-form-item>
             </el-form>
@@ -108,7 +126,10 @@ export default {
     data: function () {
         return {
             query: {
-                userName: ''
+                userName: '',
+                name: '',
+                state: '',
+                type: ''
             },
             form: {
                 id: '',
@@ -120,7 +141,7 @@ export default {
                 thirdparty: {
                     id: ''
                 },
-                roles: '',
+                roles: [],
                 state: 'NORMAL',
                 type: '',
             },
@@ -148,7 +169,15 @@ export default {
                 cols: [
                     {prop: 'username', label: '用户名'},
                     {prop: 'name', label: '姓名'},
-                    {prop: 'state', label: '状态', formatter: this.stateFormatter},
+                    {
+                        prop: 'state',
+                        label: '状态',
+                        width: '80',
+                        formatter: this.stateFormatter,
+                        tag: true,
+                        tagType: this.stateTagFormatter,
+                        tagSize: 'small'
+                    },
                     {prop: 'type', label: '分组', formatter: this.typeFormatter},
                 ],
                 oper: [
@@ -164,7 +193,7 @@ export default {
                         check: true
                     }
                 ],
-                operWidth: 90
+                operWidth: 100
             },
             userInfoDialogVisible: false,
             roles: [],
@@ -175,6 +204,21 @@ export default {
         this.list()
     },
     methods: {
+        queryList: function () {
+            this.list(this.query)
+        },
+        stateTagFormatter(value) {
+            switch (value) {
+                case 'NORMAL':
+                    return 'success'
+                case 'DISABLE':
+                    return 'warning'
+                case 'DELETE':
+                    return 'danger'
+                default:
+                    return ''
+            }
+        },
         stateFormatter(value) {
             switch (value) {
                 case 'NORMAL':
@@ -203,7 +247,6 @@ export default {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     this.form.password = md5(this.form.password)
-                    console.log(this.form)
                     User.saveUser(this.form).then(() => {
                         this.operSuccess(this)
                         this.userInfoDialogVisible = false;

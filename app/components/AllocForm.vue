@@ -111,7 +111,7 @@ export default {
                 thirdParty = true
             }
 
-            let data = Common.copyObject(Config.page)
+            let data = Common.copyObject(Config.pageAll)
             if (thirdParty) {
                 ClientCallCommon.getIntermediary().then(res => {
                     this.targets = []
@@ -123,7 +123,7 @@ export default {
                     })
                 })
             } else {
-                User.getUsers(data).then(res => {
+                User.getInsideUsers(data).then(res => {
                     this.targets = []
                     res.list.content.forEach(user => {
                         let label = user.name + '(' + user.username + ")"
@@ -136,20 +136,24 @@ export default {
             }
         },
         chooseTarget(val) {
-            User.getUser({id: val}).then(result => {
-                if (this.allocForm.auditType === '外审') {
-                    this.links.length = 0;
-                    result.user.links.forEach(l => {
+            if (this.allocForm.auditType === '外审') {
+                this.links = [];
+                let data = Common.copyObject(Config.pageAll)
+                data.thirdparty.id = val
+                User.getIntermediaryUsers(data).then(res => {
+                    res.list.content.forEach(u => {
                         this.links.push({
-                            value: l.id,
-                            label: l.contact,
-                            tel: l.telphone
+                            value: u.id,
+                            label: u.contact,
+                            tel: u.telphone
                         })
                     })
-                } else {
+                })
+            } else {
+                User.getUser({id: val}).then(result => {
                     this.allocForm.tel = result.user.telphone
-                }
-            })
+                })
+            }
         },
         chooseLink(val) {
             this.allocForm.tel = this.links.filter(l => l.value === val)[0].tel

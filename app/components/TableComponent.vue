@@ -21,7 +21,7 @@
                              :formatter="col.formatter" :sortable="col.sortable"
                              :width="col.width">
                 <template slot-scope="scope">
-                    <div v-if="col.popProgress">
+                    <vif v-if="col.popProgress"><!--鼠标放上去显示进度条-->
                         <el-popover trigger="hover" placement="top" width="1000">
                             <el-steps :active="getIndex(scope.row[col.prop])" finish-status="success">
                                 <el-step v-for="step in showSteps" :key="step" :title="step"></el-step>
@@ -30,13 +30,15 @@
                                 {{ scope.row[col.prop] }}
                             </div>
                         </el-popover>
-                    </div>
-                    <div v-if="!col.popProgress && col.formatter">
-                        {{ col.formatter(scope.row[col.prop]) }}
-                    </div>
-                    <div v-if="!col.popProgress && !col.formatter">
-                        {{ scope.row[col.prop] }}
-                    </div>
+                    </vif>
+                    <vif v-else-if="col.tag"><!--tag标签-->
+                        <el-tag :type="col.tagType(scope.row[col.prop])" :size="col.tagSize">
+                            {{ colValue(col, scope.row[col.prop]) }}
+                        </el-tag>
+                    </vif>
+                    <vif v-else>
+                        {{ colValue(col, scope.row[col.prop]) }}
+                    </vif>
                 </template>
             </el-table-column>
             <el-table-column
@@ -111,6 +113,12 @@ export default {
     props: ['tableConfig'],
     watch: {},
     methods: {
+        colValue(col, value) {
+            if (col.formatter) {
+                return col.formatter(value)
+            }
+            return value
+        },
         getIndex(value) {
             return this.steps.filter(s => s.label === value)[0].index
         },

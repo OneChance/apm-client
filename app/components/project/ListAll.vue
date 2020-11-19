@@ -67,6 +67,7 @@ import SubmissionQuery from "./SubmissionQuery";
 import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 import Download from "../../script/server/download"
+import Config from "../../script/config"
 
 export default {
     name: "ListAll",
@@ -156,7 +157,7 @@ export default {
                 this.downFiles.push({
                     type: fileType.mName,
                     name: file.name,
-                    url: Env.baseURL + file.url,
+                    url: Config.ATTACH_URL + Env.baseURL + file.url,
                     step: this.getStep(fileType.mName)
                 })
             })
