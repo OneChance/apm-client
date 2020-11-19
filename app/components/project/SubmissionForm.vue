@@ -392,37 +392,46 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr class="allocMan" v-if="stepCode>=30">
+                        <tr v-if="stepCode>=25">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.auditType" disabled></el-input>
                             </td>
                         </tr>
-
-                        <tr class="allocMan"
-                            v-if="stepCode>=30 && submissionForm.assigned">
-                            <th v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">分配审计单位</th>
-                            <th v-else>分配审计人员</th>
+                        <tr v-if="stepCode>=25 && submissionForm.thirdparty">
+                            <th>中介公司</th>
+                            <td colspan="3">
+                                <el-input type="text" v-model="submissionForm.thirdparty.name" disabled></el-input>
+                            </td>
+                        </tr>
+                        <tr v-if="stepCode>=25 && submissionForm.assigned">
+                            <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
                             </td>
                             <th>联系方式</th>
                             <td>
-                                <el-input type="text" v-model="submissionForm.assigned.telphone" disabled
-                                          v-if="!submissionForm.assigned.thirdParty"></el-input>
-                                <el-input type="text" v-model="submissionForm.assignedLink.telphone" disabled
-                                          v-if="submissionForm.assigned.thirdParty && submissionForm.assignedLink"></el-input>
+                                <el-input type="text" v-model="submissionForm.assigned.telphone" disabled></el-input>
                             </td>
                         </tr>
-                        <tr class="allocMan"
-                            v-if="stepCode>=30 && submissionForm.assigned && submissionForm.assigned.thirdParty">
-                            <th>联系人</th>
-                            <td colspan="3">
-                                <el-input type="text" v-if="submissionForm.assignedLink"
-                                          v-model="submissionForm.assignedLink.contact"
-                                          disabled></el-input>
+
+                        <tr v-if="stepCode>=25 && submissionForm.assigned">
+                            <th class="form-required">审计组员</th>
+                            <td :class="stepCode===25?'editing':''" colspan="3">
+                                <el-form-item prop="members">
+                                    <el-select v-model="submissionForm.members"
+                                               class="table-select" filterable
+                                               multiple placeholder="请选择"
+                                               :disabled="stepCode!==25">
+                                        <el-option v-for="member in members" :key="member.value"
+                                                   :label="member.label"
+                                                   :value="member.value">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
                             </td>
                         </tr>
+
                         <!--这里的意见非表单数据 是写入意见表的-->
                         <tr v-if="step==='project' || step === 'assigned'">
                             <th>审计意见</th>
@@ -465,7 +474,8 @@
                                         <th>现场查看人员</th>
                                     </tr>
                                     <tr>
-                                        <th v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">外审单位
+                                        <th v-if="submissionForm.assigned && submissionForm.assigned.type==='THIRDPARTY'">
+                                            外审单位
                                         </th>
                                         <th v-else>内审单位</th>
                                         <td colspan="3" :class="stepCode===50?'editing':''">
@@ -512,7 +522,7 @@
                                             </el-form-item>
                                         </td>
                                     </tr>
-                                    <tr v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">
+                                    <tr v-if="submissionForm.assigned && submissionForm.assigned.type==='THIRDPARTY'">
                                         <th>内审单位</th>
                                         <td colspan="3" :class="stepCode===50?'editing':''">
                                             <el-form-item prop="viewPeoplesEntrustUnitIds">
@@ -642,7 +652,8 @@
                                         <th>现场查看人员(初审)</th>
                                     </tr>
                                     <tr>
-                                        <th v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">外审单位
+                                        <th v-if="submissionForm.assigned && submissionForm.assigned.type==='THIRDPARTY'">
+                                            外审单位
                                         </th>
                                         <th v-else>内审单位</th>
                                         <td colspan="3" :class="stepCode===70?'editing':''">
@@ -687,7 +698,7 @@
                                             </el-form-item>
                                         </td>
                                     </tr>
-                                    <tr v-if="submissionForm.assigned && submissionForm.assigned.thirdParty">
+                                    <tr v-if="submissionForm.assigned && submissionForm.assigned.type==='THIRDPARTY'">
                                         <th>内审单位</th>
                                         <td colspan="3" :class="stepCode===70?'editing':''">
                                             <el-form-item prop="viewPeoplesEntrustUnitIds2">
@@ -1044,6 +1055,29 @@ export default {
                             id: this.formId
                         }).then(result => {
 
+                            //加载中介机构员工--------------------------------------------------------------------------
+                            if (this.stepCode >= 25) {
+                                this.members = []
+                                ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.submission.thirdparty.id}).then(res => {
+                                    res.list.forEach(user => {
+                                        let label = user.name + '(' + user.username + ")"
+                                        this.members.push({
+                                            value: user.id,
+                                            label: label
+                                        })
+                                    })
+                                })
+                                if (this.stepCode > 25) {
+                                    if (this.submissionForm.memberIds) {
+                                        this.submissionForm.members = []
+                                        this.submissionForm.memberIds.split(',').forEach(id => {
+                                            this.submissionForm.members.push(id - 0)
+                                        })
+                                    }
+                                }
+                            }
+                            //-----------------------------------------------------------------------------------------
+
                             //加载现场勘察资料
                             if (!result.submission.surveyFiles || result.submission.surveyFiles.length === 0) {
                                 result.submission.surveyFiles = [{
@@ -1333,6 +1367,8 @@ export default {
                     telphone: '',
                     thirdParty: false,
                 },
+                //分配组员
+                members: [],
                 //勘察准备-----------
                 prepareViewDate: '',
                 viewDate: '',
@@ -1375,6 +1411,7 @@ export default {
             comments: [],
             users: [],
             units: [],
+            members: [],
             projectMans: [],
             uploadFiles: [], //由于上传完成后修改upload的file-list存在列表刷新问题，所以用这个数组来存放已上传附件,不修改file-list
             printLoading: true
@@ -1432,7 +1469,8 @@ export default {
                 this.step === 'surveyPrepare' ||
                 this.step === 'survey' ||
                 this.step === 'auditFirst' ||
-                this.step === 'auditSecond') {
+                this.step === 'auditSecond' ||
+                this.stepCode === 25) {
                 //需要验证表单的提交
                 this.$refs['submissionForm'].validate((valid) => {
                     if (valid) {
@@ -1446,6 +1484,11 @@ export default {
                                 targetId: this.submissionForm.id,
                                 content: this.comment,
                                 auditNo: this.submissionForm.auditNo
+                            })
+                        } else if (this.stepCode === 25) {
+                            event({
+                                targetId: this.submissionForm.id,
+                                members: this.submissionForm.members.toString(),
                             })
                         } else if (this.step === 'surveyPrepare') {
                             event({

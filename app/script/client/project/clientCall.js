@@ -35,16 +35,16 @@ export default {
         })
     },
     //批量分配
-    batchAlloc(form, checks, approve, auditType) {
+    batchAlloc(form, checks, approve) {
         let data = {
             type: approve,
             targetIds: checks,
         }
         if (form) {
-            data.assignedId = form.target
+            data.assignedId = form.leader
             data.auditType = form.auditType
             if (form.auditType === '外审') {
-                data.assignedLinkId = form.link
+                data.thirdpartyId = form.intermediary
             }
         }
         return Audit.allocMissions(data)

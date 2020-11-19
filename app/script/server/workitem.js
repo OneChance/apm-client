@@ -11,6 +11,6 @@ export default {
         return Net.get('/workitem/approved/audit/', data);
     },
     getMyCreate: function (data) {
-        return Net.get('/workitem/approved/audit/', data);
+        return Net.get('/workitem/applyed/', data);
     },
 }

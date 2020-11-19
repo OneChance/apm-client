@@ -10,25 +10,25 @@
                     <el-radio v-model="allocForm.auditType" label="外审" border @change="allocTypeChange">外审
                     </el-radio>
                 </el-form-item>
-                <el-form-item prop="target">
-                    <el-select v-model="allocForm.target" filterable :placeholder="targetPlaceholder"
-                               @change="chooseTarget">
+                <el-form-item prop="intermediary" v-if="allocForm.auditType === '外审'">
+                    <el-select v-model="allocForm.intermediary" filterable placeholder="请选择审计单位"
+                               @change="chooseIntermediary">
                         <el-option
-                            v-for="target in targets"
-                            :key="target.value"
-                            :label="target.label"
-                            :value="target.value">
+                            v-for="intermediary in intermediaries"
+                            :key="intermediary.value"
+                            :label="intermediary.label"
+                            :value="intermediary.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item prop="link" v-if="allocForm.auditType === '外审'">
-                    <el-select v-model="allocForm.link" filterable placeholder="请选择组长"
-                               @change="chooseLink">
+                <el-form-item prop="leader">
+                    <el-select v-model="allocForm.leader" filterable placeholder="请选择组长"
+                               @change="chooseLeader">
                         <el-option
-                            v-for="l in links"
-                            :key="l.value"
-                            :label="l.label"
-                            :value="l.value">
+                            v-for="user in users"
+                            :key="user.value"
+                            :label="user.label"
+                            :value="user.value">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -74,21 +74,23 @@ export default {
         return {
             allocForm: {
                 auditType: '',
-                target: '',
-                link: '',
+                leader: '',
+                intermediary: '',
                 tel: '',
             },
             allocRules: {
-                target: [
-                    {required: true, message: '请选择审计人员', trigger: 'blur'},
-                ],
                 auditType: [
                     {required: true, message: '请选择审计类型', trigger: 'blur'},
                 ],
+                leader: [
+                    {required: true, message: '请选择组长', trigger: 'blur'},
+                ],
+                intermediary: [
+                    {required: true, message: '请选择中介公司', trigger: 'blur'},
+                ],
             },
-            targetPlaceholder: '请选择',
-            targets: [],
-            links: [],
+            users: [],
+            intermediaries: [],
         }
     },
     methods: {
@@ -100,34 +102,28 @@ export default {
             })
         },
         allocTypeChange: function (val) {//分配类型改变
-            this.allocForm.target = ''
-            this.allocForm.link = ''
+            this.allocForm.leader = ''
+            this.allocForm.intermediary = ''
             this.allocForm.tel = ''
-            let thirdParty = false
-            if (val === '内审') {
-                this.targetPlaceholder = '请选择组长'
-            } else {
-                this.targetPlaceholder = '请选择审计单位'
-                thirdParty = true
-            }
 
             let data = Common.copyObject(Config.pageAll)
-            if (thirdParty) {
+            if (val === '外审') {
+                this.intermediaries = []
+                this.users = []
                 ClientCallCommon.getIntermediary().then(res => {
-                    this.targets = []
-                    res.list.content.forEach(user => {
-                        this.targets.push({
-                            value: user.id,
-                            label: user.name
+                    res.list.content.forEach(intermediary => {
+                        this.intermediaries.push({
+                            value: intermediary.id,
+                            label: intermediary.name
                         })
                     })
                 })
             } else {
                 User.getInsideUsers(data).then(res => {
-                    this.targets = []
+                    this.users = []
                     res.list.content.forEach(user => {
                         let label = user.name + '(' + user.username + ")"
-                        this.targets.push({
+                        this.users.push({
                             value: user.id,
                             label: label
                         })
@@ -135,28 +131,24 @@ export default {
                 })
             }
         },
-        chooseTarget(val) {
-            if (this.allocForm.auditType === '外审') {
-                this.links = [];
-                let data = Common.copyObject(Config.pageAll)
-                data.thirdparty.id = val
-                User.getIntermediaryUsers(data).then(res => {
-                    res.list.content.forEach(u => {
-                        this.links.push({
-                            value: u.id,
-                            label: u.contact,
-                            tel: u.telphone
-                        })
+        chooseLeader(val) {
+            User.getUser({id: val}).then(result => {
+                this.allocForm.tel = result.user.telphone
+            })
+        },
+        chooseIntermediary(val) {
+            this.users = []
+            User.getIntermediaryUsers({
+                thirdpartyId: val
+            }).then(res => {
+                res.list.forEach(user => {
+                    let label = user.name + '(' + user.username + ")"
+                    this.users.push({
+                        value: user.id,
+                        label: label
                     })
                 })
-            } else {
-                User.getUser({id: val}).then(result => {
-                    this.allocForm.tel = result.user.telphone
-                })
-            }
-        },
-        chooseLink(val) {
-            this.allocForm.tel = this.links.filter(l => l.value === val)[0].tel
+            })
         },
     },
 }

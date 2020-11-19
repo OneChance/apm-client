@@ -16,7 +16,8 @@ export default {
         reject: -20,
         submissionSave: -10, //送审保存
         project: 10, //审计立项
-        alloced: 20, //分配
+        alloced: 20, //分配,
+        allocMember: 25,//分配组员
         assigned: 30, //分配审核
         surveyPrepare: 40, //勘察准
         survey: 50, //现场勘察

@@ -36,6 +36,9 @@ export default {
     getIntermediary() {
         return Intermediary.gets(Config.pageAll)
     },
+    getIntermediaryUsers(data) {
+        return User.getIntermediaryUsers(data)
+    },
     upload(content, typeId, uploadList, failRefeshList) {
 
         let fd = new FormData()

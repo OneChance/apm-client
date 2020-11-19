@@ -8,15 +8,15 @@
                 <el-form-item prop="name">
                     <el-input v-model="query.name" placeholder="姓名"></el-input>
                 </el-form-item>
-                <el-form-item prop="state">
-                    <el-select v-model="query.state" placeholder="状态" style="width:100px">
+                <el-form-item prop="states">
+                    <el-select v-model="query.states" placeholder="状态" style="width:100px">
                         <el-option key="NORMAL" label="正常" value="NORMAL"></el-option>
                         <el-option key="DISABLE" label="禁用" value="DISABLE"></el-option>
                         <el-option key="DELETE" label="删除" value="DELETE"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item prop="type">
-                    <el-select v-model="query.type" placeholder="分组" style="width:100px">
+                <el-form-item prop="types">
+                    <el-select v-model="query.types" placeholder="分组" style="width:100px">
                         <el-option key="INSIDE" label="内部" value="INSIDE"></el-option>
                         <el-option key="OUTSIDE" label="外部" value="OUTSIDE"></el-option>
                         <el-option key="THIRDPARTY" label="中介" value="THIRDPARTY"></el-option>
@@ -128,8 +128,8 @@ export default {
             query: {
                 userName: '',
                 name: '',
-                state: '',
-                type: ''
+                states: [],
+                types: []
             },
             form: {
                 id: '',
