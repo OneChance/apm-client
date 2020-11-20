@@ -25,6 +25,10 @@ export default {
     allocMissions: function (data) {
         return Net.post('/submission/distribution/approves/', data);
     },
+    //分配组员
+    allocMember: function (data) {
+        return Net.post('/submission/distribution/approves/', data);
+    },
     //分配审核
     allocApprove: function (data) {
         return Net.post('/submission/check/approves/', data);

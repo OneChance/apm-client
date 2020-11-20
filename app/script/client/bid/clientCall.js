@@ -50,6 +50,10 @@ export default {
         }
         return Bid.allocMissions(data)
     },
+    //分配组员
+    allocMember(form) {
+        return Bid.allocMember(form)
+    },
     //批量审核分配
     batchAllocApprove(comment, checks, approve) {
         return Bid.allocApprove({

@@ -45,6 +45,7 @@ import ClientCallBid from "../script/client/bid/clientCall"
 import ClientCallCommon from "../script/client/clientCall"
 import Config from "../script/config";
 import ProjectAuditProject from "../script/client/project/projectOper"
+import AllocMemberProject from '../script/client/project/allocMember'
 import AllocApproveProject from "../script/client/project/allocApproveOper"
 import RejectedOperProject from "../script/client/project/rejectedOper"
 import SurveyPrepare from "../script/client/project/surveyPrepare.js"
@@ -55,6 +56,7 @@ import AuditSecondProject from "../script/client/project/auditSecond.js"
 import ArgueResolve from "../script/client/project/argueResolve"
 import BidForm from "./bid/BidForm";
 import ProjectAuditBid from "../script/client/bid/projectOper"
+import AllocMemberBid from '../script/client/bid/allocMember'
 import AllocApproveBid from "../script/client/bid/allocApproveOper"
 import RejectedOperBid from "../script/client/bid/rejectedOper"
 import AuditFirstBid from "../script/client/bid/auditFirst.js"
@@ -158,6 +160,7 @@ export default {
             formId: -1,
             clientCall: {'submission': ClientCallProject, 'bid': ClientCallBid},
             projectAudit: {'submission': ProjectAuditProject, 'bid': ProjectAuditBid},    //不同类型的送审表调用各自的立项审计脚本
+            allocMember: {'submission': AllocMemberProject, 'bid': AllocMemberBid},
             allocApprove: {'submission': AllocApproveProject, 'bid': AllocApproveBid},
             rejectedOper: {'submission': RejectedOperProject, 'bid': RejectedOperBid},
             auditFirst: {'submission': AuditFirstProject, 'bid': AuditFirstBid},

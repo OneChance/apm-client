@@ -49,6 +49,10 @@ export default {
         }
         return Audit.allocMissions(data)
     },
+    //分配组员
+    allocMember(form) {
+        return Audit.allocMember(form)
+    },
     //批量审核分配
     batchAllocApprove(comment, checks, approve) {
         return Audit.allocApprove({
