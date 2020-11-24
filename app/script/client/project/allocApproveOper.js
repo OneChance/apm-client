@@ -11,16 +11,23 @@ const oper = {
 
 export default oper
 
-function agree(comment, formId) {
-    commitOper(1, comment, formId)
+function agree(comment, formId, workitemId) {
+    commitOper(1, comment, formId, workitemId)
 }
 
-function reject(comment, formId) {
-    commitOper(0, comment, formId)
+function reject(comment, formId, workitemId) {
+    commitOper(0, comment, formId, workitemId)
 }
 
-function commitOper(approve, comment, formId) {
-    ClientCall.batchAllocApprove(comment, [formId], approve).then(result => {
+function commitOper(approve, comment, formId, workitemId) {
+    ClientCall.batchAllocApprove(comment, [
+        {
+            type: approve,
+            targetId: formId,
+            workitemId: workitemId,
+            comment: comment
+        }
+    ], approve).then(result => {
         if (result) {
             oper.comp.operSuccess()
         }

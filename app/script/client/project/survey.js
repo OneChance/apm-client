@@ -22,6 +22,9 @@ const oper = {
         viewPeoplesEntrustUnitIds: [
             {required: true, message: '请填写委托单位现场查看人员', trigger: 'blur'}
         ],
+        nextStep: [
+            {required: true, message: '请选择下一阶段', trigger: 'blur'}
+        ],
     },
 }
 

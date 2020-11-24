@@ -39,8 +39,8 @@ export default {
             dialogVisible: false,
             noteFormVisible: false,
             buttons: [
-                {name: '归档', color: 'success', event: this.batchArc},
-                {name: '退回', color: 'danger', event: this.batchBackToAuditSecond},
+                /*{name: '归档', color: 'success', event: this.batchArc},
+                {name: '退回', color: 'danger', event: this.batchBackToAuditSecond},*/
             ],
             listChecks: [],
             tableConfig: {

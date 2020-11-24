@@ -126,6 +126,7 @@ export default {
                 {value: 80, label: '复审'},
                 {value: 90, label: '完成'},
                 {value: 100, label: '归档'},
+                {value: 110, label: '归档完成'},
             ],
         }
     },
@@ -190,6 +191,7 @@ export default {
                     let unit = this.units.filter(u => u.value + '' === d.constructionUnit + '')[0]
                     d.constructionUnit = unit ? unit.label : ''
                 })
+
                 this.tableConfigObject.data = res.list.content
                 this.tableConfigObject.total = res.list.totalElements
             })

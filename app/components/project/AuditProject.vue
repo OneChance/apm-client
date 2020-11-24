@@ -15,6 +15,7 @@
                          v-bind:formOpers="formOpers"
                          v-bind:formRules="formRules"
                          v-bind:step="'project'"
+                         v-bind:readable="true"
                          v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
@@ -38,8 +39,8 @@ export default {
     },
     mounted() {
         ProjectAudit.comp = this
-        this.formOpers = ProjectAudit.buttons
-        this.formRules = ProjectAudit.rules
+        //this.formOpers = ProjectAudit.buttons
+        //this.formRules = ProjectAudit.rules
     },
     data: function () {
         return {
@@ -47,7 +48,7 @@ export default {
             dialogVisible: false,
             buttons: [
                 //{name: '批量审核通过', color: 'success', event: this.batchAuditAgree},
-                {name: '批量打回', color: 'danger', event: this.batchAuditReject},
+                //{name: '批量打回', color: 'danger', event: this.batchAuditReject},
             ],
             formOpers: [],
             formRules: [],
@@ -70,7 +71,7 @@ export default {
                 oper: [
                     {
                         class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '审核', placement: 'top'},
+                        tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },
                 ],

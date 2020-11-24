@@ -247,6 +247,9 @@ export default {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     this.form.password = md5(this.form.password)
+                    this.form.roles = this.form.roles.map(roleId => {
+                        return {role: {id: roleId}}
+                    })
                     User.saveUser(this.form).then(() => {
                         this.operSuccess(this)
                         this.userInfoDialogVisible = false;
@@ -273,6 +276,7 @@ export default {
                             this.form[prop] = result.user[prop]
                         }
                     }
+                    this.form.roles = this.form.roles.map(role => role.role.id)
                 })
             })
         },

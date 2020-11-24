@@ -1,7 +1,13 @@
 import Net from './net.js'
 
 export default {
-    //送审表
+
+    startSubmission: function (data) {
+        return Net.jsonPost('/submission/start/', data);
+    },
+    restartSubmission: function (data) {
+        return Net.jsonPost('/submission/restart/', data);
+    },
     saveSubmission: function (data) {
         return Net.jsonPost('/submission/addOrUpdate/', data);
     },
@@ -19,23 +25,23 @@ export default {
         return Net.jsonPost('/submission/project/approve/', data);
     },
     saveAuditProjects: function (data) {
-        return Net.post('/submission/project/approves/', data);
+        return Net.jsonPost('/submission/project/approves/', data);
     },
     //分配
     allocMissions: function (data) {
-        return Net.post('/submission/distribution/approves/', data);
+        return Net.jsonPost('/submission/distribution/approves/', data);
     },
     //分配组员
     allocMember: function (data) {
-        return Net.post('/submission/distribution/approves/', data);
+        return Net.jsonPost('/submission/memberl/approve/', data);
     },
     //分配审核
     allocApprove: function (data) {
-        return Net.post('/submission/check/approves/', data);
+        return Net.jsonPost('/submission/check/approves/', data);
     },
     //勘察准备
     commitSurveyPrepare: function (data) {
-        return Net.post('/submission/survey/prepare/approve/', data);
+        return Net.jsonPost('/submission/survey/prepare/approve/', data);
     },
     //现场勘察
     commitSurvey: function (data) {
@@ -44,6 +50,10 @@ export default {
     //争议处理
     commitArgue: function (data) {
         return Net.jsonPost('/submission/argue/approve/', data);
+    },
+    //争议处理审计处审核
+    commitArgueCheck: function (data) {
+        return Net.jsonPost('/submission/audit/dept/approve/', data);
     },
     //提交争议处理结果
     commitArgueResolve: function (data) {
@@ -59,15 +69,14 @@ export default {
     },
     //从完成退回复审
     completeToAuditSecond(data) {
-        return Net.post('/submission/complete/approves/', data);
+        return Net.jsonPost('/submission/complete/approves/', data);
     },
     //从完成到归档
     arc(data) {
-        console.log(data)
-        return Net.post('/submission/complete/approves/', data);
+        return Net.jsonPost('/submission/complete/approves/', data);
     },
     //归档退回完成
     arcToComplete(data) {
-        return Net.post('/submission/filed/approves/', data);
+        return Net.jsonPost('/submission/filed/approves/', data);
     }
 }

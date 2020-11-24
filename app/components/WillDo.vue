@@ -20,6 +20,7 @@
                          v-bind:formRules2="forms.submission.rules2"
                          v-bind:stepCode="forms.submission.stepCode"
                          v-bind:step="forms.submission.step" v-bind:formId="formId"
+                         v-bind:workitemId="workitemId"
                          v-bind:formName="formName">
         </submission-form>
         <alloc-form v-bind:visible="forms.alloc.visible" v-bind:commitCallback="allocCallback">
@@ -31,6 +32,7 @@
                   v-bind:stepCode="forms.bid.stepCode"
                   v-bind:step="forms.bid.step"
                   v-bind:formId="formId"
+                  v-bind:workitemId="workitemId"
                   v-bind:formName="formName">
         </bid-form>
     </div>
@@ -51,6 +53,7 @@ import RejectedOperProject from "../script/client/project/rejectedOper"
 import SurveyPrepare from "../script/client/project/surveyPrepare.js"
 import Survey from "../script/client/project/survey.js"
 import Argue from "../script/client/project/argue.js"
+import ArgueCheck from "../script/client/project/argueCheck.js"
 import AuditFirstProject from "../script/client/project/auditFirst.js"
 import AuditSecondProject from "../script/client/project/auditSecond.js"
 import ArgueResolve from "../script/client/project/argueResolve"
@@ -158,6 +161,7 @@ export default {
             },
             listChecks: [],
             formId: -1,
+            workitemId: -1,
             clientCall: {'submission': ClientCallProject, 'bid': ClientCallBid},
             projectAudit: {'submission': ProjectAuditProject, 'bid': ProjectAuditBid},    //不同类型的送审表调用各自的立项审计脚本
             allocMember: {'submission': AllocMemberProject, 'bid': AllocMemberBid},
@@ -172,7 +176,12 @@ export default {
     methods: {
         allocCallback(form) {
             let type = this.listChecks[0].target
-            this.clientCall[type].batchAlloc(form, this.listChecks.map(form => form.targetId), 1).then(() => {
+            this.clientCall[type].batchAlloc(form, this.listChecks.map(form => {
+                return {
+                    targetId: form.targetId,
+                    workitemId: form.id
+                }
+            }), 1).then(() => {
                 this.operSuccess()
             })
         },
@@ -219,7 +228,12 @@ export default {
                     let type = this.listChecks[0].target
                     if (stage === 'project') { //批量审核立项
                         if (approve === 0) {
-                            this.clientCall[type].batchAudit(approve, this.listChecks.map(form => form.targetId)).then(result => {
+                            this.clientCall[type].batchAudit(approve, this.listChecks.map(form => {
+                                return {
+                                    targetId: form.targetId,
+                                    workitemId: form.id
+                                }
+                            })).then(result => {
                                 if (result) {
                                     this.operSuccess()
                                 }
@@ -231,43 +245,60 @@ export default {
                                 duration: 3000
                             })
                         }
-                    } else if (stage === 'distribution') { //批量分配
+                    } else if (stage === 'distribution') { //批量分配组长
                         if (approve === 1) {
                             this.forms.submission.visible = false
                             this.forms.alloc.visible = false
                             this.forms.alloc.visible = true
                         } else {
-                            this.clientCall[type].batchAlloc(null, this.listChecks.map(form => form.targetId), 0).then(() => {
+                            this.clientCall[type].batchAlloc(null, this.listChecks.map(form => {
+                                return {
+                                    targetId: form.targetId,
+                                    workitemId: form.id
+                                }
+                            }), 0).then(() => {
                                 this.operSuccess()
                             })
                         }
                     } else if (stage === 'check') { //批量审核分配
-                        this.clientCall[type].batchAllocApprove('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                        this.clientCall[type].batchAllocApprove('', this.listChecks.map(form => {
+                            return {
+                                targetId: form.targetId,
+                                workitemId: form.id
+                            }
+                        }), approve).then(() => {
                             this.operSuccess()
                         })
                     } else if (stage === 'complete') {
                         if (approve === 1) {//批量归档
-                            this.clientCall[type].batchArc('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            this.clientCall[type].batchArc('', this.listChecks.map(form => {
+                                return {
+                                    targetId: form.targetId,
+                                    workitemId: form.id
+                                }
+                            }), approve).then(() => {
                                 this.operSuccess()
                             })
                         } else {//批量打回复审
-                            this.clientCall[type].batchBackToAuditSecond('', this.listChecks.map(form => form.targetId), approve).then(() => {
+                            this.clientCall[type].batchBackToAuditSecond('', this.listChecks.map(form => {
+                                return {
+                                    targetId: form.targetId,
+                                    workitemId: form.id
+                                }
+                            }), approve).then(() => {
                                 this.operSuccess()
                             })
                         }
                     } else if (stage === 'filed') {
-                        if (approve === 1) {
-                            this.$notify.error({
-                                title: '操作失败!',
-                                message: '归档阶段无法进入下一阶段！',
-                                duration: 3000
-                            })
-                        } else {//批量打回完成
-                            this.clientCall[type].batchBackToComplete('', this.listChecks.map(form => form.targetId), approve).then(() => {
-                                this.operSuccess()
-                            })
-                        }
-                    } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second'].indexOf(stage) !== -1) {
+                        this.clientCall[type].batchBackToComplete('', this.listChecks.map(form => {
+                            return {
+                                targetId: form.targetId,
+                                workitemId: form.id
+                            }
+                        }), approve).then(() => {
+                            this.operSuccess()
+                        })
+                    } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second', 'memberl'].indexOf(stage) !== -1) {
                         this.$notify.error({
                             title: '操作失败!',
                             message: '当前阶段不可批量操作！',
@@ -293,7 +324,11 @@ export default {
                 this.projectAudit[type].comp = this //设置当前组件,用于回调刷新列表方法
                 this.forms[type].formOpers = this.projectAudit[type].buttons
                 this.forms[type].rules = this.projectAudit[type].rules
-            } else if (step === 'assigned') {
+            } else if (step === 'memberl') { //分配组员
+                this.allocMember[type].comp = this
+                this.forms[type].formOpers = this.allocMember[type].buttons
+                this.forms[type].rules = this.allocMember[type].rules
+            } else if (step === 'assigned') { //分配审核
                 this.allocApprove[type].comp = this
                 this.forms[type].formOpers = this.allocApprove[type].buttons
             } else if (step === 'reject') {
@@ -315,6 +350,9 @@ export default {
             } else if (step === 'argueDeal') {
                 ArgueResolve.comp = this
                 this.forms.submission.formOpers = ArgueResolve.buttons
+            } else if (step === 'audit_dept') {  //争议处理审核
+                ArgueCheck.comp = this
+                this.forms.submission.formOpers = ArgueCheck.buttons
             } else if (step === 'auditFirst') {
                 this.auditFirst[type].comp = this
                 this.forms[type].formOpers = this.auditFirst[type].buttons
@@ -327,6 +365,7 @@ export default {
                 this.forms[type].formOpers = []
             }
             this.formId = row.targetId
+            this.workitemId = row.id
             this.forms[type].stepCode = this.stepCode[type][step]
         },
         toPage: function (val) {

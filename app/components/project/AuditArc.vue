@@ -37,7 +37,7 @@ export default {
             stepCode: Config.stepCode.auditArc,
             dialogVisible: false,
             buttons: [
-                {name: '退回', color: 'danger', event: this.batchBackToComplete},
+                /*{name: '退回', color: 'danger', event: this.batchBackToComplete},*/
             ],
             listChecks: [],
             tableConfig: {

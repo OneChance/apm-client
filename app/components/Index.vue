@@ -31,35 +31,18 @@
                 </el-menu>
             </el-col>
             <el-col :span="4" class="header-bar-right">
-                <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal"
+                <el-menu class="el-menu-demo" mode="horizontal"
                          background-color="#e1184a"
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
-                    <el-submenu :index="menu.index" v-for="menu in userOper" :key="menu.value">
-                        <template slot="title">{{ menu.name }}</template>
-                        <el-menu-item :index="m.index" v-for="m in menu.sub" :key="m.value">
-                            {{ m.name }}
-                        </el-menu-item>
+                    <el-submenu index="userOper">
+                        <template slot="title">{{ global.loginUser.name }}</template>
+                        <el-menu-item index="logout">退出</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-col>
         </el-row>
-
-        <!-- 小屏幕菜单 -->
-        <el-menu
-            default-active="personal"
-            class="el-menu-vertical-demo small-menu"
-            text-color="#303133"
-            active-text-color="#e1184a"
-            @select="handleSelect">
-            <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value">
-                <i :class="'fa '+menu.icon+' fa-lg fa-inverse'"></i>
-                <span slot="title">
-                        {{ menu.label }}
-                </span>
-            </el-menu-item>
-        </el-menu>
 
         <div class="main_center" id="main_center">
             <component v-bind:menus="leftMenus" v-bind:is="currentComponent" class="tab"></component>
@@ -84,13 +67,6 @@ export default {
             menus: [],
             leftMenus: [],
             activeMenuIndex: 'my',
-            userOper: [
-                {
-                    index: 'userOper', name: '', sub: [
-                        {index: 'sign', name: '退出'},
-                    ]
-                }
-            ],
             currentComponent: 'leftMenuFrame'   //默认加载左边为菜单的组件
         }
     },
@@ -103,7 +79,6 @@ export default {
         })
 
         Account.getLoginUser().then(res => {
-            this.userOper[0].name = res.user.name
             this.global.loginUser = res.user
         })
 
@@ -129,10 +104,9 @@ export default {
             localStorage.removeItem("apm_token");
         },
         handleSelect(key) {
-            if (key === 'sign') {
+            if (key === 'logout') {
                 this.signOut()
             } else {
-                $('.small-menu')[0].style.webkitTransform = "translate(-270px,0px)";
                 //如果非左边菜单架构，替换当前组件
                 //this.currentComponent = key
                 //否则，替换组件数据

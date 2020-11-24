@@ -3,6 +3,14 @@
 import Audit from "../../server/audit";
 
 export default {
+    //提交送审
+    startSubmission: function (data) {
+        return Audit.startSubmission(data)
+    },
+    //打回提交送审
+    restartSubmission: function (data) {
+        return Audit.restartSubmission(data)
+    },
     //保存送审
     saveSubmission: function (data) {
         return Audit.saveSubmission(data)
@@ -22,32 +30,33 @@ export default {
             target: 'submission',
             type: approve,
             targetId: form.targetId,
+            workitemId: form.workitemId,
             content: form.content,
             auditNo: form.auditNo
         })
     },
-    //批量审计立项
+    //批量审计立项（不同意）
     batchAudit(approve, checks) {
-        return Audit.saveAuditProjects({
-            type: approve,
-            targetIds: checks,
-            content: '',
+        checks.forEach(check => {
+            check.type = approve
+            check.content = ''
         })
+        return Audit.saveAuditProjects(checks)
     },
     //批量分配
     batchAlloc(form, checks, approve) {
-        let data = {
-            type: approve,
-            targetIds: checks,
-        }
-        if (form) {
-            data.assignedId = form.leader
-            data.auditType = form.auditType
-            if (form.auditType === '外审') {
-                data.thirdpartyId = form.intermediary
+        checks.forEach(check => {
+            check.type = approve
+            check.content = ''
+            if (approve === 1) {
+                check.assignedId = form.leader
+                check.auditType = form.auditType
+                if (form.auditType === '外审') {
+                    check.thirdpartyId = form.intermediary
+                }
             }
-        }
-        return Audit.allocMissions(data)
+        })
+        return Audit.allocMissions(checks)
     },
     //分配组员
     allocMember(form) {
@@ -55,11 +64,11 @@ export default {
     },
     //批量审核分配
     batchAllocApprove(comment, checks, approve) {
-        return Audit.allocApprove({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Audit.allocApprove(checks)
     },
     //提交勘察准备
     commitSurveyPrepare(form) {
@@ -72,6 +81,10 @@ export default {
     //争议处理
     commitArgue: function (form) {
         return Audit.commitArgue(form)
+    },
+    //争议处理审计处审核
+    commitArgueCheck: function (form) {
+        return Audit.commitArgueCheck(form)
     },
     //提交争议处理结果
     commitArgueResolve: function (form) {
@@ -86,24 +99,25 @@ export default {
         return Audit.commitAuditSecond(form)
     },
     batchArc(comment, checks, approve) {
-        return Audit.arc({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Audit.arc(checks)
     },
+    //批量处理归档阶段的送审表,同意到结束,不同意回到完成
     batchBackToComplete(comment, checks, approve) {
-        return Audit.arcToComplete({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Audit.arcToComplete(checks)
     },
     batchBackToAuditSecond(comment, checks, approve) {
-        return Audit.completeToAuditSecond({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Audit.completeToAuditSecond(checks)
     }
 }

@@ -171,55 +171,49 @@
                             </td>
                         </tr>
 
-                        <tr class="allocMan" v-if="stepCode>=30">
+                        <tr class="allocMan" v-if="stepCode>=25">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.auditType" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr class="allocMan"
-                            v-if="stepCode>=30 && bidForm.assigned">
-                            <th v-if="bidForm.assigned.thirdParty">分配审计单位</th>
-                            <th v-if="!bidForm.assigned.thirdParty">分配审计人员</th>
+                        <tr v-if="stepCode>=25 && bidForm.thirdparty">
+                            <th>中介公司</th>
+                            <td colspan="3">
+                                <el-input type="text" v-model="bidForm.thirdparty.name" disabled></el-input>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=25 && bidForm.assigned">
+                            <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
                             </td>
                             <th>联系方式</th>
                             <td>
-                                <el-input type="text" v-model="bidForm.assigned.telphone" disabled
-                                          v-if="!bidForm.assigned.thirdParty"></el-input>
-                                <el-input type="text" v-model="bidForm.assignedLink.telphone" disabled
-                                          v-if="bidForm.assigned.thirdParty && bidForm.assignedLink"></el-input>
+                                <el-input type="text" v-model="bidForm.assigned.telphone" disabled></el-input>
                             </td>
                         </tr>
-                        <tr class="allocMan"
-                            v-if="stepCode>=30 && bidForm.assigned && bidForm.assigned.thirdParty">
-                            <th>联系人</th>
-                            <td colspan="3">
-                                <el-input type="text" v-if="bidForm.assignedLink"
-                                          v-model="bidForm.assignedLink.contact"
-                                          disabled></el-input>
-                            </td>
-                        </tr>
+
                         <!--这里的意见非表单数据 是写入意见表的-->
                         <tr v-if="step==='project' || step === 'assigned'">
-                            <th>审批意见</th>
-                            <td colspan="3" :class="stepCode===10||stepCode===30?'editing':''">
+                            <th :class="stepCode===10||stepCode===30?'editing':''">审批意见</th>
+                            <td colspan="3">
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
 
                         <tr v-if="stepCode>=40">
-                            <th>送审价</th>
-                            <td :class="stepCode===40?'editing':''">
+                            <th :class="stepCode===40?'editing form-required':''">送审价</th>
+                            <td>
                                 <el-form-item prop="submissionPrice">
                                     <el-input v-model="bidForm.submissionPrice" :disabled="step!=='auditFirst'"
                                               placeholder="填写送审价"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>初审审定金额<span style="color: red; ">*</span></th>
-                            <td :class="stepCode===40?'editing':''">
+                            <th :class="stepCode===40?'editing form-required':''">初审审定金额</th>
+                            <td>
                                 <el-form-item prop="firstAuditPrice">
                                     <el-input v-model="bidForm.firstAuditPrice" :disabled="step!=='auditFirst'"
                                               placeholder="填写土建金额"></el-input>
@@ -228,14 +222,14 @@
                         </tr>
 
                         <tr v-if="stepCode>=40">
-                            <th class="form-required">初审核减额</th>
-                            <td :class="stepCode===40?'editing':''">
+                            <th :class="stepCode===40?'editing form-required':''">初审核减额</th>
+                            <td>
                                 <el-form-item prop="auditFirstSub">
                                     <el-input v-model="bidForm.auditFirstSub" disabled></el-input>
                                 </el-form-item>
                             </td>
-                            <th class="form-required">初审核减率</th>
-                            <td :class="stepCode===40?'editing':''">
+                            <th :class="stepCode===40?'editing form-required':''">初审核减率</th>
+                            <td>
                                 <el-form-item prop="auditFirstSubRatio">
                                     <el-input v-model="bidForm.auditFirstSubRatio+'%'"
                                               disabled
@@ -253,10 +247,10 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditFirstFiles">
-                                        <th>
-                                            {{ fileType.mName }}<span style="color: red; ">*</span>
+                                        <th :class="stepCode===40?'editing form-required':''">
+                                            {{ fileType.mName }}
                                         </th>
-                                        <td :class="stepCode===40?'editing':''">
+                                        <td>
                                             <el-upload class="upload-demo"
                                                        action="noAction"
                                                        :http-request="upload"
@@ -283,15 +277,15 @@
                         </tr>
 
                         <tr v-if="stepCode>=50">
-                            <th class="form-required">复审审定金额</th>
-                            <td :class="stepCode===50?'editing':''">
+                            <th :class="stepCode===50?'editing form-required':''">复审审定金额</th>
+                            <td>
                                 <el-form-item prop="secondAuditPrice">
                                     <el-input v-model="bidForm.secondAuditPrice" :disabled="step!=='auditSecond'"
                                               placeholder="填写复审审定金额"></el-input>
                                 </el-form-item>
                             </td>
-                            <th class="form-required">复审核减额</th>
-                            <td :class="stepCode===50?'editing':''">
+                            <th :class="stepCode===50?'editing form-required':''">复审核减额</th>
+                            <td>
                                 <el-form-item prop="secondAuditPrice">
                                     <el-input v-model="bidForm.auditSecondSub"
                                               disabled></el-input>
@@ -300,8 +294,8 @@
                         </tr>
 
                         <tr v-if="stepCode>=50">
-                            <th class="form-required">复审核减率</th>
-                            <td colspan="3" :class="stepCode===50?'editing':''">
+                            <th :class="stepCode===50?'editing form-required':''">复审核减率</th>
+                            <td colspan="3">
                                 <el-form-item prop="secondAuditPrice">
                                     <el-input v-model="bidForm.auditSecondSubRatio+'%'"
                                               disabled></el-input>
@@ -310,8 +304,8 @@
                         </tr>
 
                         <tr v-if="stepCode>=50">
-                            <th class="form-required">审计备注</th>
-                            <td colspan="3" :class="stepCode===50?'editing':''">
+                            <th :class="stepCode===50?'editing form-required':''">审计备注</th>
+                            <td colspan="3">
                                 <el-form-item prop="auditNote">
                                     <el-input type="textarea" v-model="bidForm.auditNote"
                                               :disabled="step!=='auditSecond'"
@@ -330,10 +324,10 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditSecondFiles">
-                                        <th>
-                                            {{ fileType.mName }}<span style="color: red; ">*</span>
+                                        <th :class="stepCode===50?'editing form-required':''">
+                                            {{ fileType.mName }}
                                         </th>
-                                        <td :class="stepCode===50?'editing':''">
+                                        <td>
                                             <el-upload class="upload-demo"
                                                        action="noAction"
                                                        :http-request="upload"
@@ -445,7 +439,7 @@ import ClientCallCommon from "../../script/client/clientCall"
 
 export default {
     name: "BidForm",
-    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'formRules', 'stepCode', 'formName'],
+    props: ['visible', 'from', 'formOpers', 'step', 'formId', 'workitemId', 'formRules', 'stepCode', 'formName'],
     watch: {
         'bidForm.submissionPrice': function () {
             this.calAuditFirst()
@@ -683,11 +677,16 @@ export default {
                         if (this.step === 'bid' || this.step === 'reject') {
                             ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.details)
                             if (ClientCallCommon.checkFileOrNote(this.bidForm.details)) {
+                                if (this.stepCode === -20) {
+                                    //如果是被打回的单据,带上workitemid参数
+                                    this.bidForm.workitemId = this.workitemId
+                                }
                                 event(this.bidForm)
                             }
                         } else if (this.step === 'project') {
                             event({
                                 targetId: this.bidForm.id,
+                                workitemId: this.workitemId,
                                 content: this.comment,
                                 auditNo: this.bidForm.auditNo
                             })
@@ -696,6 +695,7 @@ export default {
                             if (ClientCallCommon.fileListCheck(this.bidForm.auditFirstFiles)) {
                                 event({
                                     targetId: this.bidForm.id,
+                                    workitemId: this.workitemId,
                                     type: 2,
                                     submissionPrice: this.bidForm.submissionPrice,
                                     firstAuditPrice: this.bidForm.firstAuditPrice,
@@ -709,6 +709,7 @@ export default {
                             if (ClientCallCommon.fileListCheck(this.bidForm.auditSecondFiles)) {
                                 event({
                                     targetId: this.bidForm.id,
+                                    workitemId: this.workitemId,
                                     type: 2,
                                     secondAuditPrice: this.bidForm.secondAuditPrice,
                                     auditSecondSub: this.bidForm.auditSecondSub,
@@ -733,7 +734,7 @@ export default {
                     ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.details)
                     event(this.bidForm)
                 } else {
-                    event(this.comment, this.bidForm.id)
+                    event(this.comment, this.bidForm.id, this.workitemId)
                 }
             }
         },

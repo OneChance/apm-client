@@ -19,19 +19,19 @@ export default {
         return Net.jsonPost('/bid/project/approve/', data);
     },
     saveAuditProjects: function (data) {
-        return Net.post('/bid/project/approves/', data);
+        return Net.jsonPost('/bid/project/approves/', data);
     },
     //分配
     allocMissions: function (data) {
-        return Net.post('/bid/distribution/approves/', data);
+        return Net.jsonPost('/bid/distribution/approves/', data);
     },
     //分配组员
     allocMember: function (data) {
-        return Net.post('/bid/distribution/approves/', data);
+        return Net.jsonPost('/bid/memberl/approve/', data);
     },
     //分配审核
     allocApprove: function (data) {
-        return Net.post('/bid/check/approves/', data);
+        return Net.jsonPost('/bid/check/approves/', data);
     },
     //初审
     commitAuditFirst: function (data) {

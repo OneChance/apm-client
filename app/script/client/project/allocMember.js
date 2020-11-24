@@ -4,7 +4,8 @@ import ClientCall from "./clientCall";
 const oper = {
     comp: {},
     buttons: [
-        {name: '分配', color: 'success', event: commit},
+        {name: '分配组员', color: 'success', event: alloc},
+        {name: '不同意', color: 'danger', event: reject, type: 'reject'},
     ],
     rules: {
         members: [
@@ -15,8 +16,17 @@ const oper = {
 
 export default oper
 
-function commit(form) {
-    ClientCall.commitAuditFirst(form).then(result => {
+function alloc(form) {
+    commit(form, 1)
+}
+
+function reject(form) {
+    commit(form, 0)
+}
+
+function commit(form, approve) {
+    form.type = approve
+    ClientCall.allocMember(form).then(result => {
         if (result) {
             oper.comp.operSuccess()
         }

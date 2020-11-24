@@ -112,15 +112,14 @@ export default {
             })
         },
         saveSubmission: function (form) {
-            this.commitForm(-10, form)
+            ClientCallProject.saveSubmission(form).then(result => {
+                if (result) {
+                    this.operSuccess()
+                }
+            })
         },
         commitSubmission: function (form) {
-            this.commitForm(10, form)
-        },
-        commitForm(code, form) {
-            //设置状态
-            form.status = code
-            ClientCallProject.saveSubmission(form).then(result => {
+            ClientCallProject.startSubmission(form).then(result => {
                 if (result) {
                     this.operSuccess()
                 }

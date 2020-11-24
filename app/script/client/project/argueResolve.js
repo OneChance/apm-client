@@ -5,7 +5,7 @@ const oper = {
     comp: {},
     buttons: [
         {
-            name: '提交处理',
+            name: '提交争议处理',
             color: 'danger',
             event: commit
         },

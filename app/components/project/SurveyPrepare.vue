@@ -1,7 +1,8 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <submission-query ref="query" v-bind:tableConfigObject="tableConfig" v-bind:stepCode="stepCode"></submission-query>
+            <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
+                              v-bind:stepCode="stepCode"></submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -10,6 +11,7 @@
                          v-bind:formRules="rules"
                          v-bind:formOpers="formOpers"
                          v-bind:step="'surveyPrepare'"
+                         v-bind:readable="true"
                          v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
@@ -31,7 +33,7 @@ export default {
     },
     mounted() {
         SurveyPrepare.comp = this
-        this.formOpers = SurveyPrepare.buttons
+        //this.formOpers = SurveyPrepare.buttons
     },
     data: function () {
         return {
@@ -57,7 +59,7 @@ export default {
                 oper: [
                     {
                         class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '编辑', placement: 'top'},
+                        tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },
                 ],

@@ -120,7 +120,8 @@ export default {
             return value
         },
         getIndex(value) {
-            return this.steps.filter(s => s.label === value)[0].index
+            let step = this.steps.filter(s => s.label === value)[0]
+            return step ? step.index : 11
         },
         click(row, event, check) {
             if (check) {

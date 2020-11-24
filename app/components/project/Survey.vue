@@ -12,6 +12,7 @@
                          v-bind:formRules="rules"
                          v-bind:step="'survey'"
                          v-bind:stepCode="stepCode"
+                         v-bind:readable="true"
                          v-bind:formId="formId">
         </submission-form>
     </div>
@@ -32,7 +33,7 @@ export default {
     },
     mounted() {
         Survey.comp = this
-        this.formOpers = Survey.buttons
+        /*this.formOpers = Survey.buttons*/
     },
     data: function () {
         return {
@@ -59,7 +60,7 @@ export default {
                 oper: [
                     {
                         class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '编辑', placement: 'top'},
+                        tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },
                 ],
