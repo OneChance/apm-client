@@ -27,6 +27,7 @@ import TableComponent from "../TableComponent";
 import BidForm from "./BidForm";
 import BidQuery from "./BidQuery";
 import ClientCall from "../../script/client/bid/clientCall";
+import ClientCallCommon from "../../script/client/clientCall";
 
 export default {
     name: "AuditCompleteBid",
@@ -97,10 +98,18 @@ export default {
             })
         },
         genNoteForm: function (row) {
-            this.noteFormVisible = false
-            this.dialogVisible = false
-            this.noteFormVisible = true
-            this.formId = row.id
+            if (ClientCallCommon.checkRights(this.$root.loginUser.roles, [36, 16])) {
+                this.noteFormVisible = false
+                this.dialogVisible = false
+                this.noteFormVisible = true
+                this.formId = row.id
+            } else {
+                this.$notify({
+                    title: '操作失败',
+                    message: '您没有权限访问该功能',
+                    duration: 3000
+                })
+            }
         },
         editRow: function (row) {
             this.noteFormVisible = false

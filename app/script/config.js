@@ -19,7 +19,7 @@ export default {
         alloced: 20, //分配,
         memberl: 25,//分配组员
         assigned: 30, //分配审核
-        surveyPrepare: 40, //勘察准
+        surveyPrepare: 40, //勘察准备
         survey: 50, //现场勘察
         argueHandle: 60, //争议处理
         audit_dept: 65, //争议处理审核

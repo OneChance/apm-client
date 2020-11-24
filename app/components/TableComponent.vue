@@ -106,9 +106,6 @@ export default {
         },
         getIndex(value) {
             let step = this.tableConfig.steps.filter(s => s.label === value)[0]
-            if (!step) {
-                console.log(value)
-            }
             return step ? step.index : this.tableConfig.steps[this.tableConfig.steps.length - 1].index + 1
         },
         click(row, event, check) {

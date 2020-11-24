@@ -61,6 +61,7 @@ import Download from "../../script/server/download"
 import BidForm from "./BidForm";
 import BidQuery from "./BidQuery";
 import ClientCall from "../../script/client/bid/clientCall";
+import ClientCallCommon from "../../script/client/clientCall";
 
 export default {
     name: "ListAllBid",
@@ -135,18 +136,26 @@ export default {
             this.formId = row.id
         },
         fileList: function (row) {
-            this.dialogVisible = false
-            this.fileListVisible = false
-            this.fileListVisible = true
+            if (ClientCallCommon.checkRights(this.$root.loginUser.roles, [35, 11])) {
+                this.dialogVisible = false
+                this.fileListVisible = false
+                this.fileListVisible = true
 
-            ClientCall.getSubmission({
-                id: row.id
-            }).then(result => {
-                this.downFiles = []
-                result.bid.details.forEach(fileType => this.addToFileList(fileType))
-                result.bid.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
-                result.bid.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
-            })
+                ClientCall.getSubmission({
+                    id: row.id
+                }).then(result => {
+                    this.downFiles = []
+                    result.bid.details.forEach(fileType => this.addToFileList(fileType))
+                    result.bid.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
+                    result.bid.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
+                })
+            } else {
+                this.$notify({
+                    title: '操作失败',
+                    message: '您没有权限访问该功能',
+                    duration: 3000
+                })
+            }
         },
         addToFileList(fileType) {
             fileType.mFiles.forEach(file => {

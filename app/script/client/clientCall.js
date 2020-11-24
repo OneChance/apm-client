@@ -218,5 +218,15 @@ export default {
     },
     materialFileTypes() {
         return MaterialFile.getMaterialTypes()
+    },
+    checkRights(userRoles, needRoles) {
+        if (userRoles) {
+            for (let i = 0; i < needRoles.length; i++) {
+                if (userRoles.map(role => role.role.id).includes(needRoles[i])) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

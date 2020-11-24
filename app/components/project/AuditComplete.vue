@@ -27,6 +27,7 @@ import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import SubmissionQuery from "./SubmissionQuery";
 import ClientCall from "../../script/client/project/clientCall";
+import ClientCallCommon from "../../script/client/clientCall";
 
 export default {
     name: "AuditComplete",
@@ -101,10 +102,18 @@ export default {
             })
         },
         genNoteForm: function (row) {
-            this.noteFormVisible = false
-            this.dialogVisible = false
-            this.noteFormVisible = true
-            this.formId = row.id
+            if (ClientCallCommon.checkRights(this.$root.loginUser.roles, [38, 10])) {
+                this.noteFormVisible = false
+                this.dialogVisible = false
+                this.noteFormVisible = true
+                this.formId = row.id
+            } else {
+                this.$notify({
+                    title: '操作失败',
+                    message: '您没有权限访问该功能',
+                    duration: 3000
+                })
+            }
         },
         editRow: function (row) {
             this.noteFormVisible = false

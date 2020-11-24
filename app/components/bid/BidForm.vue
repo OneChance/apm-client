@@ -171,21 +171,21 @@
                             </td>
                         </tr>
 
-                        <tr class="allocMan" v-if="stepCode>=25">
+                        <tr v-if="stepCode>=25 && checkRight([11,14,15,32,30])">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.auditType" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.thirdparty">
+                        <tr v-if="stepCode>=25 && bidForm.thirdparty && checkRight([11,14,15,32,30])">
                             <th>中介公司</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.thirdparty.name" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && checkRight([11,14,15,32,30])">
                             <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
@@ -196,7 +196,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && checkRight([11,14,15,32,30])">
                             <th :class="stepCode===25?'editing form-required':''">审计组员</th>
                             <td colspan="3">
                                 <el-form-item prop="members">
@@ -213,7 +213,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40">
+                        <tr v-if="stepCode>=40 && checkRight([11,18,33,30])">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">送审价</th>
                             <td>
                                 <el-form-item prop="submissionPrice">
@@ -232,7 +232,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40">
+                        <tr v-if="stepCode>=40 && checkRight([11,18,33,30])">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">初审核减额</th>
                             <td>
                                 <el-form-item prop="auditFirstSub">
@@ -249,7 +249,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40">
+                        <tr v-if="stepCode>=40 && checkRight([11,18,33,30])">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -289,7 +289,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50">
+                        <tr v-if="stepCode>=50 && checkRight([11,19,34,30])">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审审定金额</th>
                             <td>
                                 <el-form-item prop="secondAuditPrice">
@@ -307,7 +307,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50">
+                        <tr v-if="stepCode>=50 && checkRight([11,19,34,30])">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审核减率</th>
                             <td colspan="3">
                                 <el-form-item prop="secondAuditPrice">
@@ -317,7 +317,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50">
+                        <tr v-if="stepCode>=50 && checkRight([11,19,34,30])">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -357,7 +357,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50">
+                        <tr v-if="stepCode>=50 && checkRight([11,19,34,30])">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">审计备注</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNote">
@@ -497,8 +497,9 @@ export default {
                             id: this.formId
                         }).then(result => {
 
-                            //每次打开清空意见
                             this.comment = '';
+
+                            this.self = this.$root.loginUser.id === result.bid.creatorId
 
                             //加载初审资料附件
                             if (!result.bid.auditFirstFiles || result.bid.auditFirstFiles.length === 0) {
@@ -651,6 +652,7 @@ export default {
     },
     data: function () {
         return {
+            self: false,
             dialogVisible: false,
             bidForm: {
                 id: '',
@@ -701,6 +703,9 @@ export default {
         }
     },
     methods: {
+        checkRight(needRoles) {
+            return ClientCallCommon.checkRights(this.$root.loginUser.roles, needRoles)
+        },
         calAuditFirst: function () {
             this.bidForm.auditFirstSub = this.bidForm.submissionPrice - this.bidForm.firstAuditPrice
             this.bidForm.auditFirstSubRatio = (this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100
