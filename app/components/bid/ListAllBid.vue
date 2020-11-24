@@ -86,7 +86,7 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'status', label: '审计状态', width: '150', fixed: true},
+                    {prop: 'status', label: '审计状态', width: '150', fixed: true, popProgress: true},
                     {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
                     {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
@@ -95,9 +95,22 @@ export default {
                     {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
                 ],
+                steps: [
+                    {label: '送审保存', step: '送审', index: 0},
+                    {label: '送审打回', step: '送审', index: 0},
+                    {label: '处理争议', step: '送审', index: 0},
+                    {label: '审计立项', step: '审计立项', index: 1},
+                    {label: '审计分配', step: '审计分配', index: 2},
+                    {label: '分配组员', step: '审计分配', index: 2},
+                    {label: '分配审核', step: '分配审核', index: 3},
+                    {label: '初审', step: '初审', index: 4},
+                    {label: '复审', step: '复审', index: 5},
+                    {label: '完成', step: '完成', index: 6},
+                    {label: '归档', step: '归档', index: 7},
+                ],
                 oper: [
                     {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
+                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
                         tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },

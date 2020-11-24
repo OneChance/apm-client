@@ -29,9 +29,7 @@ const oper = {
 export default oper
 
 function recommit(data) {
-    //设置状态为10
-    data.status = Config.stepCodeBid.project
-    ClientCall.saveSubmission(data).then(result => {
+    ClientCall.restartSubmission(data).then(result => {
         if (result) {
             oper.comp.operSuccess()
         }

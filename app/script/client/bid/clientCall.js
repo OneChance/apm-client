@@ -7,6 +7,12 @@ export default {
     saveSubmission: function (data) {
         return Bid.saveSubmission(data)
     },
+    startSubmission: function (data) {
+        return Bid.startSubmission(data)
+    },
+    restartSubmission: function (data) {
+        return Bid.restartSubmission(data)
+    },
     //删除
     deleteSubmission: function (data) {
         return Bid.deleteSubmission(data)
@@ -23,32 +29,33 @@ export default {
             target: 'bid',
             type: approve,
             targetId: form.targetId,
+            workitemId: form.workitemId,
             content: form.content,
             auditNo: form.auditNo
         })
     },
     //批量审计立项
     batchAudit(approve, checks) {
-        return Bid.saveAuditProjects({
-            type: approve,
-            targetIds: checks,
-            content: '',
+        checks.forEach(check => {
+            check.type = approve
+            check.content = ''
         })
+        return Bid.saveAuditProjects(checks)
     },
     //批量分配
     batchAlloc(form, checks, approve, auditType) {
-        let data = {
-            type: approve,
-            targetIds: checks,
-        }
-        if (form) {
-            data.assignedId = form.target
-            data.auditType = form.auditType
-            if (form.auditType === '外审') {
-                data.assignedLinkId = form.link
+        checks.forEach(check => {
+            check.type = approve
+            check.content = ''
+            if (approve === 1) {
+                check.assignedId = form.leader
+                check.auditType = form.auditType
+                if (form.auditType === '外审') {
+                    check.thirdpartyId = form.intermediary
+                }
             }
-        }
-        return Bid.allocMissions(data)
+        })
+        return Bid.allocMissions(checks)
     },
     //分配组员
     allocMember(form) {
@@ -56,11 +63,11 @@ export default {
     },
     //批量审核分配
     batchAllocApprove(comment, checks, approve) {
-        return Bid.allocApprove({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Bid.allocApprove(checks)
     },
     //初审
     commitAuditFirst: function (form) {
@@ -71,24 +78,25 @@ export default {
         return Bid.commitAuditSecond(form)
     },
     batchArc(comment, checks, approve) {
-        return Bid.arc({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Bid.arc(checks)
     },
+    //批量处理归档阶段的送审表,同意到结束,不同意回到完成
     batchBackToComplete(comment, checks, approve) {
-        return Bid.arcToComplete({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Bid.arcToComplete(checks)
     },
     batchBackToAuditSecond(comment, checks, approve) {
-        return Bid.completeToAuditSecond({
-            type: approve,
-            targetIds: checks,
-            comment: comment,
+        checks.forEach(check => {
+            check.type = approve
+            check.comment = comment
         })
+        return Bid.completeToAuditSecond(checks)
     }
 }

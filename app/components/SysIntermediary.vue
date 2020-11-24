@@ -22,7 +22,7 @@
                 <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="true">
                     <el-form-item label="单位名称" prop="name" style="width:580px">
                         <el-input v-model="form.name" style="width:500px"
-                                  :disabled="!global.loginUser.admin"></el-input>
+                                  :disabled="!$root.loginUser.admin"></el-input>
                     </el-form-item>
 
                     <div v-for="(link,index) in form.links">

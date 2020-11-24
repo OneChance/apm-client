@@ -131,6 +131,7 @@ export default {
                 states: [],
                 types: []
             },
+            oldPassword: '',
             form: {
                 id: '',
                 username: '',
@@ -246,7 +247,11 @@ export default {
         commit: function () {
             this.$refs['form'].validate((valid) => {
                 if (valid) {
-                    this.form.password = md5(this.form.password)
+                    if (this.form.password === this.oldPassword) {
+                        this.form.password = ''
+                    } else {
+                        this.form.password = md5(this.form.password)
+                    }
                     this.form.roles = this.form.roles.map(roleId => {
                         return {role: {id: roleId}}
                     })
@@ -276,6 +281,7 @@ export default {
                             this.form[prop] = result.user[prop]
                         }
                     }
+                    this.oldPassword = this.form.password
                     this.form.roles = this.form.roles.map(role => role.role.id)
                 })
             })

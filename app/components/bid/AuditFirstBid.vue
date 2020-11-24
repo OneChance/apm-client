@@ -12,6 +12,7 @@
                   v-bind:formOpers="formOpers"
                   v-bind:step="'auditFirst'"
                   v-bind:stepCode="stepCode"
+                  v-bind:readonly="true"
                   v-bind:formId="formId">
         </bid-form>
     </div>
@@ -34,7 +35,7 @@ export default {
         return {
             stepCode: Config.stepCodeBid.auditFirst,
             dialogVisible: false,
-            formOpers: AuditFirst.buttons,
+            formOpers: [],
             tableConfig: {
                 data: [],
                 page: true,
@@ -51,8 +52,8 @@ export default {
                 ],
                 oper: [
                     {
-                        class: 'fa fa-pencil-square-o fa-lg click-fa warning-fa',
-                        tip: {content: '编辑', placement: 'top'},
+                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
+                        tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },
                 ]

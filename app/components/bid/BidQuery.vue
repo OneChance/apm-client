@@ -96,11 +96,13 @@ export default {
                 {value: -20, label: '送审打回'},
                 {value: 10, label: '审计立项'},
                 {value: 20, label: '审计分配'},
+                {value: 25, label: '分配组员'},
                 {value: 30, label: '分配审核'},
                 {value: 40, label: '初审'},
                 {value: 50, label: '复审'},
                 {value: 60, label: '完成'},
                 {value: 70, label: '归档'},
+                {value: 80, label: '归档完成'},
             ],
         }
     },

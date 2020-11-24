@@ -7,7 +7,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-import Global from "./global"
 //局部打印
 import printArea from '../plugin/printarea/jquery.PrintArea'
 //使用路由插件
@@ -19,8 +18,6 @@ Vue.use(VueAxios, axios);
 Vue.use(ElementUI)
 // 设置COOKIE工具
 Vue.use(cookie)
-//自定义全局变量
-Vue.prototype.global = Global;
 
 export default {
     vueG: null,
@@ -40,7 +37,12 @@ export default {
             });
 
             this.vueG = new Vue({
-                router
+                router,
+                data: function () {
+                    return {
+                        loginUser: {},
+                    }
+                }
             });
         }
     }

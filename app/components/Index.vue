@@ -37,7 +37,7 @@
                          active-text-color="#fff"
                          @select="handleSelect">
                     <el-submenu index="userOper">
-                        <template slot="title">{{ global.loginUser.name }}</template>
+                        <template slot="title">{{ $root.loginUser.name }}</template>
                         <el-menu-item index="logout">退出</el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -79,7 +79,7 @@ export default {
         })
 
         Account.getLoginUser().then(res => {
-            this.global.loginUser = res.user
+            this.$root.loginUser = res.user
         })
 
         this.$nextTick(() => {

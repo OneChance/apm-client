@@ -92,21 +92,6 @@ export default {
             small: false,
             deleteConfirm: false,
             deleteOper: {event: {}, row: {}},
-            steps: [
-                {label: '送审保存', step: '送审', index: 0},
-                {label: '送审打回', step: '送审', index: 0},
-                {label: '处理争议', step: '送审', index: 0},
-                {label: '审计立项', step: '审计立项', index: 1},
-                {label: '审计分配', step: '审计分配', index: 2},
-                {label: '分配审核', step: '分配审核', index: 3},
-                {label: '勘察准备', step: '勘察准备', index: 4},
-                {label: '现场勘察', step: '现场勘察', index: 5},
-                {label: '争议处理', step: '争议处理', index: 6},
-                {label: '初审', step: '初审', index: 7},
-                {label: '复审', step: '复审', index: 8},
-                {label: '完成', step: '完成', index: 9},
-                {label: '归档', step: '归档', index: 10},
-            ],
             showSteps: []
         }
     },
@@ -120,8 +105,11 @@ export default {
             return value
         },
         getIndex(value) {
-            let step = this.steps.filter(s => s.label === value)[0]
-            return step ? step.index : 11
+            let step = this.tableConfig.steps.filter(s => s.label === value)[0]
+            if (!step) {
+                console.log(value)
+            }
+            return step ? step.index : this.tableConfig.steps[this.tableConfig.steps.length - 1].index + 1
         },
         click(row, event, check) {
             if (check) {
@@ -149,10 +137,12 @@ export default {
             comp.elementSize(width)
         })
 
-        this.showSteps = new Set()
-        this.steps.forEach(s => {
-            this.showSteps.add(s.step)
-        })
+        if (this.tableConfig.steps) {
+            this.showSteps = new Set()
+            this.tableConfig.steps.forEach(s => {
+                this.showSteps.add(s.step)
+            })
+        }
     },
 }
 </script>

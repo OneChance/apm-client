@@ -33,6 +33,7 @@ export default {
         save: -10, //送审保存
         project: 10, //当前处于审计立项阶段
         alloced: 20, //分配
+        memberl: 25,//分配组员
         assigned: 30, //分配审核
         auditFirst: 40, //初审阶段
         auditSecond: 50, //复审阶段

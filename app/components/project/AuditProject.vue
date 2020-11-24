@@ -15,7 +15,7 @@
                          v-bind:formOpers="formOpers"
                          v-bind:formRules="formRules"
                          v-bind:step="'project'"
-                         v-bind:readable="true"
+                         v-bind:readonly="true"
                          v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>

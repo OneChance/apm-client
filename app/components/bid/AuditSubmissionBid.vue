@@ -103,15 +103,14 @@ export default {
             })
         },
         saveBid: function (form) {
-            this.commitForm(-10, form)
+            ClientCall.saveSubmission(form).then(result => {
+                if (result) {
+                    this.operSuccess()
+                }
+            })
         },
         commitBid: function (form) {
-            this.commitForm(10, form)
-        },
-        commitForm(code, form) {
-            //设置状态
-            form.status = code
-            ClientCall.saveSubmission(form).then(result => {
+            ClientCall.startSubmission(form).then(result => {
                 if (result) {
                     this.operSuccess()
                 }

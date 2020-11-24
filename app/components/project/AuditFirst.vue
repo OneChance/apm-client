@@ -12,7 +12,7 @@
                          v-bind:formOpers="formOpers"
                          v-bind:step="'auditFirst'"
                          v-bind:stepCode="stepCode"
-                         v-bind:readable="true"
+                         v-bind:readonly="true"
                          v-bind:formId="formId">
         </submission-form>
     </div>

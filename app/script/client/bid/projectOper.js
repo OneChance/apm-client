@@ -6,7 +6,7 @@ const oper = {
     comp: {}, //基本是列表所在控件,加载时候赋值,用于操作完毕后调用其上方法
     buttons: [
         {name: '同意', color: 'success', event: auditAgree},
-        {name: '不同意', color: 'danger', event: auditReject}
+        {name: '不同意', color: 'danger', event: auditReject, type: 'reject'}
     ],
     rules: {
         auditNo: [

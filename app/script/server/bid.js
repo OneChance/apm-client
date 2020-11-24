@@ -1,9 +1,15 @@
 import Net from './net.js'
 
 export default {
-    //送审表
+    //保存送审表
     saveSubmission: function (data) {
         return Net.jsonPost('/bid/addOrUpdate/', data);
+    },
+    startSubmission: function (data) {
+        return Net.jsonPost('/bid/start/', data);
+    },
+    restartSubmission: function (data) {
+        return Net.jsonPost('/bid/restart/', data);
     },
     getSubmissions: function (data) {
         return Net.get('/bid/list/', data)
@@ -43,14 +49,14 @@ export default {
     },
     //从完成退回复审
     completeToAuditSecond(data) {
-        return Net.post('/bid/complete/approves/', data);
+        return Net.jsonPost('/bid/complete/approves/', data);
     },
     //从完成到归档
     arc(data) {
-        return Net.post('/bid/complete/approves/', data);
+        return Net.jsonPost('/bid/complete/approves/', data);
     },
     //归档退回完成
     arcToComplete(data) {
-        return Net.post('/bid/filed/approves/', data);
+        return Net.jsonPost('/bid/filed/approves/', data);
     }
 }
