@@ -185,7 +185,7 @@ export default {
                     mName: fType.material.name,
                     mFiles: [], //上传的文件列表
                     mFileIds: '', //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
-                    mNote: '' //上传文件的备注
+                    mNote: fType.material.description //上传文件的备注
                 })
             }
         })

@@ -119,5 +119,8 @@ export default {
             check.comment = comment
         })
         return Audit.completeToAuditSecond(checks)
+    },
+    getNoteForm(data) {
+        return Audit.getNoteForm(data)
     }
 }

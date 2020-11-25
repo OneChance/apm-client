@@ -1,26 +1,24 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-
             <div slot="header" class="clearfix">
                 <span>资料清单类别维护</span>
             </div>
-
             <div class="right-button-group">
                 <el-button type="primary" @click="addFileType">添加资料类别</el-button>
             </div>
-
             <table-component v-bind:tableConfig="tableConfig"></table-component>
-
         </el-card>
-
 
         <el-dialog title="资料类别信息"
                    :visible.sync="dialogVisible"
                    :close-on-click-modal="false">
-            <el-form label-width="100px" :model="fileTypeForm" ref="fileTypeForm">
+            <el-form label-width="100px" :model="fileTypeForm" ref="fileTypeForm" :rules="rules">
                 <el-form-item label="名称" prop="name">
                     <el-input v-model="fileTypeForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="说明" prop="description">
+                    <el-input type="textarea" v-model="fileTypeForm.description"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -49,7 +47,13 @@ export default {
             fileTypeForm: {
                 id: '',
                 name: '',
+                description: '',
                 required: false
+            },
+            rules: {
+                name: [
+                    {required: true, message: '请输入名称', trigger: 'blur'},
+                ],
             },
             dialogVisible: false,
             tableConfig: {
@@ -87,15 +91,18 @@ export default {
         },
         addFileType() {
             this.dialogVisible = true
-            this.fileTypeForm.id = ''
-            this.fileTypeForm.name = ''
-            this.fileTypeForm.required = false
+            this.$nextTick(() => {
+                this.$refs['fileTypeForm'].resetFields();
+            })
         },
         editFileType(row) {
             this.dialogVisible = true
-            this.fileTypeForm.id = row.id
-            this.fileTypeForm.name = row.name
-            this.fileTypeForm.required = row.required
+            this.$nextTick(() => {
+                this.fileTypeForm.id = row.id
+                this.fileTypeForm.name = row.name
+                this.fileTypeForm.description = row.description
+                this.fileTypeForm.required = row.required
+            })
         },
         deleteFileType(row) {
             let comp = this

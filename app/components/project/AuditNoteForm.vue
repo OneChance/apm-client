@@ -38,13 +38,13 @@
                             <th>送审金额</th>
                             <td>
                                 <el-form-item prop="submissionMoney">
-                                    <el-input v-model.number="auditNoteForm.submissionMoney"></el-input>
+                                    <el-input v-model.number="auditNoteForm.submissionMoney" disabled></el-input>
                                 </el-form-item>
                             </td>
                             <th>审定金额</th>
                             <td>
                                 <el-form-item prop="auditMoney">
-                                    <el-input v-model.number="auditNoteForm.auditMoney"></el-input>
+                                    <el-input v-model.number="auditNoteForm.auditMoney" disabled></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -52,13 +52,13 @@
                             <th>核增</th>
                             <td>
                                 <el-form-item prop="add">
-                                    <el-input v-model.number="auditNoteForm.add"></el-input>
+                                    <el-input v-model.number="auditNoteForm.add" disabled></el-input>
                                 </el-form-item>
                             </td>
                             <th>核减</th>
                             <td>
                                 <el-form-item prop="sub">
-                                    <el-input v-model.number="auditNoteForm.sub"></el-input>
+                                    <el-input v-model.number="auditNoteForm.sub" disabled></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -79,22 +79,22 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                                请财务部门代扣施工单位惩罚性费用{{ auditNoteForm.auditFee }}元
+                                <el-input v-model="auditNoteForm.note2" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                本项目由{{ auditNoteForm.auditUnit }}初审（详见附件）；
+                                <el-input v-model="auditNoteForm.note3" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                本工程结算方式：{{ auditNoteForm.payType }}
+                                <el-input v-model="auditNoteForm.note4" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                审计备注：{{ auditNoteForm.auditNote }}
+                                <el-input v-model="auditNoteForm.note5" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
@@ -147,6 +147,7 @@
 import ClientCallProject from "../../script/client/project/clientCall"
 import Common from "../../script/common.js"
 import ConstructionUnit from "../../script/server/constructionUnit"
+import ClientCallBid from "../../script/client/bid/clientCall";
 
 export default {
     name: "AuditNoteForm",
@@ -171,6 +172,22 @@ export default {
                     this.auditNoteForm.payType = result.submission.payType
                     this.auditNoteForm.auditNote = result.submission.auditNote
 
+                    //取保存的信息,如果有,覆盖
+                    ClientCallProject.getNoteForm({
+                        id: this.formId
+                    }).then(result => {
+                        if (result) {
+                            this.auditNoteForm.buildUnit = result.buildUnit
+                            this.auditNoteForm.floorArea = result.floorArea
+                            this.auditNoteForm.note1 = result.note1
+                        }
+                    })
+
+                    this.auditNoteForm.note2 = '请财务部门代扣施工单位惩罚性费用 ' + this.auditNoteForm.auditFee + ' 元'
+                    this.auditNoteForm.note3 = '本项目由 ' + this.auditNoteForm.auditUnit + ' 初审（详见附件）'
+                    this.auditNoteForm.note4 = '本工程结算方式：' + this.auditNoteForm.payType
+                    this.auditNoteForm.note5 = '审计备注：' + this.auditNoteForm.auditNote
+
                     ConstructionUnit.getConstructionUnit({
                         id: result.submission.constructionUnit,
                     }).then(res => {
@@ -190,6 +207,7 @@ export default {
         return {
             dialogVisible: false,
             auditNoteForm: {
+                submissionId: this.formId,
                 id: '',
                 auditNo: '',
                 arcNo: '',
@@ -207,6 +225,10 @@ export default {
                 constructionUnit: '',
                 buildUnit: '',
                 note1: ' 本工程造价中未扣水电费、甲供材；甲供材、水电费结算执行《扬州大学建设工程甲供材及水电费结算暂行办法》（扬大审计〔2018〕3号）',
+                note2: '',
+                note3: '',
+                note4: '',
+                note5: '',
             },
             units: [],
         }

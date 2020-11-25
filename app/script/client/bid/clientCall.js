@@ -98,5 +98,8 @@ export default {
             check.comment = comment
         })
         return Bid.completeToAuditSecond(checks)
+    },
+    getNoteForm(data) {
+        return Bid.getNoteForm(data)
     }
 }

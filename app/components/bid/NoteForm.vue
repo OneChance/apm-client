@@ -100,27 +100,33 @@
                         <tr>
                             <th rowspan="5">审计意见及说明</th>
                             <td colspan="3">
-                                1.该项目由（去外审单位）审核，审核说明详见附件;
+                                <el-input v-model="noteForm.note0" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                2.人工费按照苏建函价（2020）115号调整;
+                                <el-form-item prop="budget">
+                                    <el-input v-model="noteForm.note1"></el-input>
+                                </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                3.材料价格执行《扬州市工程造价管理》2020年第7期，缺项部分参照市场询价;
+                                <el-form-item prop="budget">
+                                    <el-input v-model="noteForm.note2"></el-input>
+                                </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                4.该建议招标控制价不含暂列金额;
+                                <el-form-item prop="budget">
+                                    <el-input v-model="noteForm.note3"></el-input>
+                                </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                审计备注：{{ noteForm.auditNote }}
+                                <el-input v-model="noteForm.note4" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
@@ -177,8 +183,6 @@ export default {
                 }).then(result => {
                     let now = new Date();
 
-                    console.log(result.bid)
-
                     this.noteForm.projectNo = result.bid.itemCode
                     this.noteForm.projectName = result.bid.projectName
                     this.noteForm.bidUnit = result.bid.bidUnit
@@ -186,6 +190,21 @@ export default {
                     this.noteForm.budget = result.bid.budget
                     this.noteForm.auditMoney = result.bid.secondAuditPrice
                     this.noteForm.sub = result.bid.subtractPrice
+                    this.noteForm.auditFee = result.bid.auditFee
+                    this.noteForm.auditUnit = result.bid.thirdparty ? result.bid.thirdparty.name : ''
+                    this.noteForm.auditNote = result.bid.auditNote
+                    this.noteForm.auditMan = result.bid.assigned.name
+
+                    //取保存的信息,如果有,覆盖
+                    ClientCallBid.getNoteForm({
+                        id: this.formId
+                    }).then(result => {
+                        if (result) {
+                            this.noteForm.projectNo = result.projectNo
+                            this.noteForm.constructionUnit = result.constructionUnit
+                            this.noteForm.disignUnit = result.disignUnit
+                        }
+                    })
                     this.noteForm.auditInfo = result.bid.bidUnit + "\n     你单位送来的该工程，经审核，建议招标控制价为" + this.noteForm.auditMoney + "元。大写:" + Common.priceCN(
                         this.noteForm.auditMoney) + "。\n" +
                         "请按审计结果办理招投标相关手续。\n" +
@@ -193,10 +212,8 @@ export default {
                         "                                                                                  审计处\n" +
                         "                                                                                  " + now.getFullYear() +
                         "/" + (now.getMonth() + 1) + "/" + now.getDate();
-
-                    this.noteForm.auditFee = result.bid.auditFee
-                    this.noteForm.auditNote = result.bid.auditNote
-                    this.noteForm.auditUnit = result.bid.assigned.name
+                    this.noteForm.note0 = '该项目由: ' + this.noteForm.auditMan + ' 审核，审核说明详见附件'
+                    this.noteForm.note4 = '审计备注: ' + this.noteForm.auditNote
 
                 })
             }
@@ -209,20 +226,29 @@ export default {
         return {
             dialogVisible: false,
             noteForm: {
+                bidId: this.formId,
                 id: '',
                 projectNo: '',
                 arcNo: '',
                 projectName: '',
                 bidUnit: '',
+                constructionUnit: '',
+                disignUnit: '',
                 submissionMoney: 0,
                 auditMoney: 0,
                 budget: 0,
                 sub: 0,
                 add: 0,
+                auditMan: '',
                 auditInfo: '',
                 auditFee: 0,
                 auditUnit: '',
                 auditNote: '',
+                note1: '人工费按照苏建函价（2020）115号调整',
+                note2: '材料价格执行《扬州市工程造价管理》2020年第7期，缺项部分参照市场询价',
+                note3: '该建议招标控制价不含暂列金额',
+                note0: '',
+                note4: ''
             },
         }
     },

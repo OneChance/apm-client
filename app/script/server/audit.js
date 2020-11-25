@@ -78,5 +78,8 @@ export default {
     //归档退回完成
     arcToComplete(data) {
         return Net.jsonPost('/submission/filed/approves/', data);
+    },
+    getNoteForm(data) {
+        return new Promise(resolve => resolve(null))
     }
 }
