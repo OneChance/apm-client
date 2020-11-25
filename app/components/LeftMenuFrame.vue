@@ -123,7 +123,9 @@ export default {
         }
     },
     mounted: function () {
-
+        this.$root.$on('routeTo', (url) => {
+            this.currentComponent = url
+        })
     },
     methods: {
         handleSelect(key) {

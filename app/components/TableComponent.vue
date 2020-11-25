@@ -1,11 +1,10 @@
 <template>
     <div>
         <el-table
+            ref='table'
             :data="tableConfig.data"
             border
             stripe
-            style="width: 100%"
-            :max-height="maxHeight"
             @selection-change="tableConfig.checkBoxChange">
             <el-table-column v-if="tableConfig.checkable"
                              type="selection"

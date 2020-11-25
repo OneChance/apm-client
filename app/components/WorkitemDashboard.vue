@@ -2,18 +2,19 @@
     <div class="work-dashboard">
         <el-row>
             <el-col :span="12">
-                <will-do v-bind:cols="willDoCols" v-bind:formName="'willdo'" v-bind:height="600"></will-do>
+                <will-do v-bind:cols="willDoCols" v-bind:formName="'willDo'" v-bind:showPara="showPara"></will-do>
             </el-col>
             <el-col :span="12">
-                <done v-bind:cols="workCols" v-bind:formName="'done'"></done>
+                <done v-bind:cols="workCols" v-bind:formName="'done'" v-bind:showPara="showPara"></done>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
-                <my-work v-bind:cols="workCols" v-bind:formName="'mywork'"></my-work>
+                <my-work v-bind:cols="workCols" v-bind:formName="'myWork'" v-bind:showPara="showPara"></my-work>
             </el-col>
             <el-col :span="12">
-                <my-create v-bind:cols="workCols" v-bind:formName="'mycreate'"></my-create>
+                <my-create v-bind:cols="workCols" v-bind:formName="'myCreate'"
+                           v-bind:showPara="showPara"></my-create>
             </el-col>
         </el-row>
     </div>
@@ -36,6 +37,7 @@ export default {
     },
     data: function () {
         return {
+            showPara: {page: false, pageSize: 5},
             workCols: [
                 {
                     prop: 'auditNo',

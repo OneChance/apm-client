@@ -2,7 +2,12 @@
     <div class="card-content">
         <el-card class="box-card">
             <div slot="header" class="clearfix header" v-if="formName">
-                <span class="sign-title">{{ name }}</span>
+                <el-row>
+                    <el-col :span="6"><span class="sign-title">{{ name }}</span></el-col>
+                    <el-col :span="2" :offset="16">
+                        <el-button type="info" plain size="mini" @click="more()">更多</el-button>
+                    </el-col>
+                </el-row>
             </div>
             <workitem-query ref="query"
                             v-bind:formName="formName"
@@ -41,7 +46,7 @@ import ClientCallCommon from "../script/client/clientCall";
 
 export default {
     name: "Workitems",
-    props: ['type', 'checkedList', 'buttons', 'cols', 'formName'],
+    props: ['type', 'checkedList', 'buttons', 'cols', 'formName', 'showPara'],
     created: function () {
 
     },
@@ -80,10 +85,10 @@ export default {
             case 'done':
                 this.name = '已办事项';
                 break
-            case 'mywork':
+            case 'myWork':
                 this.name = '我的项目';
                 break
-            case 'mycreate':
+            case 'myCreate':
                 this.name = '我发起的';
                 break
             default:
@@ -118,8 +123,9 @@ export default {
             },
             tableConfig: {
                 data: [],
-                page: true,
+                page: this.showPara ? this.showPara.page : true,
                 total: 0,
+                pageSize: this.showPara ? this.showPara.pageSize : '',
                 currentPage: 1,
                 pageMethod: this.toPage,
                 cols: [
@@ -155,7 +161,7 @@ export default {
                     },
                     event: this.editRow,
                 },],
-                operWidth: 80
+                operWidth: 80,
             },
             listChecks: [],
             formId: -1,
@@ -163,6 +169,9 @@ export default {
         }
     },
     methods: {
+        more() {
+            this.$root.$emit('routeTo', this.formName)
+        },
         editRow: function (row) {
             let step = ClientCallCommon.stepNameConvert(row.stage)
             let type = row.target

@@ -1,14 +1,20 @@
 <template>
     <div class="card-content">
-        <el-card class="box-card" :style="height?'height:'+height:''">
+        <el-card ref='comp' class="box-card">
             <div slot="header" class="clearfix header" v-if="formName">
-                <span class="sign-title">待办事项</span>
+                <el-row>
+                    <el-col :span="6"><span class="sign-title">待办事项</span></el-col>
+                    <el-col :span="2" :offset="16">
+                        <el-button type="info" plain size="mini" @click="more()">更多</el-button>
+                    </el-col>
+                </el-row>
             </div>
             <workitem-query ref="query"
                             v-bind:formName="formName"
                             v-bind:tableConfigObject="tableConfig"
                             v-bind:buttons="buttons"
                             v-bind:checkedList="checkedList"
+                            v-bind:showPara="showPara"
                             v-bind:type="'willDo'">
             </workitem-query>
             <table-component v-bind:tableConfig="tableConfig">
@@ -68,7 +74,7 @@ import WorkitemQuery from "./WorkitemQuery";
 
 export default {
     name: "WillDo",
-    props: ['cols', 'formName', 'height'],
+    props: ['cols', 'formName', 'showPara', 'moreUrl'],
     created: function () {
 
     },
@@ -142,8 +148,9 @@ export default {
             },
             tableConfig: {
                 data: [],
-                page: true,
+                page: this.showPara ? this.showPara.page : true,
                 total: 0,
+                pageSize: this.showPara ? this.showPara.pageSize : '',
                 currentPage: 1,
                 pageMethod: this.toPage,
                 checkBoxChange: this.checkBoxChange,
@@ -157,7 +164,7 @@ export default {
                     },
                     event: this.editRow,
                 },],
-                operWidth: 80
+                operWidth: 80,
             },
             listChecks: [],
             formId: -1,
@@ -174,6 +181,9 @@ export default {
         }
     },
     methods: {
+        more() {
+            this.$root.$emit('routeTo', this.formName)
+        },
         allocCallback(form) {
             let type = this.listChecks[0].target
             this.clientCall[type].batchAlloc(form, this.listChecks.map(form => {

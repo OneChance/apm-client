@@ -51,6 +51,11 @@ export default {
         },
         list(config) {
             let data = Common.copyObject(Config.page)
+
+            if (this.tableConfigObject.pageSize) {
+                data.pageSize = this.tableConfigObject.pageSize
+            }
+
             for (let op in this.query) {
                 data[op] = this.query[op]
             }
