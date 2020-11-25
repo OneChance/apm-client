@@ -1,6 +1,6 @@
 <template>
     <div class="card-content">
-        <el-card class="box-card">
+        <el-card class="box-card" :style="height?'height:'+height:''">
             <div slot="header" class="clearfix header" v-if="formName">
                 <span class="sign-title">待办事项</span>
             </div>
@@ -68,7 +68,7 @@ import WorkitemQuery from "./WorkitemQuery";
 
 export default {
     name: "WillDo",
-    props: ['cols', 'formName'],
+    props: ['cols', 'formName', 'height'],
     created: function () {
 
     },
@@ -88,7 +88,7 @@ export default {
                     width: '100'
                 },
                 {
-                    prop: 'targetStr',
+                    prop: 'nextStageStr',
                     label: '下一步',
                     width: '100',
                 },
@@ -298,7 +298,7 @@ export default {
                         }), approve).then(() => {
                             this.operSuccess()
                         })
-                    } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second', 'memberl'].indexOf(stage) !== -1) {
+                    } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second', 'memberl', 'audit_dept'].indexOf(stage) !== -1) {
                         this.$notify.error({
                             title: '操作失败!',
                             message: '当前阶段不可批量操作！',

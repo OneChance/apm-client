@@ -2,7 +2,7 @@
     <div class="work-dashboard">
         <el-row>
             <el-col :span="12">
-                <will-do v-bind:cols="willDoCols" v-bind:formName="'willdo'"></will-do>
+                <will-do v-bind:cols="willDoCols" v-bind:formName="'willdo'" v-bind:height="600"></will-do>
             </el-col>
             <el-col :span="12">
                 <done v-bind:cols="workCols" v-bind:formName="'done'"></done>
@@ -65,9 +65,9 @@ export default {
                     width: '100'
                 },
                 {
-                    prop: 'targetStr',
+                    prop: 'nextStageStr',
                     label: '下一步',
-                    width: '110',
+                    width: '150',
                 },
                 {
                     prop: 'auditNo',

@@ -9,6 +9,7 @@ import MaterialFile from "../server/materialFile";
 import Intermediary from "../server/intermediary"
 import Config from "../config"
 import Common from "../common";
+import Account from "../server/account";
 
 export default {
     getWorkitems(data, type) {
@@ -219,14 +220,24 @@ export default {
     materialFileTypes() {
         return MaterialFile.getMaterialTypes()
     },
-    checkRights(userRoles, needRoles) {
-        if (userRoles) {
-            for (let i = 0; i < needRoles.length; i++) {
-                if (userRoles.map(role => role.role.id).includes(needRoles[i])) {
-                    return true
+    checkRights(needRolesMap) {
+        return Account.getLoginUser().then(res => {
+            let checkRes = new Map()
+            for (let key of needRolesMap.keys()) {
+                checkRes.set(key, false)
+            }
+            if (res.user.roles) {
+                for (let key of checkRes.keys()) {
+                    let needRoles = needRolesMap.get(key)
+                    for (let i = 0; i < needRoles.length; i++) {
+                        if (res.user.roles.map(role => role.role.id).includes(needRoles[i])) {
+                            checkRes.set(key, true)
+                            break;
+                        }
+                    }
                 }
             }
-        }
-        return false
+            return checkRes
+        })
     }
 }

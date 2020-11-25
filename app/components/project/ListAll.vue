@@ -152,32 +152,32 @@ export default {
             this.formId = row.id
         },
         fileList: function (row) {
-            if (ClientCallCommon.checkRights(this.$root.loginUser.roles, [37, 11])) {
-
-                this.dialogVisible = false
-                this.fileListVisible = false
-                this.fileListVisible = true
-
-                ClientCallCommon.materialFileTypes().then(result => {
-                    this.mTypes = result.list
-                    ClientCallProject.getSubmission({
-                        id: row.id
-                    }).then(result => {
-                        this.downFiles = []
-                        result.submission.details.forEach(fileType => this.addToFileList(fileType))
-                        result.submission.surveyFiles.forEach(fileType => this.addToFileList(fileType))
-                        result.submission.argueFiles.forEach(fileType => this.addToFileList(fileType))
-                        result.submission.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
-                        result.submission.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
+            ClientCallCommon.checkRights(new Map([['show', [37, 11]]])).then(checkRes => {
+                if (checkRes.get('show')) {
+                    this.dialogVisible = false
+                    this.fileListVisible = false
+                    this.fileListVisible = true
+                    ClientCallCommon.materialFileTypes().then(result => {
+                        this.mTypes = result.list
+                        ClientCallProject.getSubmission({
+                            id: row.id
+                        }).then(result => {
+                            this.downFiles = []
+                            result.submission.details.forEach(fileType => this.addToFileList(fileType))
+                            result.submission.surveyFiles.forEach(fileType => this.addToFileList(fileType))
+                            result.submission.argueFiles.forEach(fileType => this.addToFileList(fileType))
+                            result.submission.auditFirstFiles.forEach(fileType => this.addToFileList(fileType))
+                            result.submission.auditSecondFiles.forEach(fileType => this.addToFileList(fileType))
+                        })
                     })
-                })
-            } else {
-                this.$notify({
-                    title: '操作失败',
-                    message: '您没有权限访问该功能',
-                    duration: 3000
-                })
-            }
+                } else {
+                    this.$notify({
+                        title: '操作失败',
+                        message: '您没有权限访问该功能',
+                        duration: 3000
+                    })
+                }
+            })
         },
         addToFileList(fileType) {
             fileType.mFiles.forEach(file => {

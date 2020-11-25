@@ -98,18 +98,20 @@ export default {
             })
         },
         genNoteForm: function (row) {
-            if (ClientCallCommon.checkRights(this.$root.loginUser.roles, [36, 16])) {
-                this.noteFormVisible = false
-                this.dialogVisible = false
-                this.noteFormVisible = true
-                this.formId = row.id
-            } else {
-                this.$notify({
-                    title: '操作失败',
-                    message: '您没有权限访问该功能',
-                    duration: 3000
-                })
-            }
+            ClientCallCommon.checkRights(new Map([['show', [36, 16]]])).then(checkRes => {
+                if (checkRes.get('show')) {
+                    this.noteFormVisible = false
+                    this.dialogVisible = false
+                    this.noteFormVisible = true
+                    this.formId = row.id
+                } else {
+                    this.$notify({
+                        title: '操作失败',
+                        message: '您没有权限访问该功能',
+                        duration: 3000
+                    })
+                }
+            })
         },
         editRow: function (row) {
             this.noteFormVisible = false

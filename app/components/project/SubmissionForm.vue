@@ -397,19 +397,19 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr v-if="stepCode>=25 && checkRight([11,2,3,23,29])">
+                        <tr v-if="stepCode>=25 && allocInfoView">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.auditType" disabled></el-input>
                             </td>
                         </tr>
-                        <tr v-if="stepCode>=25 && submissionForm.thirdparty && checkRight([11,2,3,23,29])">
+                        <tr v-if="stepCode>=25 && submissionForm.thirdparty && allocInfoView">
                             <th>中介公司</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="submissionForm.thirdparty.name" disabled></el-input>
                             </td>
                         </tr>
-                        <tr v-if="stepCode>=25 && submissionForm.assigned && checkRight([11,2,3,23,29])">
+                        <tr v-if="stepCode>=25 && submissionForm.assigned && allocInfoView">
                             <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="submissionForm.assigned.name" disabled></el-input>
@@ -420,7 +420,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && submissionForm.assigned  && checkRight([11,2,3,23,29])">
+                        <tr v-if="stepCode>=25 && submissionForm.assigned  && allocInfoView">
                             <th :class="stepCode===25?'editing form-required':''">审计组员</th>
                             <td colspan="3">
                                 <el-form-item prop="members">
@@ -437,7 +437,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && checkRight([11,4,24,29])">
+                        <tr v-if="stepCode>=40 && prepareInfoView">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">约看现场时间
                             </th>
                             <td colspan="3">
@@ -452,7 +452,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50 && checkRight([11,5,25,29])">
+                        <tr v-if="stepCode>=50 && surveyInfoView">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">现场查看时间</th>
                             <td colspan="3">
                                 <el-form-item prop="viewDate">
@@ -466,7 +466,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50 && checkRight([11,5,25,29])">
+                        <tr v-if="stepCode>=50 && surveyInfoView">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -537,7 +537,7 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr v-if="stepCode>=50 && checkRight([11,5,25,29])">
+                        <tr v-if="stepCode>=50 && surveyInfoView">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -589,7 +589,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="(stepCode>=60 && (checkRight([11,6,26,29]) || self)) || stepCode === -30">
+                        <tr v-if="(stepCode>=60 && (argueInfoView || self)) || stepCode === -30">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -628,7 +628,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="step ==='argueDeal' || (stepCode>=60 && (checkRight([11,6,26,29]) || self))">
+                        <tr v-if="step ==='argueDeal' || (stepCode>=60 && (argueInfoView || self))">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -666,7 +666,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=70 && checkRight([11,7,27,29])">
+                        <tr v-if="stepCode>=70 && auditFirstInfoView">
                             <th :class="stepCode===70 &&!readonly?'editing form-required':''">约看现场时间(初审)</th>
                             <td>
                                 <el-form-item prop="prepareViewDate2">
@@ -690,7 +690,7 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr v-if="stepCode>=70 && checkRight([11,7,27,29])">
+                        <tr v-if="stepCode>=70 && auditFirstInfoView">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -760,7 +760,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=70 && checkRight([11,7,27,29])">
+                        <tr v-if="stepCode>=70 && auditFirstInfoView">
                             <th :class="stepCode===70 && !readonly?'editing form-required':''">送审价</th>
                             <td>
                                 <el-form-item prop="submissionPrice">
@@ -779,7 +779,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=70 && checkRight([11,7,27,29])">
+                        <tr v-if="stepCode>=70 && auditFirstInfoView">
                             <th :class="stepCode===70 && !readonly?'editing form-required':''">初审核减额</th>
                             <td>
                                 <el-form-item prop="auditFirstSub">
@@ -796,7 +796,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=70 && checkRight([11,7,27,29])">
+                        <tr v-if="stepCode>=70 && auditFirstInfoView">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -835,7 +835,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=80 && checkRight([11,8,28,29])">
+                        <tr v-if="stepCode>=80 && auditSecondInfoView">
                             <th :class="stepCode===80 && !readonly?'editing form-required':''">复审审定金额</th>
                             <td>
                                 <el-form-item prop="secondAuditPrice">
@@ -853,7 +853,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=80 && checkRight([11,8,28,29])">
+                        <tr v-if="stepCode>=80 && auditSecondInfoView">
                             <th :class="stepCode===80 && !readonly?'editing form-required':''">复审核减率</th>
                             <td colspan="3">
                                 <el-form-item prop="secondAuditPrice">
@@ -863,7 +863,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=80 && checkRight([11,8,28,29])">
+                        <tr v-if="stepCode>=80 && auditSecondInfoView">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -902,7 +902,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=80 && checkRight([11,8,28,29])">
+                        <tr v-if="stepCode>=80 && auditSecondInfoView">
                             <th :class="stepCode===80 && !readonly?'editing form-required':''">审计备注</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNote">
@@ -1010,6 +1010,7 @@ import ClientCallCommon from "../../script/client/clientCall"
 import Env from "../../script/server/env"
 import ConstructionUnit from "../../script/server/constructionUnit";
 import Config from "../../script/config"
+import Account from "../../script/server/account";
 
 export default {
     name: "SubmissionForm",
@@ -1087,6 +1088,22 @@ export default {
                             this.comment = '';
 
                             this.self = this.$root.loginUser.id === result.submission.creatorId
+
+                            let needRolesMap = new Map()
+
+                            needRolesMap.set('allocInfoView', [11, 2, 3, 23, 29])
+                            needRolesMap.set('prepareInfoView', [11, 4, 24, 29])
+                            needRolesMap.set('surveyInfoView', [11, 5, 25, 29])
+                            needRolesMap.set('argueInfoView', [11, 6, 26, 29])
+                            needRolesMap.set('auditFirstInfoView', [11, 7, 27, 29])
+                            needRolesMap.set('auditSecondInfoView', [11, 8, 28, 29])
+
+                            //页面内容查看权限控制
+                            ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
+                                for (let [key, value] of checkRes.entries()) {
+                                    this[key] = value
+                                }
+                            })
 
                             //加载现场勘察资料
                             if (!result.submission.surveyFiles || result.submission.surveyFiles.length === 0) {
@@ -1445,13 +1462,17 @@ export default {
             members: [],
             projectMans: [],
             uploadFiles: [], //由于上传完成后修改upload的file-list存在列表刷新问题，所以用这个数组来存放已上传附件,不修改file-list
-            printLoading: true
+            printLoading: true,
+            //页面可见内容控制
+            allocInfoView: false,
+            prepareInfoView: false,
+            surveyInfoView: false,
+            argueInfoView: false,
+            auditFirstInfoView: false,
+            auditSecondInfoView: false,
         }
     },
     methods: {
-        checkRight(needRoles) {
-            return ClientCallCommon.checkRights(this.$root.loginUser.roles, needRoles)
-        },
         calInspectUnitCheckFee(constructionUnitApplyFee, inspectApplyFee) {
             if (inspectApplyFee && inspectApplyFee > 0) {
                 this.submissionForm.inspectUnitCheckFee = (constructionUnitApplyFee - inspectApplyFee).toFixed(2)

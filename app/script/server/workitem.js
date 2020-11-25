@@ -5,21 +5,12 @@ export default {
         return Net.get('/workitem/undo/', data);
     },
     getDone: function (data) {
-        //return Net.get('/workitem/approved/
-        return new Promise((resolve => {
-            resolve({list: {content: []}})
-        }))
+        return Net.get('/workitem/approve/', data);
     },
     getMyWork: function (data) {
-        //return Net.get('/workitem/approved/audit/', data);
-        return new Promise((resolve => {
-            resolve({list: {content: []}})
-        }))
+        return Net.get('/workitem/approve/audit/', data);
     },
     getMyCreate: function (data) {
-        // return Net.get('/workitem/applyed/', data);
-        return new Promise((resolve => {
-            resolve({list: {content: []}})
-        }))
+        return Net.get('/workitem/apply/', data);
     },
 }

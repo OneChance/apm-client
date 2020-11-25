@@ -72,7 +72,9 @@
                         <tr>
                             <th rowspan="5">审计意见及说明</th>
                             <td colspan="3">
-                                本工程造价中未扣水电费、甲供材；甲供材、水电费结算执行《扬州大学建设工程甲供材及水电费结算暂行办法》（扬大审计〔2018〕3号）
+                                <el-form-item prop="note1">
+                                    <el-input type="textarea" autosize v-model="auditNoteForm.note1"></el-input>
+                                </el-form-item>
                             </td>
                         </tr>
                         <tr>
@@ -203,7 +205,8 @@ export default {
                 payType: '',
                 auditNote: '',
                 constructionUnit: '',
-                buildUnit: ''
+                buildUnit: '',
+                note1: ' 本工程造价中未扣水电费、甲供材；甲供材、水电费结算执行《扬州大学建设工程甲供材及水电费结算暂行办法》（扬大审计〔2018〕3号）',
             },
             units: [],
         }

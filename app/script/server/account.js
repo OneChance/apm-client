@@ -9,5 +9,5 @@ export default {
     },
     logOut: function () {
         return Net.get('/logout/');
-    }
+    },
 }
