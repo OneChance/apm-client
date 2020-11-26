@@ -56,7 +56,7 @@ export default {
                 },
             ],
             willDoCols: [
-                {
+                /*{
                     prop: 'targetStr',
                     label: '送审类型',
                     width: '110',
@@ -65,12 +65,7 @@ export default {
                     prop: 'stageStr',
                     label: '待办名称',
                     width: '100'
-                },
-                {
-                    prop: 'nextStageStr',
-                    label: '下一步',
-                    width: '150',
-                },
+                },*/
                 {
                     prop: 'auditNo',
                     label: '审计编号',

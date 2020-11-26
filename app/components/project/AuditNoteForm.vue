@@ -160,13 +160,12 @@ export default {
                 ClientCallProject.getSubmission({
                     id: this.formId
                 }).then(result => {
-
+                    this.auditNoteForm.submissionId = this.formId
                     this.auditNoteForm.auditNo = result.submission.auditNo
                     this.auditNoteForm.projectName = result.submission.projectName
                     this.auditNoteForm.submissionMoney = result.submission.submissionPrice
                     this.auditNoteForm.auditMoney = result.submission.secondAuditPrice
                     this.auditNoteForm.sub = result.submission.subtractPrice
-                    this.auditNoteForm.auditInfo = this.setInfo('')
                     this.auditNoteForm.auditFee = result.submission.auditFee
                     this.auditNoteForm.auditUnit = result.submission.assigned.name
                     this.auditNoteForm.payType = result.submission.payType
@@ -174,12 +173,23 @@ export default {
 
                     //取保存的信息,如果有,覆盖
                     ClientCallProject.getNoteForm({
-                        id: this.formId
+                        submissionId: this.formId
                     }).then(result => {
-                        if (result) {
-                            this.auditNoteForm.buildUnit = result.buildUnit
-                            this.auditNoteForm.floorArea = result.floorArea
-                            this.auditNoteForm.note1 = result.note1
+                        if (result.submission_noty) {
+                            this.auditNoteForm.id = result.submission_noty.id
+                            this.auditNoteForm.buildUnit = result.submission_noty.buildUnit
+                            this.auditNoteForm.floorArea = result.submission_noty.floorArea
+                            this.auditNoteForm.note1 = result.submission_noty.note1
+                            this.auditNoteForm.auditInfo = result.submission_noty.auditInfo
+                        } else {
+                            let now = new Date();
+                            this.auditNoteForm.auditInfo = this.auditNoteForm.buildUnit + "\n  你单位送来的该工程，经审计，核定工程造价为" + this.auditNoteForm.auditMoney + "元。大写:" + Common.priceCN(
+                                this.auditNoteForm.auditMoney) + "。\n" +
+                                "请按审计结果办理结算手续。\n" +
+                                "特此通知。\n " +
+                                "                                                                                  审计处\n" +
+                                "                                                                                  " + now.getFullYear() +
+                                "/" + (now.getMonth() + 1) + "/" + now.getDate();
                         }
                     })
 
@@ -196,18 +206,14 @@ export default {
                 })
             }
         },
-        "auditNoteForm.buildUnit": function (val) {
-            this.auditNoteForm.auditInfo = this.setInfo(val)
-        }
     },
     mounted: function () {
 
     },
     data: function () {
         return {
-            dialogVisible: false,
             auditNoteForm: {
-                submissionId: this.formId,
+                submissionId: '',
                 id: '',
                 auditNo: '',
                 arcNo: '',
@@ -239,18 +245,14 @@ export default {
                 importCSS: false
             })
         },
-        setInfo: function (buildUnit) {
-            let now = new Date();
-            return buildUnit + "\n  你单位送来的该工程，经审计，核定工程造价为" + this.auditNoteForm.auditMoney + "元。大写:" + Common.priceCN(
-                this.auditNoteForm.auditMoney) + "。\n" +
-                "请按审计结果办理结算手续。\n" +
-                "特此通知。\n " +
-                "                                                                                  审计处\n" +
-                "                                                                                  " + now.getFullYear() +
-                "/" + (now.getMonth() + 1) + "/" + now.getDate();
-        },
         save: function () {
-            console.log(this.auditNoteForm)
+            ClientCallProject.saveNoteForm(this.auditNoteForm).then(result => {
+                this.visible = false
+                this.$message({
+                    message: '操作成功',
+                    type: 'success'
+                });
+            })
         }
     },
 }

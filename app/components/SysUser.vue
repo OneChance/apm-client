@@ -88,6 +88,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="部门" prop="departName" v-if="form.type === 'INSIDE'">
+                        <el-input v-model="form.departName"></el-input>
+                    </el-form-item>
                 </el-form>
             </template>
             <div slot="footer" class="dialog-footer">
@@ -145,6 +148,7 @@ export default {
                 roles: [],
                 state: 'NORMAL',
                 type: '',
+                departName: '',
             },
             rules: {
                 username: [

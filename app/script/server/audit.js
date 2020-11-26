@@ -80,6 +80,9 @@ export default {
         return Net.jsonPost('/submission/filed/approves/', data);
     },
     getNoteForm(data) {
-        return new Promise(resolve => resolve(null))
+        return Net.get('/submission/noty/get/', data);
+    },
+    saveNoteForm(data) {
+        return Net.jsonPost('/submission/noty/addOrUpdate/', data);
     }
 }

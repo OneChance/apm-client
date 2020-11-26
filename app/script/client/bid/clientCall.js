@@ -101,5 +101,8 @@ export default {
     },
     getNoteForm(data) {
         return Bid.getNoteForm(data)
+    },
+    saveNoteForm(data) {
+        return Bid.saveNoteForm(data)
     }
 }

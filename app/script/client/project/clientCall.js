@@ -122,5 +122,8 @@ export default {
     },
     getNoteForm(data) {
         return Audit.getNoteForm(data)
+    },
+    saveNoteForm(data) {
+        return Audit.saveNoteForm(data)
     }
 }

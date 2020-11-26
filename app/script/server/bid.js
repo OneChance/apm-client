@@ -60,6 +60,9 @@ export default {
         return Net.jsonPost('/bid/filed/approves/', data);
     },
     getNoteForm(data) {
-        return new Promise(resolve => resolve(null))
+        return Net.get('/bid/noty/get/', data);
+    },
+    saveNoteForm(data) {
+        return Net.jsonPost('/bid/noty/addOrUpdate/', data);
     }
 }

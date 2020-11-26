@@ -9,7 +9,7 @@
                             <th>项目编号</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNo">
-                                    <el-input v-model="noteForm.projectNo" placeholder="填写项目编号"></el-input>
+                                    <el-input v-model="noteForm.projectNo" placeholder="填写项目编号" disabled></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -182,7 +182,7 @@ export default {
                     id: this.formId
                 }).then(result => {
                     let now = new Date();
-
+                    this.noteForm.bidId = this.formId
                     this.noteForm.projectNo = result.bid.itemCode
                     this.noteForm.projectName = result.bid.projectName
                     this.noteForm.bidUnit = result.bid.bidUnit
@@ -194,17 +194,6 @@ export default {
                     this.noteForm.auditUnit = result.bid.thirdparty ? result.bid.thirdparty.name : ''
                     this.noteForm.auditNote = result.bid.auditNote
                     this.noteForm.auditMan = result.bid.assigned.name
-
-                    //取保存的信息,如果有,覆盖
-                    ClientCallBid.getNoteForm({
-                        id: this.formId
-                    }).then(result => {
-                        if (result) {
-                            this.noteForm.projectNo = result.projectNo
-                            this.noteForm.constructionUnit = result.constructionUnit
-                            this.noteForm.disignUnit = result.disignUnit
-                        }
-                    })
                     this.noteForm.auditInfo = result.bid.bidUnit + "\n     你单位送来的该工程，经审核，建议招标控制价为" + this.noteForm.auditMoney + "元。大写:" + Common.priceCN(
                         this.noteForm.auditMoney) + "。\n" +
                         "请按审计结果办理招投标相关手续。\n" +
@@ -212,6 +201,22 @@ export default {
                         "                                                                                  审计处\n" +
                         "                                                                                  " + now.getFullYear() +
                         "/" + (now.getMonth() + 1) + "/" + now.getDate();
+
+                    //取保存的信息,如果有,覆盖
+                    ClientCallBid.getNoteForm({
+                        bidId: this.formId
+                    }).then(result => {
+                        if (result.bid_noty) {
+                            this.noteForm.id = result.bid_noty.id
+                            this.noteForm.constructionUnit = result.bid_noty.constructionUnit
+                            this.noteForm.disignUnit = result.bid_noty.disignUnit
+                            this.noteForm.auditInfo = result.bid_noty.auditInfo
+                            this.noteForm.note1 = result.bid_noty.note1
+                            this.noteForm.note2 = result.bid_noty.note2
+                            this.noteForm.note3 = result.bid_noty.note3
+                        }
+                    })
+
                     this.noteForm.note0 = '该项目由: ' + this.noteForm.auditMan + ' 审核，审核说明详见附件'
                     this.noteForm.note4 = '审计备注: ' + this.noteForm.auditNote
 
@@ -226,7 +231,7 @@ export default {
         return {
             dialogVisible: false,
             noteForm: {
-                bidId: this.formId,
+                bidId: '',
                 id: '',
                 projectNo: '',
                 arcNo: '',
@@ -259,7 +264,13 @@ export default {
             })
         },
         save: function () {
-            console.log(this.noteForm)
+            ClientCallBid.saveNoteForm(this.noteForm).then(result => {
+                this.visible = false
+                this.$message({
+                    message: '操作成功',
+                    type: 'success'
+                });
+            })
         }
     },
 }
