@@ -37,7 +37,7 @@ export default {
 
     },
     mounted() {
-        if (this.global.loginUser.thirdParty) {
+        if (this.$root.loginUser.type === 'THIRDPARTY') {
             this.buttons = []
         }
     },
