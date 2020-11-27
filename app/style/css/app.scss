@@ -74,6 +74,21 @@ body {
 
 //--------------------------------------------
 
+.el-steps {
+  * {
+    font-size: 0.7em !important;
+  }
+
+  .el-step.is-center .el-step__description {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+.steps {
+  width: 90vw
+}
+
 .el-popup-parent--hidden {
   padding-right: 0 !important;
 }

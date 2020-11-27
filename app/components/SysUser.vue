@@ -51,7 +51,7 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="分组" prop="type">
-                        <el-radio-group v-model="form.type" @change="groupChange">
+                        <el-radio-group v-model="form.type" @change="typeChange">
                             <el-radio-button label="INSIDE">内部</el-radio-button>
                             <el-radio-button label="OUTSIDE">外部</el-radio-button>
                             <el-radio-button label="THIRDPARTY">中介</el-radio-button>
@@ -88,8 +88,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="部门" prop="departName" v-if="form.type === 'INSIDE'">
-                        <el-input v-model="form.departName"></el-input>
+                    <el-form-item label="部门" prop="deptName" v-if="form.type === 'INSIDE'">
+                        <el-input v-model="form.deptName"></el-input>
                     </el-form-item>
                 </el-form>
             </template>
@@ -148,7 +148,7 @@ export default {
                 roles: [],
                 state: 'NORMAL',
                 type: '',
-                departName: '',
+                deptName: '',
             },
             rules: {
                 username: [
@@ -172,8 +172,8 @@ export default {
                 page: true,
                 pageMethod: this.toPage,
                 cols: [
-                    {prop: 'username', label: '用户名'},
-                    {prop: 'name', label: '姓名'},
+                    {prop: 'username', label: '用户名', width: 100},
+                    {prop: 'name', label: '姓名', width: 100},
                     {
                         prop: 'state',
                         label: '状态',
@@ -183,7 +183,9 @@ export default {
                         tagType: this.stateTagFormatter,
                         tagSize: 'small'
                     },
-                    {prop: 'type', label: '分组', formatter: this.typeFormatter},
+                    {prop: 'type', label: '分组', formatter: this.typeFormatter, width: 100},
+                    {prop: 'deptName', label: '部门'},
+                    {prop: 'thirdparty.name', label: '中介机构'},
                 ],
                 oper: [
                     {
@@ -209,6 +211,11 @@ export default {
         this.list()
     },
     methods: {
+        typeChange: function (type) {
+            if (type !== 'THIRDPARTY') {
+                this.form.thirdparty.id = ''
+            }
+        },
         queryList: function () {
             this.list(this.query)
         },
@@ -270,14 +277,16 @@ export default {
             this.list({page: val})
         },
         add: function () {
+            this.form.id = ''
+            this.form.thirdparty.id = ''
             this.userInfoDialogVisible = true
             this.$nextTick(() => {
                 this.$refs['form'].resetFields();
-                this.form.id = ''
             });
         },
         edit: function (row) {
             User.getUser({id: row.id}).then(result => {
+                this.form.thirdparty.id = ''
                 this.userInfoDialogVisible = true
                 this.$nextTick(() => {
                     for (let prop in result.user) {

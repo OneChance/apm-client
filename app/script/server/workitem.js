@@ -13,4 +13,7 @@ export default {
     getMyCreate: function (data) {
         return Net.get('/workitem/apply/', data);
     },
+    getWorkitemReach: function (data) {
+        return Net.get('/workitem/reach/', data);
+    },
 }

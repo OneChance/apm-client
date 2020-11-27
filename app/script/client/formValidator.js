@@ -18,11 +18,11 @@ export default {
         }
     },
     auditNoValidator: function (rule, value, callback) {
-        let reg = /^[1-9]\d*$/g;
+        let reg = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,}$/;
         if (value === '') {
             callback(new Error('请输入审计编号'));
         } else if (!reg.test(value)) {
-            callback(new Error('只能输入数字'));
+            callback(new Error('审计编号必须由字母数字和符号组成'));
         } else {
             callback();
         }

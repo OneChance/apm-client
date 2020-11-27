@@ -171,21 +171,21 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && allocInfoView">
+                        <tr v-if="stepCode>=25 && (allocInfoView || assigned)">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.auditType" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.thirdparty && allocInfoView">
+                        <tr v-if="stepCode>=25 && bidForm.thirdparty && (allocInfoView || assigned)">
                             <th>中介公司</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.thirdparty.name" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned && allocInfoView">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)">
                             <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
@@ -196,7 +196,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned && allocInfoView">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)">
                             <th :class="stepCode===25?'editing form-required':''">审计组员</th>
                             <td colspan="3">
                                 <el-form-item prop="members">
@@ -213,7 +213,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && auditFirstInfoView">
+                        <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">送审价</th>
                             <td>
                                 <el-form-item prop="submissionPrice">
@@ -232,7 +232,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && auditFirstInfoView">
+                        <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">初审核减额</th>
                             <td>
                                 <el-form-item prop="auditFirstSub">
@@ -249,7 +249,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && auditFirstInfoView">
+                        <tr v-if="stepCode>=40 && (auditFirstInfoView||assigned)">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -500,6 +500,7 @@ export default {
                             this.comment = '';
 
                             this.self = this.$root.loginUser.id === result.bid.creatorId
+                            this.assigned = result.bid.assigned && this.$root.loginUser.id === result.bid.assigned.id
 
                             let needRolesMap = new Map()
 
@@ -587,22 +588,24 @@ export default {
 
                             if (this.stepCode >= 25) {
                                 this.members = []
-                                ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.bid.thirdparty.id}).then(res => {
-                                    res.list.forEach(user => {
-                                        let label = user.name + '(' + user.username + ")"
-                                        this.members.push({
-                                            value: user.id,
-                                            label: label
+                                if (result.bid.thirdparty) {
+                                    ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.bid.thirdparty.id}).then(res => {
+                                        res.list.forEach(user => {
+                                            let label = user.name + '(' + user.username + ")"
+                                            this.members.push({
+                                                value: user.id,
+                                                label: label
+                                            })
                                         })
-                                    })
 
-                                    if (this.bidForm.memberIds) {
-                                        this.bidForm.members = []
-                                        this.bidForm.memberIds.split(',').forEach(id => {
-                                            this.bidForm.members.push(id - 0)
-                                        })
-                                    }
-                                })
+                                        if (this.bidForm.memberIds) {
+                                            this.bidForm.members = []
+                                            this.bidForm.memberIds.split(',').forEach(id => {
+                                                this.bidForm.members.push(id - 0)
+                                            })
+                                        }
+                                    })
+                                }
                             }
 
                             if (this.bidForm.materialGroup) {
@@ -666,6 +669,7 @@ export default {
     data: function () {
         return {
             self: false,
+            assigned: false,
             dialogVisible: false,
             bidForm: {
                 id: '',

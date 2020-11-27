@@ -68,6 +68,7 @@ import JSZip from 'jszip'
 import FileSaver from 'file-saver'
 import Download from "../../script/server/download"
 import Config from "../../script/config"
+import Comment from "../../script/server/comment";
 
 export default {
     name: "ListAll",
@@ -93,7 +94,14 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'status', label: '审计状态', width: '150', fixed: true, popProgress: true},
+                    {
+                        prop: 'status',
+                        label: '审计状态',
+                        width: '150',
+                        fixed: true,
+                        popProgress: true,
+                        popShow: this.popShow
+                    },
                     {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
                     {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
@@ -106,10 +114,9 @@ export default {
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
                     {prop: 'auditFee', label: '惩罚性费用', width: '150'},
                 ],
-                steps: [
-                    {label: '送审保存', step: '送审', index: 0},
-                    {label: '送审打回', step: '送审', index: 0},
-                    {label: '处理争议', step: '送审', index: 0},
+                steps: [ //待办名对应到步骤条步骤 label用于匹配待办名  submissionQuery组件中有对应的label列表
+                    {label: '保存', step: '送审', index: 0},
+                    {label: '退回', step: '送审', index: 0},
                     {label: '审计立项', step: '审计立项', index: 1},
                     {label: '审计分配', step: '审计分配', index: 2},
                     {label: '分配组员', step: '审计分配', index: 2},
@@ -144,6 +151,9 @@ export default {
         }
     },
     methods: {
+        popShow: function (row, callback) {
+            ClientCallCommon.getStepTimes('submission', row.id, callback)
+        },
         editRow: function (row) {
             this.dialogVisible = false
             this.fileListVisible = false
@@ -189,7 +199,7 @@ export default {
                 })
             })
         },
-        getStep(mName) {
+        getStep(mName) {//根据附件类别名确定阶段名
             if (this.mTypes.map(t => t.name).includes(mName)) {
                 return '送审'
             } else {

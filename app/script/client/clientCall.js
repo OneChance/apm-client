@@ -10,6 +10,7 @@ import Intermediary from "../server/intermediary"
 import Config from "../config"
 import Common from "../common";
 import Account from "../server/account";
+import Comment from "../server/comment";
 
 export default {
     getWorkitems(data, type) {
@@ -190,7 +191,7 @@ export default {
             }
         })
     },
-    //前后端阶段名转换
+    //后端待办名称转换前端阶段名
     stepNameConvert(serverStage) {
         switch (serverStage) {
             case 'distribution':
@@ -239,5 +240,70 @@ export default {
             }
             return checkRes
         })
+    },
+    stepNameTransfer: function (name) {
+        switch (name) {
+            case 'project':
+                return '审计立项'
+            case 'distribution':
+            case 'memberl':
+                return '审计分配'
+            case 'check':
+                return '分配审核'
+            case 'survey_prepare':
+                return '勘察准备'
+            case 'survey_scene':
+                return '现场勘察'
+            case 'argue_reject':
+            case 'argue':
+            case 'audit_dept':
+                return '争议处理'
+            case 'audit_first':
+                return '初审'
+            case 'audit_second':
+                return '复审'
+            case 'complete':
+                return '完成'
+            case 'filed':
+                return '归档'
+            default:
+                return name
+        }
+    },
+    //获取步骤条时间
+    getStepTimes(type, id, callback) {
+        Workitem.getWorkitemReach({
+            target: type,
+            targetId: id
+        }).then(res => {
+                let currentStepCode = -1
+                //1.获取有效的workitem(时间小于当前待办项目且code>当前待办项目的item为无效的)
+                //2.阶段名转换
+                let validSteps = []
+                let itemList = res.list.reverse()
+                for (let i = 0; i < itemList.length; i++) {
+                    let add = false
+                    if (currentStepCode === -1) {
+                        currentStepCode = itemList[i][3]  //记录当前code
+                        add = true
+                    } else {
+                        if (itemList[i][3] < currentStepCode) {
+                            add = true
+                        }
+                    }
+                    if (add) {
+                        validSteps.push({step: this.stepNameTransfer(itemList[i][2]), time: itemList[i][4]})
+                    }
+                }
+                let stepTimesMerge = new Map()
+                //2.取小阶段中第一个阶段的时间
+                validSteps.forEach(step => {
+                    if (!stepTimesMerge.get(step.step)) {
+                        stepTimesMerge.set(step.step, step.time)
+                    }
+                })
+                callback(stepTimesMerge)
+            }
+        )
     }
 }

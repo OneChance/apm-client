@@ -63,6 +63,7 @@ import BidQuery from "./BidQuery";
 import ClientCall from "../../script/client/bid/clientCall";
 import ClientCallCommon from "../../script/client/clientCall";
 import ClientCallProject from "../../script/client/project/clientCall";
+import Comment from "../../script/server/comment";
 
 export default {
     name: "ListAllBid",
@@ -88,7 +89,14 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'status', label: '审计状态', width: '150', fixed: true, popProgress: true},
+                    {
+                        prop: 'status',
+                        label: '审计状态',
+                        width: '150',
+                        fixed: true,
+                        popProgress: true,
+                        popShow: this.popShow
+                    },
                     {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
                     {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
@@ -129,6 +137,9 @@ export default {
         }
     },
     methods: {
+        popShow: function (row, callback) {
+            ClientCallCommon.getStepTimes('bid', row.id, callback)
+        },
         editRow: function (row) {
             this.dialogVisible = false
             this.fileListVisible = false
