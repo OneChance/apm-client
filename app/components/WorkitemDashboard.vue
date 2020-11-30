@@ -37,7 +37,7 @@ export default {
     },
     data: function () {
         return {
-            showPara: {page: false, pageSize: 5},
+            showPara: {page: false, pageSize: 5, height: 300},
             workCols: [
                 {
                     prop: 'auditNo',
@@ -50,6 +50,7 @@ export default {
                 {
                     prop: 'creator.name',
                     label: '送审人',
+                    width: 80
                 },
             ],
             willDoCols: [
@@ -74,6 +75,7 @@ export default {
                 {
                     prop: 'creator.name',
                     label: '送审人',
+                    width: 80
                 },
             ]
         }

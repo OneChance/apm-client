@@ -162,6 +162,7 @@ export default {
                     event: this.editRow,
                 },],
                 operWidth: 80,
+                height: this.showPara && this.showPara.height ? this.showPara.height : ''
             },
             listChecks: [],
             formId: -1,

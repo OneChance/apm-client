@@ -4,6 +4,7 @@
             ref='table'
             :data="tableConfig.data"
             border
+            :height="tableConfig.height"
             stripe
             @selection-change="tableConfig.checkBoxChange">
             <el-table-column v-if="tableConfig.checkable"
