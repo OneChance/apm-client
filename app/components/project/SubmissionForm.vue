@@ -1087,6 +1087,9 @@ export default {
 
                             this.comment = '';
 
+                            //初始化按钮名字
+                            //console.log(this.formOpers)
+
                             this.self = this.$root.loginUser.id === result.submission.creatorId
                             this.assigned = result.submission.assigned && this.$root.loginUser.id === result.submission.assigned.id
 

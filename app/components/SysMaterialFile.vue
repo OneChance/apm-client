@@ -60,7 +60,7 @@ export default {
                 data: [],
                 cols: [
                     {prop: 'name', label: '资料类别名称', width: '500'},
-                    {prop: 'required', label: '是否必须上传', formatter: this.requiredFormatter},
+                    {prop: 'description', label: '说明'},
                 ],
                 oper: [
                     {

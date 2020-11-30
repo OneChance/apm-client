@@ -57,7 +57,6 @@ body {
   }
 }
 
-//工作dashboard-----------------------------
 .work-dashboard {
   .box-card {
     margin-bottom: 10px;
@@ -72,16 +71,14 @@ body {
   }
 }
 
-//--------------------------------------------
-
 .el-steps {
   * {
     font-size: 0.7em !important;
   }
 
   .el-step.is-center .el-step__description {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+    padding-left: 18% !important;
+    padding-right: 18% !important;
   }
 }
 

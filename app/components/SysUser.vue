@@ -215,6 +215,9 @@ export default {
             if (type !== 'THIRDPARTY') {
                 this.form.thirdparty.id = ''
             }
+            if (type !== 'INSIDE') {
+                this.form.deptName = ''
+            }
         },
         queryList: function () {
             this.list(this.query)
@@ -277,11 +280,12 @@ export default {
             this.list({page: val})
         },
         add: function () {
-            this.form.id = ''
-            this.form.thirdparty.id = ''
             this.userInfoDialogVisible = true
             this.$nextTick(() => {
                 this.$refs['form'].resetFields();
+                this.form.deptName = ''
+                this.form.id = ''
+                this.form.thirdparty.id = ''
             });
         },
         edit: function (row) {

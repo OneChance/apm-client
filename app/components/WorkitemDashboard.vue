@@ -42,17 +42,14 @@ export default {
                 {
                     prop: 'auditNo',
                     label: '审计编号',
-                    width: '100',
                 },
                 {
                     prop: 'projectName',
                     label: '项目名称',
-                    width: '150',
                 },
                 {
                     prop: 'creator.name',
                     label: '送审人',
-                    width: '100'
                 },
             ],
             willDoCols: [
@@ -69,17 +66,14 @@ export default {
                 {
                     prop: 'auditNo',
                     label: '审计编号',
-                    width: '100',
                 },
                 {
                     prop: 'projectName',
                     label: '项目名称',
-                    width: '150',
                 },
                 {
                     prop: 'creator.name',
                     label: '送审人',
-                    width: '100'
                 },
             ]
         }

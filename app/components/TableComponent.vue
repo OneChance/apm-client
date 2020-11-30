@@ -21,7 +21,7 @@
                              :width="col.width">
                 <template slot-scope="scope">
                     <vif v-if="col.popProgress"><!--鼠标放上去显示进度条-->
-                        <el-popover trigger="click" placement="top"
+                        <el-popover trigger="hover" placement="top"
                                     @show="col.popShow(scope.row,getDescription)">
                             <el-steps :active="getIndex(scope.row[col.prop])" finish-status="success"
                                       align-center class="steps">
