@@ -49,8 +49,8 @@ export default {
                 {name: '分配', color: 'success', event: this.batchAlloc}
             ],
             buttons: [
-                {name: '分配', color: 'success', event: this.batchAllocAgree},
-                {name: '打回', color: 'danger', event: this.batchAllocReject},
+                /*{name: '分配', color: 'success', event: this.batchAllocAgree},
+                {name: '打回', color: 'danger', event: this.batchAllocReject},*/
             ],
             tableConfig: {
                 data: [],

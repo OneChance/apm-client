@@ -10,4 +10,7 @@ export default {
     logOut: function () {
         return Net.get('/logout/');
     },
+    updatePassword: function (data) {
+        return Net.post('/user/updatePassword/', data);
+    }
 }

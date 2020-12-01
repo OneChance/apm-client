@@ -68,7 +68,7 @@ export default {
                 oper: [
                     {
                         class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
-                        tip: {content: '审核', placement: 'top'},
+                        tip: {content: '查看', placement: 'top'},
                         event: this.editRow,
                     },
                 ],

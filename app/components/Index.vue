@@ -38,6 +38,7 @@
                          @select="handleSelect">
                     <el-submenu index="userOper">
                         <template slot="title">{{ $root.loginUser.name }}</template>
+                        <el-menu-item index="changePassword">修改密码</el-menu-item>
                         <el-menu-item index="logout">退出</el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -48,6 +49,24 @@
             <component v-bind:menus="leftMenus" v-bind:is="currentComponent" class="tab"></component>
         </div>
 
+        <el-dialog title="修改密码"
+                   :visible.sync="changePasswordDialog"
+                   :close-on-click-modal="false">
+            <template>
+                <el-form ref="passForm" :model="passForm" :rules="passForm.rules" label-width="80px">
+                    <el-form-item label="新密码" prop="newPass">
+                        <el-input type='password' v-model="passForm.newPass"></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码" prop="confirmPass">
+                        <el-input type='password' v-model="passForm.confirmPass"></el-input>
+                    </el-form-item>
+                </el-form>
+            </template>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="changePasswordDialog = false">取 消</el-button>
+                <el-button type="primary" @click="changePassword">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -57,6 +76,7 @@ import Menu from '../script/server/menu.js'
 import Account from '../script/server/account.js'
 import App from '../script/app.js'
 import LeftMenuFrame from '../components/LeftMenuFrame.vue'
+import md5 from 'js-md5';
 
 export default {
     created: function () {
@@ -64,6 +84,19 @@ export default {
     },
     data: function () {
         return {
+            changePasswordDialog: false,
+            passForm: {
+                newPass: '',
+                confirmPass: '',
+                rules: {
+                    newPass: [
+                        {required: true, message: '请输入新密码', trigger: 'blur'},
+                    ],
+                    confirmPass: [
+                        {required: true, message: '请确认新密码', trigger: 'blur'},
+                    ],
+                }
+            },
             menus: [],
             leftMenus: [],
             activeMenuIndex: 'my',
@@ -96,9 +129,31 @@ export default {
         };
     },
     methods: {
+        changePassword: function () {
+            this.$refs['passForm'].validate((valid) => {
+                if (valid) {
+                    if (this.passForm.newPass !== this.passForm.confirmPass) {
+                        this.$notify.error({
+                            title: '错误',
+                            message: '新密码与确认密码不一致'
+                        });
+                    } else {
+                        Account.updatePassword({
+                            password: md5(this.passForm.newPass)
+                        }).then(() => {
+                            this.changePasswordDialog = false
+                            this.$message({
+                                message: '密码已修改',
+                                type: 'success'
+                            });
+                        })
+                    }
+                }
+            })
+        },
         signOut: function () {
             Account.logOut().then(() => {
-                if (this.$root.loginUser.type === 'INSIDE') {
+                if (this.$root.loginUser.deptCode) {
                     window.location.href = "https://uaaap.yzu.edu.cn/cas/logout?service=http%3a%2f%2fgcsj.yzu.edu.cn/api/third-party/callback/";
                 } else {
                     App.vueG.$router.push('/sign').catch(err => err);
@@ -111,6 +166,11 @@ export default {
         handleSelect(key) {
             if (key === 'logout') {
                 this.signOut()
+            } else if (key === 'changePassword') {
+                this.changePasswordDialog = true
+                this.$nextTick(() => {
+                    this.$refs.passForm.resetFields();
+                })
             } else {
                 //如果非左边菜单架构，替换当前组件
                 //this.currentComponent = key

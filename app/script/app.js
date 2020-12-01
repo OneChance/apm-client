@@ -19,6 +19,12 @@ Vue.use(ElementUI)
 // 设置COOKIE工具
 Vue.use(cookie)
 
+//消除重复路由控制台错误提示
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
+
 export default {
     vueG: null,
     init: function () {

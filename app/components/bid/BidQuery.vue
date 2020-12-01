@@ -146,8 +146,11 @@ export default {
 
             this.tableConfigObject.currentPage = data.page
 
-            //资料送审阶段查询所有自己创建的送审单
             if (this.stepCode === -10) {
+                data.creatorId = this.$root.loginUser.id
+            }
+
+            if (this.stepCode === 0) {
                 data.creatorId = -1
             }
 

@@ -59,7 +59,8 @@ export default {
             Account.signIn({
                 username: this.name,
                 password: md5(this.password)
-            }).then(this.signCallback);
+            }).then(this.signCallback).catch(() => {
+            });
         },
         authCenter: function () {
             window.location.href = "https://uaaap.yzu.edu.cn/cas/login?service=http%3a%2f%2fgcsj.yzu.edu.cn/api/third-party/callback/";
