@@ -98,10 +98,15 @@ export default {
     methods: {
         signOut: function () {
             Account.logOut().then(() => {
-                App.vueG.$router.push('/sign').catch(err => err);
+                if (this.$root.loginUser.type === 'INSIDE') {
+                    window.location.href = "https://uaaap.yzu.edu.cn/cas/logout?service=http%3a%2f%2fgcsj.yzu.edu.cn/api/third-party/callback/";
+                } else {
+                    App.vueG.$router.push('/sign').catch(err => err);
+                }
+            }).finally(() => {
+                this.$cookie.delete('apm_token');
+                localStorage.removeItem("apm_token");
             })
-            this.$cookie.delete('apm_token');
-            localStorage.removeItem("apm_token");
         },
         handleSelect(key) {
             if (key === 'logout') {

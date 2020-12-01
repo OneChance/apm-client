@@ -1,7 +1,7 @@
 <template>
     <el-form :inline="true" :model='query' ref='query' class="demo-form-inline query-form">
-        <el-form-item prop="status" v-if="stepCode===0">
-            <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 110px;">
+        <el-form-item prop="status" v-if="stepCode===0 || stepCode ===-10">
+            <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 160px;">
                 <el-option
                     v-for="status in statusList"
                     :key="status.value"
@@ -113,8 +113,8 @@ export default {
             auditTypes: Config.auditTypes,
             statusList: [
                 {value: 0, label: '所有'},
-                {value: -10, label: '保存'},
-                {value: -20, label: '退回'},
+                {value: -10, label: '送审保存'},
+                {value: -20, label: '送审打回'},
                 {value: -30, label: '处理争议(送审人)'},
                 {value: 10, label: '审计立项'},
                 {value: 20, label: '审计分配'},
@@ -168,7 +168,12 @@ export default {
             }
 
             if (!data['status']) {
-                data['status'] = this.stepCode
+                if (this.stepCode === -10) {
+                    data['status'] = 0
+                } else {
+                    data['status'] = this.stepCode
+                }
+
             }
 
             for (let prop in config) {
@@ -177,13 +182,18 @@ export default {
 
             this.tableConfigObject.currentPage = data.page
 
+            //资料送审阶段查询所有自己创建的送审单
+            if (this.stepCode === -10) {
+                data.creatorId = -1
+            }
+
             ClientCallProject.getSubmissions(data).then(res => {
 
                 if (this.checkedList) {
                     this.checkedList = []
                 }
 
-                if (this.stepCode === 0) {
+                if (this.stepCode === 0 || this.stepCode === -10) {
                     res.list.content.forEach(d => {
                         d.status = this.statusList.filter(s => s.value === d.status)[0].label
                     })
