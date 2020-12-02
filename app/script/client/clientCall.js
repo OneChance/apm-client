@@ -266,6 +266,8 @@ export default {
                 return '完成'
             case 'filed':
                 return '归档'
+            case '[start]':
+                return '送审'
             default:
                 return name
         }
