@@ -725,11 +725,11 @@ export default {
     methods: {
         calAuditFirst: function () {
             this.bidForm.auditFirstSub = this.bidForm.submissionPrice - this.bidForm.firstAuditPrice
-            this.bidForm.auditFirstSubRatio = (this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100
+            this.bidForm.auditFirstSubRatio = ((this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100).toFixed(2)
         },
         calAuditSecond: function () {
             this.bidForm.auditSecondSub = this.bidForm.firstAuditPrice - this.bidForm.secondAuditPrice
-            this.bidForm.auditSecondSubRatio = (this.bidForm.auditSecondSub / this.bidForm.firstAuditPrice).toFixed(2) * 100
+            this.bidForm.auditSecondSubRatio = ((this.bidForm.auditSecondSub / this.bidForm.firstAuditPrice).toFixed(4) * 100).toFixed(2)
         },
         commit: function (event, type) {
             if (((this.step === 'bid' && event.name.indexOf('save') === -1) ||
