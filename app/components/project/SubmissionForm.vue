@@ -1059,305 +1059,328 @@ export default {
                             links: unit.links
                         })
                     })
-                })
 
-                this.submissionForm.details = []
+                    //基础数据加载完成后开始加载表单
+                    this.submissionForm.details = []
 
-                this.$nextTick(() => {
-                    if (this.from === 'addform') {
-                        this.$refs['submissionForm'].resetFields();
-                        $(".comment").hide()
-                    } else if (this.from === 'editform') {
+                    this.$nextTick(() => {
+                        if (this.from === 'addform') {
+                            this.$refs['submissionForm'].resetFields();
+                            $(".comment").hide()
+                        } else if (this.from === 'editform') {
+                            //加载form
+                            ClientCallProject.getSubmission({
+                                id: this.formId
+                            }).then(result => {
 
-                        if (this.stepCode >= 50) {
-                            ClientCallCommon.getEmps().then(result => {
-                                this.users = []
-                                result.list.content.forEach(user => {
-                                    this.users.push({
-                                        value: user.id,
-                                        label: user.name
-                                    })
-                                })
-                            })
-                        }
-                        //加载form
-                        ClientCallProject.getSubmission({
-                            id: this.formId
-                        }).then(result => {
-
-                            this.comment = '';
-
-                            //初始化按钮名字
-                            //console.log(this.formOpers)
-
-                            this.self = this.$root.loginUser.id === result.submission.creatorId
-                            this.assigned = result.submission.assigned && this.$root.loginUser.id === result.submission.assigned.id
-
-                            let needRolesMap = new Map()
-
-                            needRolesMap.set('allocInfoView', [11, 2, 3, 23, 29])
-                            needRolesMap.set('prepareInfoView', [11, 4, 24, 29])
-                            needRolesMap.set('surveyInfoView', [11, 5, 25, 29])
-                            needRolesMap.set('argueInfoView', [11, 6, 26, 29])
-                            needRolesMap.set('auditFirstInfoView', [11, 7, 27, 29])
-                            needRolesMap.set('auditSecondInfoView', [11, 8, 28, 29])
-
-                            //页面内容查看权限控制
-                            ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
-                                for (let [key, value] of checkRes.entries()) {
-                                    this[key] = value
-                                }
-                            })
-
-                            //加载现场勘察资料
-                            if (!result.submission.surveyFiles || result.submission.surveyFiles.length === 0) {
-                                result.submission.surveyFiles = [{
-                                    mId: '-1',
-                                    mName: '勘察记录',
-                                    mFiles: [],
-                                    mFileIds: '',
-                                    mNote: ''
-                                },
-                                    {
-                                        mId: '-2',
-                                        mName: '勘察照片',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    }
-                                ]
-                            }
-                            //加载争议处理资料
-                            if (!result.submission.argueFiles || result.submission.argueFiles.length === 0) {
-                                result.submission.argueFiles = [{
-                                    mId: '-3',
-                                    mName: '联系单',
-                                    mFiles: [],
-                                    mFileIds: '',
-                                    mNote: ''
-                                },]
-                            }
-                            //加载初审资料附件
-                            if (!result.submission.auditFirstFiles || result.submission.auditFirstFiles.length === 0) {
-                                result.submission.auditFirstFiles = [
-                                    {
-                                        mId: '-4',
-                                        mName: '审定单(初)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-5',
-                                        mName: '初审报告(初)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-6',
-                                        mName: '审计工作底稿(初)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-7',
-                                        mName: '计价文本(初)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                ]
-                            }
-                            //加载复审资料附件
-                            if (!result.submission.auditSecondFiles || result.submission.auditSecondFiles.length === 0) {
-                                result.submission.auditSecondFiles = [
-                                    {
-                                        mId: '-8',
-                                        mName: '审定单(复)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-9',
-                                        mName: '初审报告(复)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-10',
-                                        mName: '审计工作底稿(复)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-11',
-                                        mName: '计价文本(复)',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                ]
-                            }
-                            //加载补充资料附件
-                            if (!result.submission.supplementFiles || result.submission.supplementFiles.length === 0) {
-                                result.submission.supplementFiles = [{
-                                    mId: '-12',
-                                    mName: '补充资料',
-                                    mFiles: [],
-                                    mFileIds: '',
-                                    mNote: ''
-                                }]
-                            }
-
-                            for (let p in result.submission) {
-                                this.submissionForm[p] = result.submission[p]
-                            }
-
-                            if (this.stepCode >= 25) {
-                                this.members = []
-                                if (result.submission.thirdparty) {
-                                    ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.submission.thirdparty.id}).then(res => {
-                                        res.list.forEach(user => {
-                                            let label = user.name + '(' + user.username + ")"
-                                            this.members.push({
-                                                value: user.id,
-                                                label: label
+                                if (this.stepCode >= 50) {
+                                    if (result.submission.auditType === '内审') {
+                                        ClientCallCommon.getEmps().then(result => {
+                                            this.users = []
+                                            result.list.content.forEach(user => {
+                                                this.users.push({
+                                                    value: user.id,
+                                                    label: user.name
+                                                })
                                             })
                                         })
-
-                                        if (this.submissionForm.memberIds) {
-                                            this.submissionForm.members = []
-                                            this.submissionForm.memberIds.split(',').forEach(id => {
-                                                this.submissionForm.members.push(id - 0)
+                                    } else {
+                                        ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.submission.thirdparty.id}).then(result => {
+                                            this.users = []
+                                            result.list.forEach(user => {
+                                                this.users.push({
+                                                    value: user.id,
+                                                    label: user.name
+                                                })
                                             })
-                                        }
-                                    })
+                                        })
+                                    }
                                 }
-                            }
 
-                            if (this.submissionForm.materialGroup) {
-                                MaterialFile.getMaterialGroup({
-                                    id: this.submissionForm.materialGroup
-                                }).then(res => {
-                                    for (let fType of res.materialGroup.details) {
-                                        let detail = this.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
-                                        if (detail) {
-                                            detail.mRequired = fType.required
-                                        } else {
-                                            this.submissionForm.details.push({
-                                                mRequired: fType.required,
-                                                mId: fType.material.id,
-                                                mName: fType.material.name,
-                                                mFiles: [],
-                                                mFileIds: '',
-                                                mNote: ''
-                                            })
-                                        }
+                                this.comment = '';
+
+                                //初始化按钮名字
+                                //console.log(this.formOpers)
+
+                                this.self = this.$root.loginUser.id === result.submission.creatorId
+                                this.assigned = result.submission.assigned && this.$root.loginUser.id === result.submission.assigned.id
+
+                                let needRolesMap = new Map()
+
+                                needRolesMap.set('allocInfoView', [11, 2, 3, 23, 29])
+                                needRolesMap.set('prepareInfoView', [11, 4, 24, 29])
+                                needRolesMap.set('surveyInfoView', [11, 5, 25, 29])
+                                needRolesMap.set('argueInfoView', [11, 6, 26, 29])
+                                needRolesMap.set('auditFirstInfoView', [11, 7, 27, 29])
+                                needRolesMap.set('auditSecondInfoView', [11, 8, 28, 29])
+
+                                //页面内容查看权限控制
+                                ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
+                                    for (let [key, value] of checkRes.entries()) {
+                                        this[key] = value
                                     }
                                 })
-                            }
 
-                            //获取意见
-                            this.comments = []
-                            Comment.getComment({
-                                target: 'submission',
-                                targetId: this.submissionForm.id
-                            }).then(res => {
-                                this.comments = res.list
-                            })
+                                //加载现场勘察资料
+                                if (!result.submission.surveyFiles || result.submission.surveyFiles.length === 0) {
+                                    result.submission.surveyFiles = [{
+                                        mId: '-1',
+                                        mName: '勘察记录',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },
+                                        {
+                                            mId: '-2',
+                                            mName: '勘察照片',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        }
+                                    ]
+                                }
+                                //加载争议处理资料
+                                if (!result.submission.argueFiles || result.submission.argueFiles.length === 0) {
+                                    result.submission.argueFiles = [{
+                                        mId: '-3',
+                                        mName: '联系单',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },]
+                                }
+                                //加载初审资料附件
+                                if (!result.submission.auditFirstFiles || result.submission.auditFirstFiles.length === 0) {
+                                    result.submission.auditFirstFiles = [
+                                        {
+                                            mId: '-4',
+                                            mName: '审定单(初)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-5',
+                                            mName: '初审报告(初)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-6',
+                                            mName: '审计工作底稿(初)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-7',
+                                            mName: '计价文本(初)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                    ]
+                                }
+                                //加载复审资料附件
+                                if (!result.submission.auditSecondFiles || result.submission.auditSecondFiles.length === 0) {
+                                    result.submission.auditSecondFiles = [
+                                        {
+                                            mId: '-8',
+                                            mName: '审定单(复)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-9',
+                                            mName: '初审报告(复)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-10',
+                                            mName: '审计工作底稿(复)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-11',
+                                            mName: '计价文本(复)',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                    ]
+                                }
+                                //加载补充资料附件
+                                if (!result.submission.supplementFiles || result.submission.supplementFiles.length === 0) {
+                                    result.submission.supplementFiles = [{
+                                        mId: '-12',
+                                        mName: '补充资料',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    }]
+                                }
 
-                            //加载施工单位项目负责人列表
-                            this.setProjectMans(this.submissionForm.constructionUnit)
+                                for (let p in result.submission) {
+                                    this.submissionForm[p] = result.submission[p]
+                                }
 
-                            if (this.stepCode > 50) {
-                                //加载现场查看人员字段(选择的字段)
+                                if (this.stepCode >= 25) {
+                                    this.members = []
+                                    if (result.submission.thirdparty) {
+                                        ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.submission.thirdparty.id}).then(res => {
+                                            res.list.forEach(user => {
+                                                let label = user.name + '(' + user.username + ")"
+                                                this.members.push({
+                                                    value: user.id,
+                                                    label: label
+                                                })
+                                            })
+                                        })
+                                    } else {
+                                        ClientCallCommon.getEmps().then(result => {
+                                            result.list.content.forEach(user => {
+                                                let label = user.name + '(' + user.username + ")"
+                                                this.members.push({
+                                                    value: user.id,
+                                                    label: label
+                                                })
+                                            })
+                                        })
+                                    }
 
-                                if (this.submissionForm.viewPeoplesAuditUnitIds) {
-                                    this.submissionForm.viewPeoplesAuditUnit = []
-                                    this.submissionForm.viewPeoplesAuditUnitIds.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoplesAuditUnit.push(id - 0)
-                                    })
+                                    if (this.submissionForm.memberIds) {
+                                        this.submissionForm.members = []
+                                        this.submissionForm.memberIds.split(',').forEach(id => {
+                                            this.submissionForm.members.push(id - 0)
+                                        })
+                                    }
+                                }
 
-                                    this.submissionForm.viewPeoplesConstructUnit = []
-                                    this.submissionForm.viewPeoplesConstructUnitIds.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoplesConstructUnit.push(id)
+                                if (this.submissionForm.materialGroup) {
+                                    MaterialFile.getMaterialGroup({
+                                        id: this.submissionForm.materialGroup
+                                    }).then(res => {
+                                        for (let fType of res.materialGroup.details) {
+                                            let detail = this.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
+                                            if (detail) {
+                                                detail.mRequired = fType.required
+                                            } else {
+                                                this.submissionForm.details.push({
+                                                    mRequired: fType.required,
+                                                    mId: fType.material.id,
+                                                    mName: fType.material.name,
+                                                    mFiles: [],
+                                                    mFileIds: '',
+                                                    mNote: ''
+                                                })
+                                            }
+                                        }
                                     })
                                 }
-                            }
 
-                            if (this.stepCode >= 70) {
-                                if (this.stepCode === 70) {
-                                    //初始化约看时间为勘察准备和勘察阶段填写的值
-                                    let prepareViewDate = this.submissionForm.prepareViewDate
-                                    let vewDate = this.submissionForm.viewDate
-                                    let viewPeoplesEntrustUnitIds = this.submissionForm.viewPeoplesEntrustUnitIds
+                                //获取意见
+                                this.comments = []
+                                Comment.getComment({
+                                    target: 'submission',
+                                    targetId: this.submissionForm.id
+                                }).then(res => {
+                                    this.comments = res.list
+                                })
 
-                                    this.submissionForm.prepareViewDate2 = prepareViewDate
-                                    this.submissionForm.viewDate2 = vewDate
+                                //加载施工单位项目负责人列表
+                                this.setProjectMans(this.submissionForm.constructionUnit)
 
-                                    this.submissionForm.viewPeoplesAuditUnit2 = []
-                                    this.submissionForm.viewPeoplesAuditUnitIds.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
-                                    })
+                                if (this.stepCode > 50) {
+                                    //加载现场查看人员字段(选择的字段)
 
-                                    this.submissionForm.viewPeoplesBuildUnitIds2 = this.submissionForm.viewPeoplesBuildUnitIds
+                                    if (this.submissionForm.viewPeoplesAuditUnitIds) {
+                                        this.submissionForm.viewPeoplesAuditUnit = []
+                                        this.submissionForm.viewPeoplesAuditUnitIds.split(',').forEach(id => {
+                                            this.submissionForm.viewPeoplesAuditUnit.push(id - 0)
+                                        })
 
-                                    this.submissionForm.viewPeoplesConstructUnit2 = []
-                                    this.submissionForm.viewPeoplesConstructUnitIds.split(',').forEach(id => {
-                                        this.submissionForm.viewPeoplesConstructUnit2.push(id)
-                                    })
+                                        this.submissionForm.viewPeoplesConstructUnit = []
+                                        this.submissionForm.viewPeoplesConstructUnitIds.split(',').forEach(id => {
+                                            this.submissionForm.viewPeoplesConstructUnit.push(id)
+                                        })
+                                    }
+                                }
 
-                                    this.submissionForm.viewPeoplesEntrustUnitIds2 = viewPeoplesEntrustUnitIds
+                                if (this.stepCode >= 70) {
+                                    if (this.stepCode === 70) {
+                                        //初始化约看时间为勘察准备和勘察阶段填写的值
+                                        let prepareViewDate = this.submissionForm.prepareViewDate
+                                        let vewDate = this.submissionForm.viewDate
+                                        let viewPeoplesEntrustUnitIds = this.submissionForm.viewPeoplesEntrustUnitIds
 
-                                } else {
-                                    this.submissionForm.viewPeoplesAuditUnit2 = []
-                                    if (this.submissionForm.viewPeoplesAuditUnitIds2) {
-                                        this.submissionForm.viewPeoplesAuditUnitIds2.split(',').forEach(id => {
+                                        this.submissionForm.prepareViewDate2 = prepareViewDate
+                                        this.submissionForm.viewDate2 = vewDate
+
+                                        this.submissionForm.viewPeoplesAuditUnit2 = []
+                                        this.submissionForm.viewPeoplesAuditUnitIds.split(',').forEach(id => {
                                             this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
                                         })
-                                    }
-                                    this.submissionForm.viewPeoplesConstructUnit2 = []
-                                    if (this.submissionForm.viewPeoplesConstructUnitIds2) {
-                                        this.submissionForm.viewPeoplesConstructUnitIds2.split(',').forEach(id => {
-                                            this.submissionForm.viewPeoplesConstructUnit2.push(id - 0)
+
+                                        this.submissionForm.viewPeoplesBuildUnitIds2 = this.submissionForm.viewPeoplesBuildUnitIds
+
+                                        this.submissionForm.viewPeoplesConstructUnit2 = []
+                                        this.submissionForm.viewPeoplesConstructUnitIds.split(',').forEach(id => {
+                                            this.submissionForm.viewPeoplesConstructUnit2.push(id)
                                         })
+
+                                        this.submissionForm.viewPeoplesEntrustUnitIds2 = viewPeoplesEntrustUnitIds
+
+                                    } else {
+                                        this.submissionForm.viewPeoplesAuditUnit2 = []
+                                        if (this.submissionForm.viewPeoplesAuditUnitIds2) {
+                                            this.submissionForm.viewPeoplesAuditUnitIds2.split(',').forEach(id => {
+                                                this.submissionForm.viewPeoplesAuditUnit2.push(id - 0)
+                                            })
+                                        }
+                                        this.submissionForm.viewPeoplesConstructUnit2 = []
+                                        if (this.submissionForm.viewPeoplesConstructUnitIds2) {
+                                            this.submissionForm.viewPeoplesConstructUnitIds2.split(',').forEach(id => {
+                                                this.submissionForm.viewPeoplesConstructUnit2.push(id - 0)
+                                            })
+                                        }
+                                    }
+
+                                    //送审价=建设单位报审金额
+                                    this.submissionForm.submissionPrice = this.submissionForm.buildUnitApplyFee
+                                }
+
+                                if (this.stepCode >= 80) {
+                                    //将复审审定金额默认设置为初审审定金额
+                                    if (!this.submissionForm.secondAuditPrice || this.submissionForm.secondAuditPrice === 0) {
+                                        this.submissionForm.secondAuditPrice = this.submissionForm.firstAuditPrice
                                     }
                                 }
 
-                                //送审价=建设单位报审金额
-                                this.submissionForm.submissionPrice = this.submissionForm.buildUnitApplyFee
-                            }
-
-                            if (this.stepCode >= 80) {
-                                //将复审审定金额默认设置为初审审定金额
-                                if (!this.submissionForm.secondAuditPrice || this.submissionForm.secondAuditPrice === 0) {
-                                    this.submissionForm.secondAuditPrice = this.submissionForm.firstAuditPrice
+                                //初始化附件
+                                if (this.step === 'survey') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.surveyFiles)
+                                } else if (this.step === 'argueDeal') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.supplementFiles)
+                                } else if (this.step === 'argueHandle') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.argueFiles)
+                                } else if (this.step === 'auditFirst') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.auditFirstFiles)
+                                } else if (this.step === 'auditSecond') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.auditSecondFiles)
+                                } else if (this.step === 'submission' || this.step === 'reject') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.details)
                                 }
-                            }
-
-                            //初始化附件
-                            if (this.step === 'survey') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.surveyFiles)
-                            } else if (this.step === 'argueDeal') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.supplementFiles)
-                            } else if (this.step === 'argueHandle') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.argueFiles)
-                            } else if (this.step === 'auditFirst') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.auditFirstFiles)
-                            } else if (this.step === 'auditSecond') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.auditSecondFiles)
-                            } else if (this.step === 'submission' || this.step === 'reject') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.submissionForm.details)
-                            }
-                        })
-                    }
-                    $(".print-info").hide()
-                });
+                            })
+                        }
+                        $(".print-info").hide()
+                    });
+                })
 
                 //延时两秒可打印,防止页面元素没有加载完成,样式错误
                 setTimeout(() => {
@@ -1496,14 +1519,13 @@ export default {
         },
         calAuditFirst: function () {
             this.submissionForm.auditFirstSub = this.submissionForm.submissionPrice - this.submissionForm.firstAuditPrice
-            this.submissionForm.auditFirstSubRatio = (this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(4) * 100
+            this.submissionForm.auditFirstSubRatio = ((this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(4) * 100).toFixed(2)
         },
         calAuditSecond: function () {
             this.submissionForm.auditSecondSub = this.submissionForm.firstAuditPrice - this.submissionForm.secondAuditPrice
-            this.submissionForm.auditSecondSubRatio = (this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2) * 100
+            this.submissionForm.auditSecondSubRatio = ((this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2) * 100).toFixed(2)
         },
         unitChange: function (val) {
-            this.projectMans.length = 0
             this.submissionForm.constructionUnitProjectMan = ''
             this.submissionForm.constructionUnitTel = ''
             this.setProjectMans(val)
@@ -1564,7 +1586,7 @@ export default {
                                 targetId: this.submissionForm.id,
                                 workitemId: this.workitemId,
                                 prepareViewDate: this.submissionForm.prepareViewDate,
-                                type: 2
+                                type: 1
                             })
                         } else if (this.step === 'survey') {
                             ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.submissionForm.surveyFiles)
@@ -1579,7 +1601,7 @@ export default {
                                     viewPeoplesBuildUnitIds: this.submissionForm.viewPeoplesBuildUnitIds,
                                     viewPeoplesConstructUnitIds: this.submissionForm.viewPeoplesConstructUnit.toString(),
                                     viewPeoplesEntrustUnitIds: this.submissionForm.viewPeoplesEntrustUnitIds,
-                                    type: 2
+                                    type: 1
                                 })
                             }
                         } else if (this.step === 'auditFirst') {
@@ -1588,7 +1610,7 @@ export default {
                                 event({
                                     targetId: this.submissionForm.id,
                                     workitemId: this.workitemId,
-                                    type: 2,
+                                    type: 1,
                                     submissionPrice: this.submissionForm.submissionPrice,
                                     firstAuditPrice: this.submissionForm.firstAuditPrice,
                                     auditFirstSub: this.submissionForm.auditFirstSub,
@@ -1608,7 +1630,7 @@ export default {
                                 event({
                                     targetId: this.submissionForm.id,
                                     workitemId: this.workitemId,
-                                    type: 2,
+                                    type: 1,
                                     secondAuditPrice: this.submissionForm.secondAuditPrice,
                                     auditSecondSub: this.submissionForm.auditSecondSub,
                                     auditSecondSubRatio: this.submissionForm.auditSecondSubRatio,
@@ -1649,7 +1671,7 @@ export default {
                         targetId: this.submissionForm.id,
                         workitemId: this.workitemId,
                         argueFiles: this.submissionForm.argueFiles,
-                        type: 2
+                        type: 1
                     })
                 } else if (this.stepCode === 65) { //争议处理审计处审核
                     event({
@@ -1663,7 +1685,7 @@ export default {
                         targetId: this.submissionForm.id,
                         workitemId: this.workitemId,
                         supplementFiles: this.submissionForm.supplementFiles,
-                        type: 2
+                        type: 1
                     })
                 } else {
                     event(

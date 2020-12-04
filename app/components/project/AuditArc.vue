@@ -59,7 +59,7 @@ export default {
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150'},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
-                    {prop: 'auditFee', label: '惩罚性费用', width: '150'},
+                    {prop: 'auditFee', label: '惩罚性费用'},
                 ],
                 oper: [
                     {

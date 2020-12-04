@@ -103,7 +103,7 @@ export default {
                     {prop: 'assigned.name', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
-                    {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
+                    {prop: 'secondAuditPrice', label: '审定金额', sortable: true},
                 ],
                 steps: [
                     {label: '送审保存', step: '送审', index: 0},

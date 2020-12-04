@@ -103,7 +103,7 @@ export default {
                         popShow: this.popShow
                     },
                     {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
-                    {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
+                    {prop: 'projectName', label: '工程项目', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'contractNo', label: '合同编码', width: '150'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
@@ -112,7 +112,7 @@ export default {
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150', sortable: true},
-                    {prop: 'auditFee', label: '惩罚性费用', width: '150'},
+                    {prop: 'auditFee', label: '惩罚性费用'},
                 ],
                 steps: [ //待办名对应到步骤条步骤 label用于匹配待办名  submissionQuery组件中有对应的label列表
                     {label: '保存', step: '送审', index: 0},

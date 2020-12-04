@@ -27,7 +27,7 @@ export default {
     //获取员工
     getEmps() {
         let data = Common.copyObject(Config.pageAll)
-        data.type = 'INSIDE'
+        data.types = ['INSIDE']
         return User.getUsers(data)
     },
     //获取施工单位

@@ -48,7 +48,7 @@ export default {
                     {prop: 'auditNo', label: '审计编号', width: '150'},
                     {prop: 'projectName', label: '工程项目', width: '220'},
                     {prop: 'assigned.name', label: '中介机构', width: '220'},
-                    {prop: 'auditType', label: '审计方式', width: '100'},
+                    {prop: 'auditType', label: '审计方式'},
                 ],
                 oper: [
                     {
