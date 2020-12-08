@@ -84,7 +84,7 @@ export default {
 
 .login-card {
     width: 350px;
-    height: 350px;
+    height: fit-content;
     margin-top: 160px;
 }
 
