@@ -68,11 +68,11 @@ export default {
                 {
                     prop: 'projectName',
                     label: '项目名称',
+                    width: 220
                 },
                 {
                     prop: 'creator.name',
                     label: '送审人',
-                    width: 80
                 },
                 {
                     prop: 'nextStageStr',
