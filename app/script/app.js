@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Sign from '../components/Sign.vue';
 import Index from '../components/Index.vue'
+import Pdf from '../components/file/Pdf'
 import cookie from 'vue-cookie'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -32,6 +33,7 @@ export default {
             const routes = [
                 {path: '/sign', component: Sign},
                 {path: '/', component: Sign},
+                {path: '/pdf', component: Pdf},
                 {
                     path: '/index',
                     component: Index,

@@ -63,6 +63,7 @@ export default {
                 {
                     prop: 'auditNo',
                     label: '审计编号',
+                    width: 170
                 },
                 {
                     prop: 'projectName',
@@ -71,10 +72,12 @@ export default {
                 {
                     prop: 'creator.name',
                     label: '送审人',
+                    width: 80
                 },
                 {
                     prop: 'nextStageStr',
                     label: '下一步',
+                    width: 120
                 },
             ]
         }

@@ -310,14 +310,16 @@ export default {
         )
     },
     filePreview(file, vueObj) {
-        let officeFile = /(?:xlsx|xls|doc|docx|ppt)$/;
-        let pdfFile = /(?:xlsx|xls|doc|docx|ppt)$/;
-        console.log(officeFile.test(name))
-        console.log(pdfFile.test(name))
-        if (officeFile.test(name)) {
+        let officeFile = /.*\.(?:xlsx|.xls|.doc|.docx|.ppt)$/i;
+        let pdfFile = /.*\.(?:pdf)$/i;
+        if (officeFile.test(file.name)) {
             window.open(Config.ATTACH_URL + Env.baseURL + file.url)
-        } else if (pdfFile.test(name)) {
-            console.log('pdf')
+        } else if (pdfFile.test(file.name)) {
+            let routeUrl = vueObj.$router.resolve({
+                path: "/pdf",
+                query: {url: Env.baseURL + file.url}
+            });
+            window.open(routeUrl.href, '_blank');
         } else {
             vueObj.$notify.error({
                 title: '操作失败!',
