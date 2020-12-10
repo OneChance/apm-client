@@ -16,7 +16,6 @@
     "@vue/babel-preset-jsx": "^1.1.2",
     "add-asset-html-webpack-plugin": "^3.1.3",
     "babel-loader": "^8.0.0-beta.0",
-    "babili-webpack-plugin": "^0.1.2",
     "clean-webpack-plugin": "^1.0.0",
     "css-loader": "^1.0.1",
     "file-loader": "^2.0.0",
