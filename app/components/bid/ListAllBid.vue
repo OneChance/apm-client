@@ -38,7 +38,7 @@
                         prop="name"
                         label="文件">
                         <template slot-scope="scope">
-                            <a :href="scope.row.url" target="_blank">{{ scope.row.name }}</a>
+                            <el-link type="primary" @click="preview(scope.row)">{{scope.row.name}}</el-link>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -106,8 +106,8 @@ export default {
                     {prop: 'secondAuditPrice', label: '审定金额', sortable: true},
                 ],
                 steps: [
-                    {label: '送审保存', step: '送审', index: 0},
-                    {label: '送审打回', step: '送审', index: 0},
+                    {label: '保存', step: '送审', index: 0},
+                    {label: '退回', step: '送审', index: 0},
                     {label: '处理争议', step: '送审', index: 0},
                     {label: '审计立项', step: '审计立项', index: 1},
                     {label: '审计分配', step: '审计分配', index: 2},
@@ -170,6 +170,9 @@ export default {
                     })
                 }
             })
+        },
+        preview(file) {
+            ClientCallCommon.filePreview(file, this)
         },
         addToFileList(fileType) {
             fileType.mFiles.forEach(file => {

@@ -43,7 +43,7 @@
                         prop="name"
                         label="文件">
                         <template slot-scope="scope">
-                            <a :href="scope.row.url" target="_blank">{{ scope.row.name }}</a>
+                            <el-link type="primary" @click="preview(scope.row)">{{scope.row.name}}</el-link>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -103,7 +103,7 @@ export default {
                         popShow: this.popShow
                     },
                     {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
-                    {prop: 'projectName', label: '工程项目', fixed: true},
+                    {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
                     {prop: 'itemCode', label: '立项代码', width: '150'},
                     {prop: 'contractNo', label: '合同编码', width: '150'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
@@ -189,12 +189,16 @@ export default {
                 }
             })
         },
+        preview(file) {
+            ClientCallCommon.filePreview(file, this)
+        },
         addToFileList(fileType) {
             fileType.mFiles.forEach(file => {
                 this.downFiles.push({
                     type: fileType.mName,
                     name: file.name,
                     url: Config.ATTACH_URL + Env.baseURL + file.url,
+                    downloadUrl: Env.baseURL + file.url,
                     step: this.getStep(fileType.mName)
                 })
             })
@@ -238,7 +242,7 @@ export default {
             let promises = [];
 
             for (let item of files) {
-                const promise = _this.getImgArrayBuffer(item.url).then(data => {
+                const promise = _this.getImgArrayBuffer(item.downloadUrl).then(data => {
                     // 下载文件, 并存成ArrayBuffer对象(blob)
                     zip.file(item.type + "/" + item.name, data, {binary: true}); // 逐个添加文件
                 });
@@ -247,7 +251,6 @@ export default {
 
             Promise.all(promises).then(() => {
                 zip.generateAsync({type: "blob"}).then(content => {
-                    console.log(content)
                     FileSaver.saveAs(content, filename); // 利用file-saver保存文件  自定义文件名
                 });
             }).catch(() => {

@@ -171,21 +171,21 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && (allocInfoView || assigned)">
+                        <tr v-if="stepCode>=25 && (allocInfoView || assigned)" class="print-not-show">
                             <th>审计方式</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.auditType" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.thirdparty && (allocInfoView || assigned)">
+                        <tr v-if="stepCode>=25 && bidForm.thirdparty && (allocInfoView || assigned)" class="print-not-show">
                             <th>中介公司</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.thirdparty.name" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)" class="print-not-show">
                             <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
@@ -196,7 +196,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)" class="print-not-show">
                             <th :class="stepCode===25?'editing form-required':''">审计组员</th>
                             <td colspan="3">
                                 <el-form-item prop="members">
@@ -213,7 +213,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)">
+                        <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)" class="print-not-show">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">送审价</th>
                             <td>
                                 <el-form-item prop="submissionPrice">
@@ -232,7 +232,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)">
+                        <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)" class="print-not-show">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">初审核减额</th>
                             <td>
                                 <el-form-item prop="auditFirstSub">
@@ -249,7 +249,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=40 && (auditFirstInfoView||assigned)">
+                        <tr v-if="stepCode>=40 && (auditFirstInfoView||assigned)" class="print-not-show">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -289,7 +289,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50 && auditSecondInfoView">
+                        <tr v-if="stepCode>=50 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审审定金额</th>
                             <td>
                                 <el-form-item prop="secondAuditPrice">
@@ -307,7 +307,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50 && auditSecondInfoView">
+                        <tr v-if="stepCode>=50 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审核减率</th>
                             <td colspan="3">
                                 <el-form-item prop="secondAuditPrice">
@@ -317,7 +317,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50 && auditSecondInfoView">
+                        <tr v-if="stepCode>=50 && auditSecondInfoView" class="print-not-show">
                             <td colspan="4" class="compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -357,7 +357,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=50 && auditSecondInfoView">
+                        <tr v-if="stepCode>=50 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">审计备注</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNote">
@@ -370,14 +370,14 @@
 
 
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr v-if="(step==='project' || step === 'assigned') && !readonly">
+                        <tr v-if="(step==='project' || step === 'assigned') && !readonly" class="print-not-show">
                             <th :class="(stepCode===10||stepCode===30)&&!readonly?'editing':''">审批意见</th>
                             <td colspan="3">
                                 <el-input type="textarea" v-model="comment"></el-input>
                             </td>
                         </tr>
 
-                        <tr>
+                        <tr class="print-not-show">
                             <td colspan="4" class="comment compact-td">
                                 <table class="form-table">
                                     <tr>
@@ -657,6 +657,7 @@ export default {
                         })
                     }
                     $(".print-info").hide()
+                    $(".print-not-show").show()
                 });
             } else {
                 $(".upload-btn").show()
@@ -828,6 +829,7 @@ export default {
         print: function () {
             $(".upload-btn").hide()
             $(".print-info").show()
+            $(".print-not-show").hide()
             let formName = this.formName ? this.formName + 'bid' : 'bid'
             $("#" + formName).printArea({
                 importCSS: false
@@ -853,7 +855,7 @@ export default {
             ClientCallCommon.removeFile(file, this.uploadFiles)
         },
         handlePreview(file) {
-            window.open(Config.ATTACH_URL + Env.baseURL + file.url)
+            ClientCallCommon.filePreview(file, this)
         },
         materialGroupChange: function (value) {
             //根据选择的清单组，初始化附加列表

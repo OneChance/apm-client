@@ -81,7 +81,14 @@ export default {
                         event: this.deleteRow,
                         check: true
                     }
-                ]
+                ],
+                oper2: [
+                    {
+                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
+                        tip: {content: '查看', placement: 'right'},
+                        event: this.viewRow,
+                    },
+                ],
             },
             rules: RejectedOper.rules,
         }
@@ -94,10 +101,19 @@ export default {
             this.from = 'addform'
         },
         editRow: function (row) {
-            this.dialogVisible = false
-            this.dialogVisible = true
             this.from = 'editform'
             this.formId = row.id
+            this.stepCode = Config.stepCodeBid.save
+            this.dialogVisible = false
+            this.dialogVisible = true
+        },
+        viewRow: function (row) {
+            this.formId = row.id
+            this.from = 'editform'
+            this.formOpers = []
+            this.stepCode = 10000
+            this.dialogVisible = false
+            this.dialogVisible = true
         },
         deleteRow: function (row) {
             ClientCall.deleteSubmission({id: row.id}).then(() => {

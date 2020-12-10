@@ -59,11 +59,7 @@ export default {
                     label: '送审类型',
                     width: '110',
                 },
-                {
-                    prop: 'stageStr',
-                    label: '待办名称',
-                    width: '100'
-                },*/
+                */
                 {
                     prop: 'auditNo',
                     label: '审计编号',
@@ -75,7 +71,10 @@ export default {
                 {
                     prop: 'creator.name',
                     label: '送审人',
-                    width: 80
+                },
+                {
+                    prop: 'nextStageStr',
+                    label: '下一步',
                 },
             ]
         }

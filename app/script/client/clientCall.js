@@ -11,6 +11,7 @@ import Config from "../config"
 import Common from "../common";
 import Account from "../server/account";
 import Comment from "../server/comment";
+import Env from "../server/env";
 
 export default {
     getWorkitems(data, type) {
@@ -307,5 +308,22 @@ export default {
                 callback(stepTimesMerge)
             }
         )
+    },
+    filePreview(file, vueObj) {
+        let officeFile = /(?:xlsx|xls|doc|docx|ppt)$/;
+        let pdfFile = /(?:xlsx|xls|doc|docx|ppt)$/;
+        console.log(officeFile.test(name))
+        console.log(pdfFile.test(name))
+        if (officeFile.test(name)) {
+            window.open(Config.ATTACH_URL + Env.baseURL + file.url)
+        } else if (pdfFile.test(name)) {
+            console.log('pdf')
+        } else {
+            vueObj.$notify.error({
+                title: '操作失败!',
+                message: '该文件类型不支持在线预览!',
+                duration: 2000
+            })
+        }
     }
 }

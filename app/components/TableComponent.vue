@@ -50,12 +50,22 @@
                 :width="tableConfig.operWidth"
                 label="操作">
                 <template slot-scope="scope">
-                    <el-tooltip v-for="o in tableConfig.oper" class="item" effect="dark" :content="o.tip.content"
-                                :key="o.tip.content"
-                                :placement="o.tip.placement">
-                        <i :class="o.class"
-                           @click="click(scope.row,o.event,o.check)"></i>
-                    </el-tooltip>
+                    <vif v-if="!scope.row.hideOper">
+                        <el-tooltip v-for="o in tableConfig.oper" class="item" effect="dark" :content="o.tip.content"
+                                    :key="o.tip.content"
+                                    :placement="o.tip.placement">
+                            <i :class="o.class"
+                               @click="click(scope.row,o.event,o.check)"></i>
+                        </el-tooltip>
+                    </vif>
+                    <vif v-else>
+                        <el-tooltip v-for="o in tableConfig.oper2" class="item" effect="dark" :content="o.tip.content"
+                                    :key="o.tip.content"
+                                    :placement="o.tip.placement">
+                            <i :class="o.class"
+                               @click="click(scope.row,o.event,o.check)"></i>
+                        </el-tooltip>
+                    </vif>
                 </template>
             </el-table-column>
         </el-table>

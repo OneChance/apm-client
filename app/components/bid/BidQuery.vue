@@ -92,8 +92,8 @@ export default {
             auditTypes: Config.auditTypes,
             statusList: [
                 {value: 0, label: '所有'},
-                {value: -10, label: '送审保存'},
-                {value: -20, label: '送审打回'},
+                {value: -10, label: '保存'},
+                {value: -20, label: '退回'},
                 {value: 10, label: '审计立项'},
                 {value: 20, label: '审计分配'},
                 {value: 25, label: '分配组员'},
@@ -163,6 +163,12 @@ export default {
                 if (this.stepCode === 0 || this.stepCode === -10) {
                     res.list.content.forEach(d => {
                         d.status = this.statusList.filter(s => s.value === d.status)[0].label
+                    })
+                }
+
+                if (this.stepCode === -10) {
+                    res.list.content.forEach(d => {
+                        d.hideOper = (d.status !== '保存')
                     })
                 }
 

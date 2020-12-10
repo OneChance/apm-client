@@ -14,7 +14,7 @@
                          v-bind:formRules="rules"
                          v-bind:formRules2="rules2"
                          v-bind:formOpers="formOpers"
-                         v-bind:step="'submission'"
+                         v-bind:step="step"
                          v-bind:stepCode="stepCode"
                          v-bind:formId="formId">
         </submission-form>
@@ -26,7 +26,6 @@
 import TableComponent from "../TableComponent";
 import SubmissionForm from "./SubmissionForm";
 import Config from "../../script/config";
-import FormValidator from "../../script/client/formValidator";
 import SubmissionQuery from "./SubmissionQuery";
 import ClientCallProject from "../../script/client/project/clientCall"
 import RejectedOper from "../../script/client/project/rejectedOper"
@@ -44,14 +43,12 @@ export default {
     watch: {},
     data: function () {
         return {
+            step:'submission',
             stepCode: Config.stepCode.submissionSave,
             dialogVisible: false,
             from: '',
             formId: -1,
-            formOpers: [
-                {name: '保存', color: 'primary', event: this.saveSubmission},
-                {name: '提交', color: 'success', event: this.commitSubmission}
-            ],
+            formOpers: [],
             buttons: [
                 {name: '新增', color: 'success', event: this.add},
             ],
@@ -89,6 +86,13 @@ export default {
                         check: true
                     }
                 ],
+                oper2: [
+                    {
+                        class: 'fa fa-pencil-square-o fa-lg click-fa success-fa',
+                        tip: {content: '查看', placement: 'right'},
+                        event: this.viewRow,
+                    },
+                ],
                 operWidth: 100
             },
             rules: RejectedOper.rules,
@@ -103,10 +107,25 @@ export default {
             this.from = 'addform'
         },
         editRow: function (row) {
+            this.from = 'editform'
+            this.step = 'submission'
+            this.stepCode =  Config.stepCode.submissionSave
+            this.formId = row.id
+            this.formOpers = [
+                {name: '保存', color: 'primary', event: this.saveSubmission},
+                {name: '提交', color: 'success', event: this.commitSubmission}
+            ]
             this.dialogVisible = false
             this.dialogVisible = true
-            this.from = 'editform'
+        },
+        viewRow: function (row) {
             this.formId = row.id
+            this.from = 'editform'
+            this.formOpers = []
+            this.step = 'otherStep'
+            this.stepCode =  10000
+            this.dialogVisible = false
+            this.dialogVisible = true
         },
         deleteRow: function (row) {
             ClientCallProject.deleteSubmission({id: row.id}).then(() => {
