@@ -1510,7 +1510,6 @@ export default {
         resetForm() {
             this.$refs['submissionForm'].resetFields();
             ClientCallCommon.clearForm(this.submissionForm)
-            this.submissionForm.payType = ''
         },
         calInspectUnitCheckFee(constructionUnitApplyFee, inspectApplyFee) {
             if (inspectApplyFee && inspectApplyFee > 0) {
