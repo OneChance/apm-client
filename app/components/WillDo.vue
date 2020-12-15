@@ -63,6 +63,8 @@ import ArgueCheck from "../script/client/project/argueCheck.js"
 import AuditFirstProject from "../script/client/project/auditFirst.js"
 import AuditSecondProject from "../script/client/project/auditSecond.js"
 import ArgueResolve from "../script/client/project/argueResolve"
+import CompleteProject from "../script/client/project/completeOper"
+import ArcProject from "../script/client/project/arcOper"
 import BidForm from "./bid/BidForm";
 import ProjectAuditBid from "../script/client/bid/projectOper"
 import AllocMemberBid from '../script/client/bid/allocMember'
@@ -70,6 +72,8 @@ import AllocApproveBid from "../script/client/bid/allocApproveOper"
 import RejectedOperBid from "../script/client/bid/rejectedOper"
 import AuditFirstBid from "../script/client/bid/auditFirst.js"
 import AuditSecondBid from "../script/client/bid/auditSecond.js"
+import CompleteBid from "../script/client/bid/completeOper"
+import ArcBid from "../script/client/bid/arcOper"
 import WorkitemQuery from "./WorkitemQuery";
 
 export default {
@@ -177,6 +181,8 @@ export default {
             rejectedOper: {'submission': RejectedOperProject, 'bid': RejectedOperBid},
             auditFirst: {'submission': AuditFirstProject, 'bid': AuditFirstBid},
             auditSecond: {'submission': AuditSecondProject, 'bid': AuditSecondBid},
+            complete: {'submission': CompleteProject, 'bid': CompleteBid},
+            arc: {'submission': ArcProject, 'bid': ArcBid},
             stepCode: {'submission': Config.stepCode, 'bid': Config.stepCodeBid},
             currentType: '',
         }
@@ -331,6 +337,8 @@ export default {
             }
             this.forms[type].visible = true
 
+            console.log(step)
+
             if (step === 'project') {
                 this.projectAudit[type].comp = this //设置当前组件,用于回调刷新列表方法
                 this.forms[type].formOpers = this.projectAudit[type].buttons
@@ -372,6 +380,12 @@ export default {
                 this.auditSecond[type].comp = this
                 this.forms[type].formOpers = this.auditSecond[type].buttons
                 this.forms[type].rules = this.auditSecond[type].rules
+            } else if (step === 'auditComplete') {
+                this.complete[type].comp = this
+                this.forms[type].formOpers = this.complete[type].buttons
+            } else if (step === 'auditArc') {
+                this.arc[type].comp = this
+                this.forms[type].formOpers = this.arc[type].buttons
             } else {
                 this.forms[type].formOpers = []
             }
