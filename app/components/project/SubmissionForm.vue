@@ -335,7 +335,7 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="print-not-show">
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">资料清单组</th>
                             <td colspan="3">
                                 <el-form-item prop="materialGroup">
@@ -351,7 +351,7 @@
                         </tr>
                         <tr>
                             <td colspan="4" class="compact-td">
-                                <table class="form-table">
+                                <table class="form-table print-not-show">
                                     <tr>
                                         <th class="first-th">资料清单</th>
                                         <th>附件</th>
@@ -385,6 +385,7 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <files-info class="print-info" v-bind:files="this.submissionForm.details"></files-info>
                             </td>
                         </tr>
                         <tr v-if="stepCode>=25 && (allocInfoView || assigned)" class="print-not-show">
@@ -1002,10 +1003,8 @@ import MaterialFile from "../../script/server/materialFile";
 import Comment from "../../script/server/comment";
 import ClientCallProject from "../../script/client/project/clientCall"
 import ClientCallCommon from "../../script/client/clientCall"
-import Env from "../../script/server/env"
 import ConstructionUnit from "../../script/server/constructionUnit";
-import Config from "../../script/config"
-import Account from "../../script/server/account";
+import FilesInfo from "../FilesInfo";
 
 export default {
     name: "SubmissionForm",
@@ -1259,6 +1258,7 @@ export default {
                                     }
                                 }
 
+                                //根据所选清单组，加载清单组文件类型
                                 if (this.submissionForm.materialGroup) {
                                     MaterialFile.getMaterialGroup({
                                         id: this.submissionForm.materialGroup
@@ -1266,8 +1266,10 @@ export default {
                                         for (let fType of res.materialGroup.details) {
                                             let detail = this.submissionForm.details.filter(f => f.mId === fType.material.id)[0]
                                             if (detail) {
+                                                //已有数据，但是需要补上是否必传信息，修改时显示
                                                 detail.mRequired = fType.required
                                             } else {
+                                                //新增时
                                                 this.submissionForm.details.push({
                                                     mRequired: fType.required,
                                                     mId: fType.material.id,
@@ -1789,6 +1791,9 @@ export default {
             }
         }
     },
+    components: {
+        FilesInfo
+    }
 }
 </script>
 

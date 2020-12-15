@@ -337,8 +337,6 @@ export default {
             }
             this.forms[type].visible = true
 
-            console.log(step)
-
             if (step === 'project') {
                 this.projectAudit[type].comp = this //设置当前组件,用于回调刷新列表方法
                 this.forms[type].formOpers = this.projectAudit[type].buttons
