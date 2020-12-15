@@ -1,3 +1,3 @@
 export default {
-    baseURL: "/api"   //apm.ceeg.cn gcsj.yzu.edu.cn
+    baseURL: "http://apm.ceeg.cn/api"   //apm.ceeg.cn gcsj.yzu.edu.cn
 }

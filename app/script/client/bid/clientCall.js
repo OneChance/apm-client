@@ -20,6 +20,9 @@ export default {
     getSubmissions: function (data) {
         return Bid.getSubmissions(data)
     },
+    exportSubmissions: function (data) {
+        return Bid.exportSubmissions(data)
+    },
     getSubmission: function (data) {
         return Bid.getSubmission(data)
     },

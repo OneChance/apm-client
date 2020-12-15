@@ -105,6 +105,8 @@ export default {
             this.dialogVisible = false
             this.dialogVisible = true
             this.from = 'addform'
+            this.step = 'submission'
+            this.stepCode = Config.stepCode.submissionSave
             this.formOpers = [
                 {name: '保存', color: 'primary', event: this.saveSubmission},
                 {name: '提交', color: 'success', event: this.commitSubmission}

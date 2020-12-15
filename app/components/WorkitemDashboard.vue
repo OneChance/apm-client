@@ -37,7 +37,7 @@ export default {
     },
     data: function () {
         return {
-            showPara: {page: false, pageSize: 5, height: 300},
+            showPara: {page: false, pageSize: 5, height: 280},
             workCols: [
                 {
                     prop: 'auditNo',

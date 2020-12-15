@@ -2,7 +2,8 @@
     <div class="card-content">
         <el-card class="box-card">
             <submission-query ref="query" v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"></submission-query>
+                              v-bind:stepCode="stepCode"
+                              v-bind:needExport="true"></submission-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
@@ -43,7 +44,7 @@
                         prop="name"
                         label="文件">
                         <template slot-scope="scope">
-                            <el-link type="primary" @click="preview(scope.row)">{{scope.row.name}}</el-link>
+                            <el-link type="primary" @click="preview(scope.row)">{{ scope.row.name }}</el-link>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -112,7 +113,7 @@ export default {
                     {prop: 'auditType', label: '审计方式', width: '80'},
                     {prop: 'submissionPrice', label: '送审金额', width: '80'},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '80'},
-                    {prop: 'auditFee', label: '惩罚性费用',width: '90'},
+                    {prop: 'auditFee', label: '惩罚性费用', width: '90'},
                 ],
                 steps: [ //待办名对应到步骤条步骤 label用于匹配待办名  submissionQuery组件中有对应的label列表
                     {label: '保存', step: '送审', index: 0},

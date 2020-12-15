@@ -14,6 +14,9 @@ export default {
     getSubmissions: function (data) {
         return Net.get('/bid/list/', data)
     },
+    exportSubmissions: function (data) {
+        return Net.exportData('/bid/export/', data)
+    },
     getSubmission: function (data) {
         return Net.get('/bid/get/', data)
     },

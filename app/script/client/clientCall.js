@@ -327,5 +327,14 @@ export default {
                 duration: 2000
             })
         }
+    },
+    clearForm(form) {
+        for (let p in form) {
+            if (form[p] instanceof Array) {
+                form[p].length = 0
+            } else if (form[p] instanceof String || form[p] instanceof Number) {
+                form[p] = ''
+            }
+        }
     }
 }

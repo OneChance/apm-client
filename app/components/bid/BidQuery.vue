@@ -54,6 +54,7 @@
 
         <el-button type="primary" @click="queryList">查询</el-button>
         <el-button @click="$refs['query'].resetFields()">重置</el-button>
+        <el-button type="success" @click="exportData" v-if="needExport">导出</el-button>
         <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name">
             {{ btn.name }}
         </el-button>
@@ -69,7 +70,7 @@ import ClientCallCommon from "../../script/client/clientCall"
 
 export default {
     name: "BidQuery",
-    props: ['stepCode', 'tableConfigObject', 'checkedList', 'buttons'],
+    props: ['stepCode', 'tableConfigObject', 'checkedList', 'buttons', 'needExport'],
     data: function () {
         return {
             stepCodes: Config.stepCodeBid,
@@ -121,6 +122,25 @@ export default {
     methods: {
         btnClick: function (event) {
             event()
+        },
+        exportData: function () {
+            let exportOptions = {
+                status: 0
+            }
+            for (let op in this.query) {
+                if (this.query[op]) {
+                    exportOptions[op] = this.query[op]
+                }
+            }
+            ClientCallBid.exportSubmissions(exportOptions).then(result => {
+                let url = window.URL.createObjectURL(new Blob([result]))
+                let link = document.createElement('a')
+                link.style.display = 'none'
+                link.href = url
+                link.setAttribute('download', '审计列表.xlsx')
+                document.body.appendChild(link)
+                link.click()
+            })
         },
         queryList: function () {
             this.list()

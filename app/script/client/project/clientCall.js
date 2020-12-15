@@ -1,6 +1,7 @@
 /*客户端调用方法,封装服务端调用,包含待办和业务列表都会调用的提交方法*/
 
 import Audit from "../../server/audit";
+import Net from "../../server/net";
 
 export default {
     //提交送审
@@ -17,6 +18,9 @@ export default {
     },
     getSubmissions: function (data) {
         return Audit.getSubmissions(data)
+    },
+    exportSubmissions: function (data) {
+        return Audit.exportSubmissions(data)
     },
     getSubmission: function (data) {
         return Audit.getSubmission(data)

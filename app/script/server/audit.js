@@ -14,6 +14,9 @@ export default {
     getSubmissions: function (data) {
         return Net.get('/submission/list/', data)
     },
+    exportSubmissions: function (data) {
+        return Net.exportData('/submission/export/', data)
+    },
     getSubmission: function (data) {
         return Net.get('/submission/get/', data)
     },

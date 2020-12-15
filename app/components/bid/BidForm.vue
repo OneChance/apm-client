@@ -178,14 +178,16 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.thirdparty && (allocInfoView || assigned)" class="print-not-show">
+                        <tr v-if="stepCode>=25 && bidForm.thirdparty && (allocInfoView || assigned)"
+                            class="print-not-show">
                             <th>中介公司</th>
                             <td colspan="3">
                                 <el-input type="text" v-model="bidForm.thirdparty.name" disabled></el-input>
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)" class="print-not-show">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)"
+                            class="print-not-show">
                             <th>审计组长</th>
                             <td>
                                 <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
@@ -196,7 +198,8 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)" class="print-not-show">
+                        <tr v-if="stepCode>=25 && bidForm.assigned && (allocInfoView || assigned)"
+                            class="print-not-show">
                             <th :class="stepCode===25?'editing form-required':''">审计组员</th>
                             <td colspan="3">
                                 <el-form-item prop="members">
@@ -660,6 +663,7 @@ export default {
                     $(".print-not-show").show()
                 });
             } else {
+                this.resetForm()
                 $(".upload-btn").show()
             }
         }
@@ -724,6 +728,10 @@ export default {
         }
     },
     methods: {
+        resetForm() {
+            this.$refs['bidForm'].resetFields();
+            ClientCallCommon.clearForm(this.bidForm)
+        },
         calAuditFirst: function () {
             this.bidForm.auditFirstSub = this.bidForm.submissionPrice - this.bidForm.firstAuditPrice
             this.bidForm.auditFirstSubRatio = ((this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100).toFixed(2)

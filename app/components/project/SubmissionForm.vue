@@ -6,13 +6,6 @@
                     <p class="title">工程结算送审表</p>
                     <table class="form-table">
                         <tr>
-                            <th class="first-th">立项代码</th>
-                            <td>
-                                <el-form-item prop="itemCode">
-                                    <el-input v-model="submissionForm.itemCode"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
-                                </el-form-item>
-                            </td>
                             <th :class="(stepCode===10 && !readonly)?'form-required first-th editing':'first-th'"
                                 class="">审计编号
                             </th>
@@ -22,39 +15,21 @@
                                               :disabled="step!=='project' || readonly"></el-input>
                                 </el-form-item>
                             </td>
-                        </tr>
-                        <tr>
-                            <th :class="(step==='submission' || step==='reject')?'form-required':''">合同编码</th>
+                            <th :class="(step==='submission' || step==='reject')?'form-required':''">合同编号</th>
                             <td>
                                 <el-form-item prop="contractNo">
                                     <el-input v-model="submissionForm.contractNo"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
                                 </el-form-item>
                             </td>
+                        </tr>
+                        <tr>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">工程项目名称</th>
-                            <td>
+                            <td colspan="3">
                                 <el-form-item prop="projectName">
                                     <el-input v-model="submissionForm.projectName"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
                                               placeholder="填写工程项目名称"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>经费来源</th>
-                            <td>
-                                <el-form-item prop="feeFrom">
-                                    <el-input v-model="submissionForm.feeFrom"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                              placeholder="填写经费来源"></el-input>
-                                </el-form-item>
-                            </td>
-                            <th>预算</th>
-                            <td>
-                                <el-form-item prop="budget">
-                                    <el-input v-model="submissionForm.budget"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                              placeholder="填写预算"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -100,37 +75,9 @@
                                 </el-form-item>
                             </td>
                         </tr>
-                        <tr>
-                            <th rowspan="2" :class="(step==='submission' || step==='reject')?'form-required':''">
-                                中标合同金额
-                            </th>
-                            <td rowspan="2">
-                                <el-form-item prop="contractMoney">
-                                    <el-input v-model="submissionForm.contractMoney"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                              placeholder="填写中标合同金额"></el-input>
-                                </el-form-item>
-                            </td>
-                            <th>土建</th>
-                            <td>
-                                <el-form-item prop="constructMoney">
-                                    <el-input v-model="submissionForm.constructMoney"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>安装</th>
-                            <td>
-                                <el-form-item prop="installMoney">
-                                    <el-input v-model="submissionForm.installMoney"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
-                        <tr>
+                        <tr v-if="stepCode<=0">
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">结算方式</th>
-                            <td colspan="3" v-if="step==='submission' || step==='reject'">
+                            <td colspan="3">
                                 <el-form-item prop="payType">
                                     <el-radio v-model="submissionForm.payType" label="按实结算"
                                               border
@@ -163,19 +110,10 @@
                                               placeholder="其他结算方式"></el-input>
                                 </el-form-item>
                             </td>
-                            <td colspan="3" v-else>
-                                <el-input v-model="submissionForm.payType"
-                                          :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                          style="width: 200px"></el-input>
-                                <el-input v-model="submissionForm.payTypeOther"
-                                          v-if="submissionForm.payType==='其他'"
-                                          :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                          style="width: 200px"></el-input>
-                            </td>
                         </tr>
-                        <tr>
+                        <tr v-if="stepCode<=0">
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">付款情况</th>
-                            <td colspan="3" v-if="step==='submission' || step==='reject'">
+                            <td colspan="3">
                                 <el-form-item prop="payCondition">
                                     <el-radio v-model="submissionForm.payCondition" label="未付款" border size="small"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
@@ -206,7 +144,20 @@
                                               placeholder="其他付款情况"></el-input>
                                 </el-form-item>
                             </td>
-                            <td colspan="3" v-else>
+                        </tr>
+                        <tr v-if="stepCode>0">
+                            <th>结算方式</th>
+                            <td>
+                                <el-input v-model="submissionForm.payType"
+                                          :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                          style="width: 200px"></el-input>
+                                <el-input v-model="submissionForm.payTypeOther"
+                                          v-if="submissionForm.payType==='其他'"
+                                          :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                          style="width: 200px"></el-input>
+                            </td>
+                            <th>付款情况</th>
+                            <td>
                                 <el-input v-model="submissionForm.payCondition"
                                           :disabled="(step!=='submission' && step!=='reject')||readonly"
                                           style="width: 200px"></el-input>
@@ -215,6 +166,45 @@
                                           :value="submissionForm.payCondition==='其他'?'':'无'"
                                           :disabled="(step!=='submission' && step!=='reject')||readonly"
                                           style="width: 200px"></el-input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th rowspan="2" :class="(step==='submission' || step==='reject')?'form-required':''">
+                                中标合同金额
+                            </th>
+                            <td rowspan="2">
+                                <el-form-item prop="contractMoney">
+                                    <el-input v-model="submissionForm.contractMoney"
+                                              :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                              placeholder="填写中标合同金额"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th>经费来源</th>
+                            <td>
+                                <el-form-item prop="feeFrom">
+                                    <el-input v-model="submissionForm.feeFrom"
+                                              :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                              placeholder="填写经费来源"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>经费代码</th>
+                            <td>
+                                <el-form-item prop="itemCode">
+                                    <el-input v-model="submissionForm.itemCode"
+                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>预算</th>
+                            <td colspan="3">
+                                <el-form-item prop="budget">
+                                    <el-input v-model="submissionForm.budget"
+                                              :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                              placeholder="填写预算"></el-input>
+                                </el-form-item>
                             </td>
                         </tr>
                         <tr>
@@ -1396,6 +1386,7 @@ export default {
                 }, 2000)
 
             } else {
+                this.resetForm()
                 $(".upload-btn").show()
             }
         }
@@ -1516,6 +1507,11 @@ export default {
         }
     },
     methods: {
+        resetForm() {
+            this.$refs['submissionForm'].resetFields();
+            ClientCallCommon.clearForm(this.submissionForm)
+            this.submissionForm.payType = ''
+        },
         calInspectUnitCheckFee(constructionUnitApplyFee, inspectApplyFee) {
             if (inspectApplyFee && inspectApplyFee > 0) {
                 this.submissionForm.inspectUnitCheckFee = (constructionUnitApplyFee - inspectApplyFee).toFixed(2)

@@ -22,6 +22,9 @@ export default {
     },
     download(url) {
         return request(url, 'download');
+    },
+    exportData(url, data) {
+        return request(url, 'export_data', data);
     }
 }
 
@@ -44,6 +47,12 @@ let request = function (api, type, data, progress) {
         axiosRequest = App.vueG.axios.get(api, {
             headers: {'Authorization': 'Bearer ' + token},
             responseType: 'blob',
+        });
+    } else if (type === 'export_data') {
+        axiosRequest = App.vueG.axios.get(fullURL, {
+            headers: {'Authorization': 'Bearer ' + token},
+            responseType: 'blob',
+            params: data,
         });
     } else if (type === 'file') {
         axiosRequest = App.vueG.axios.create({
