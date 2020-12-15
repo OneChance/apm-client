@@ -448,6 +448,7 @@
                                     <el-date-picker v-model="submissionForm.prepareViewDate"
                                                     :disabled="step!=='surveyPrepare'|| readonly"
                                                     format="yyyy-MM-dd HH:mm:ss"
+                                                    :picker-options="pickerOptions"
                                                     value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
                                                     placeholder="选择日期">
                                     </el-date-picker>
@@ -1507,6 +1508,11 @@ export default {
             argueInfoView: false,
             auditFirstInfoView: false,
             auditSecondInfoView: false,
+            pickerOptions: {
+                disabledDate: time => {
+                    return time.getTime() <= Date.now() - 8.64e7
+                }
+            },
         }
     },
     methods: {

@@ -38,7 +38,7 @@
                         prop="name"
                         label="文件">
                         <template slot-scope="scope">
-                            <el-link type="primary" @click="preview(scope.row)">{{scope.row.name}}</el-link>
+                            <el-link type="primary" @click="preview(scope.row)">{{ scope.row.name }}</el-link>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -92,18 +92,18 @@ export default {
                     {
                         prop: 'status',
                         label: '审计状态',
-                        width: '150',
+                        width: '120',
                         fixed: true,
                         popProgress: true,
                         popShow: this.popShow
                     },
-                    {prop: 'auditNo', label: '审计编号', width: '150', fixed: true},
+                    {prop: 'auditNo', label: '审计编号', width: '100', fixed: true},
                     {prop: 'projectName', label: '工程项目', width: '220', fixed: true},
-                    {prop: 'itemCode', label: '立项代码', width: '150'},
+                    {prop: 'itemCode', label: '立项代码'},
                     {prop: 'assigned.name', label: '中介机构', width: '220'},
-                    {prop: 'auditType', label: '审计方式', width: '100'},
-                    {prop: 'submissionPrice', label: '送审金额', width: '150', sortable: true},
-                    {prop: 'secondAuditPrice', label: '审定金额', sortable: true},
+                    {prop: 'auditType', label: '审计方式', width: '80'},
+                    {prop: 'submissionPrice', label: '送审金额', width: '80'},
+                    {prop: 'secondAuditPrice', label: '审定金额', width: '80'},
                 ],
                 steps: [
                     {label: '保存', step: '送审', index: 0},

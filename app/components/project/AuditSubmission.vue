@@ -43,7 +43,7 @@ export default {
     watch: {},
     data: function () {
         return {
-            step:'submission',
+            step: 'submission',
             stepCode: Config.stepCode.submissionSave,
             dialogVisible: false,
             from: '',
@@ -63,15 +63,15 @@ export default {
                     {
                         prop: 'status',
                         label: '审计状态',
-                        width: '150',
+                        width: '120',
                         fixed: true,
                     },
-                    {prop: 'itemCode', label: '立项代码', width: '150'},
-                    {prop: 'auditNo', label: '审计编号', width: '150'},
-                    {prop: 'contractNo', label: '合同编码', width: '150'},
-                    {prop: 'projectName', label: '工程项目',width: '220'},
-                    {prop: 'constructionUnit', label: '施工单位',width: '220'},
-                    {prop: 'contractMoney', label: '中标或合同金额', width: '150'},
+                    {prop: 'itemCode', label: '立项代码'},
+                    {prop: 'auditNo', label: '审计编号', width: '100'},
+                    {prop: 'contractNo', label: '合同编码', width: '100'},
+                    {prop: 'projectName', label: '工程项目', width: '220'},
+                    {prop: 'constructionUnit', label: '施工单位', width: '220'},
+                    {prop: 'contractMoney', label: '中标或合同金额', width: '110'},
                 ],
                 oper: [
                     {
@@ -105,11 +105,15 @@ export default {
             this.dialogVisible = false
             this.dialogVisible = true
             this.from = 'addform'
+            this.formOpers = [
+                {name: '保存', color: 'primary', event: this.saveSubmission},
+                {name: '提交', color: 'success', event: this.commitSubmission}
+            ]
         },
         editRow: function (row) {
             this.from = 'editform'
             this.step = 'submission'
-            this.stepCode =  Config.stepCode.submissionSave
+            this.stepCode = Config.stepCode.submissionSave
             this.formId = row.id
             this.formOpers = [
                 {name: '保存', color: 'primary', event: this.saveSubmission},
@@ -123,7 +127,7 @@ export default {
             this.from = 'editform'
             this.formOpers = []
             this.step = 'otherStep'
-            this.stepCode =  10000
+            this.stepCode = 10000
             this.dialogVisible = false
             this.dialogVisible = true
         },

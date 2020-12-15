@@ -62,12 +62,12 @@ export default {
                     {
                         prop: 'status',
                         label: '审计状态',
-                        width: '150',
+                        width: '120',
                         fixed: true,
                     },
-                    {prop: 'itemCode', label: '立项代码', width: '150'},
+                    {prop: 'itemCode', label: '立项代码'},
                     {prop: 'auditNo', label: '审计编号', width: '150'},
-                    {prop: 'projectName', label: '工程项目'},
+                    {prop: 'projectName', label: '工程项目', width: '220'},
                 ],
                 oper: [
                     {

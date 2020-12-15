@@ -161,7 +161,7 @@ export default {
                     },
                     event: this.editRow,
                 },],
-                operWidth: 80,
+                operWidth: 50,
                 height: this.showPara && this.showPara.height ? this.showPara.height : ''
             },
             listChecks: [],
