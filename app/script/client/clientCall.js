@@ -12,6 +12,7 @@ import Common from "../common";
 import Account from "../server/account";
 import Comment from "../server/comment";
 import Env from "../server/env";
+import ClientCallProject from "./project/clientCall";
 
 export default {
     getWorkitems(data, type) {
@@ -336,5 +337,16 @@ export default {
                 form[p] = ''
             }
         }
+    },
+    exportData(expFuc, expOptions, fileName) {
+        expFuc(expOptions).then(result => {
+            let url = window.URL.createObjectURL(new Blob([result]))
+            let link = document.createElement('a')
+            link.style.display = 'none'
+            link.href = url
+            link.setAttribute('download', fileName + '.xls')
+            document.body.appendChild(link)
+            link.click()
+        })
     }
 }

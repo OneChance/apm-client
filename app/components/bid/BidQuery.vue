@@ -132,15 +132,7 @@ export default {
                     exportOptions[op] = this.query[op]
                 }
             }
-            ClientCallBid.exportSubmissions(exportOptions).then(result => {
-                let url = window.URL.createObjectURL(new Blob([result]))
-                let link = document.createElement('a')
-                link.style.display = 'none'
-                link.href = url
-                link.setAttribute('download', '审计列表.xlsx')
-                document.body.appendChild(link)
-                link.click()
-            })
+            ClientCallCommon.exportData(ClientCallBid.exportSubmissions, exportOptions, '招标控制价送审表')
         },
         queryList: function () {
             this.list()

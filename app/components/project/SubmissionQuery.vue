@@ -167,15 +167,7 @@ export default {
                     exportOptions[op] = this.query[op]
                 }
             }
-            ClientCallProject.exportSubmissions(exportOptions).then(result => {
-                let url = window.URL.createObjectURL(new Blob([result]))
-                let link = document.createElement('a')
-                link.style.display = 'none'
-                link.href = url
-                link.setAttribute('download', '审计列表.xlsx')
-                document.body.appendChild(link)
-                link.click()
-            })
+            ClientCallCommon.exportData(ClientCallProject.exportSubmissions, exportOptions, '工程结算送审表')
         },
         queryList: function () {
             this.list()

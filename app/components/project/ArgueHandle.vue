@@ -45,9 +45,8 @@ export default {
                 pageMethod: this.toPage,
                 checkable: false,
                 cols: [
-                    {prop: 'itemCode', label: '立项代码'},
                     {prop: 'auditNo', label: '审计编号', width: '100'},
-                    {prop: 'contractNo', label: '合同编码', width: '100'},
+                    {prop: 'contractNo', label: '合同编码'},
                     {prop: 'projectName', label: '工程项目', width: '220'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
                     {prop: 'contractMoney', label: '中标或合同金额', width: '110'},

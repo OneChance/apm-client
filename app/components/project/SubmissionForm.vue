@@ -328,6 +328,8 @@
                         </tr>
                         <tr>
                             <th>项目概况</th>
+
+
                             <td colspan="3">
                                 <el-form-item prop="description">
                                     <el-input v-model="submissionForm.description" placeholder="填写项目概况"
