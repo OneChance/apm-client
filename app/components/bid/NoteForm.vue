@@ -1,7 +1,7 @@
 <template>
     <el-dialog :title="招标控制价通知单" class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div class="note-form">
+            <div ref="bid-note-form">
                 <el-form :model="noteForm" :rules="rules" ref="submissionForm">
                     <p class="title">招标控制价审核通知单</p>
                     <table class="form-table">
@@ -259,9 +259,7 @@ export default {
     },
     methods: {
         print: function () {
-            $(".note-form").printArea({
-                importCSS: false
-            })
+            this.$print(this.$refs['bid-note-form'])
         },
         save: function () {
             ClientCallBid.saveNoteForm(this.noteForm).then(result => {

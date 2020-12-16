@@ -8,8 +8,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-//局部打印
-import printArea from '../plugin/printarea/jquery.PrintArea'
+import Print from '../plugin/print/print'
+
 //使用路由插件
 Vue.use(VueRouter);
 //网络工具
@@ -19,6 +19,8 @@ Vue.use(VueAxios, axios);
 Vue.use(ElementUI)
 // 设置COOKIE工具
 Vue.use(cookie)
+//打印插件
+Vue.use(Print)
 
 //消除重复路由控制台错误提示
 const originalPush = VueRouter.prototype.push

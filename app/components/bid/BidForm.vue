@@ -1,7 +1,7 @@
 <template>
     <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div :id="formName?formName+'bid':'bid'">
+            <div :ref="formName?formName+'bid':'bid'">
                 <el-form :model="bidForm" :rules="formRules" ref="bidForm">
                     <p class="title">招标控制价审核送审表</p>
                     <table class="form-table">
@@ -839,9 +839,7 @@ export default {
             $(".print-info").show()
             $(".print-not-show").hide()
             let formName = this.formName ? this.formName + 'bid' : 'bid'
-            $("#" + formName).printArea({
-                importCSS: false
-            })
+            this.$print(this.$refs[formName])
         },
         //资料清单移除方法
         handleRemove(file) {

@@ -1,7 +1,7 @@
 <template>
     <el-dialog class="form-dialog" :visible.sync="visible" :close-on-click-modal="false">
         <template>
-            <div :id="formName?formName+'sub':'submission'">
+            <div :ref="formName?formName+'sub':'submission'">
                 <el-form :model="submissionForm" :rules="formRules" ref="submissionForm">
                     <p class="title">工程结算送审表</p>
                     <table class="form-table">
@@ -184,7 +184,7 @@
                                 <el-form-item prop="feeFrom">
                                     <el-input v-model="submissionForm.feeFrom"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                              placeholder="填写经费来源"></el-input>
+                                              :placeholder="this.visible ? '填写经费来源' : '' "></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -1531,11 +1531,15 @@ export default {
         },
         calAuditFirst: function () {
             this.submissionForm.auditFirstSub = this.submissionForm.submissionPrice - this.submissionForm.firstAuditPrice
-            this.submissionForm.auditFirstSubRatio = ((this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(4) * 100).toFixed(2)
+            if (this.submissionForm.submissionPrice && this.submissionForm.submissionPrice > 0) {
+                this.submissionForm.auditFirstSubRatio = ((this.submissionForm.auditFirstSub / this.submissionForm.submissionPrice).toFixed(4) * 100).toFixed(2)
+            }
         },
         calAuditSecond: function () {
             this.submissionForm.auditSecondSub = this.submissionForm.firstAuditPrice - this.submissionForm.secondAuditPrice
-            this.submissionForm.auditSecondSubRatio = ((this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2) * 100).toFixed(2)
+            if (this.submissionForm.firstAuditPrice && this.submissionForm.firstAuditPrice > 0) {
+                this.submissionForm.auditSecondSubRatio = ((this.submissionForm.auditSecondSub / this.submissionForm.firstAuditPrice).toFixed(2) * 100).toFixed(2)
+            }
         },
         unitChange: function (val) {
             this.submissionForm.constructionUnitProjectMan = ''
@@ -1707,14 +1711,15 @@ export default {
             }
         },
         print: function () {
+            this.visible = false
             $(".upload-btn").hide()
             $(".print-info").show()
             $(".print-not-show").hide()
+            //id唯一化,防止打印错误的单据
             let formName = this.formName ? this.formName + 'sub' : 'submission'
-            $("#" + formName).printArea({
-                importCSS: false
+            this.$nextTick(() => {
+                this.$print(this.$refs[formName])
             })
-            this.visible = false
         },
         //资料清单移除方法
         handleRemove(file) {
