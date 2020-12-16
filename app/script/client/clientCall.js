@@ -311,7 +311,7 @@ export default {
         )
     },
     filePreview(file, vueObj) {
-        let officeFile = /.*\.(?:xlsx|.xls|.doc|.docx|.ppt)$/i;
+        let officeFile = /.*\.(?:xlsx|xls|doc|docx|ppt)$/i;
         let pdfFile = /.*\.(?:pdf)$/i;
         if (officeFile.test(file.name)) {
             window.open(Config.ATTACH_URL + Env.baseURL + file.url)
