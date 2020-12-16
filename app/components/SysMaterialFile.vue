@@ -59,7 +59,7 @@ export default {
             tableConfig: {
                 data: [],
                 cols: [
-                    {prop: 'name', label: '资料类别名称', width: '500'},
+                    {prop: 'name', label: '资料类别名称', width: '400'},
                     {prop: 'description', label: '说明'},
                 ],
                 oper: [
@@ -74,7 +74,8 @@ export default {
                         event: this.deleteFileType,
                         check: true
                     }
-                ]
+                ],
+                operWidth: 100
             },
         }
     },
