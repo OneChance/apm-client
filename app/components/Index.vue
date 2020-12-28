@@ -15,16 +15,17 @@
                          text-color="#fff"
                          active-text-color="#fff"
                          @select="handleSelect">
-                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id === 6">
+                    <el-menu-item :ref='menu.value' :index="menu.value" v-for="menu in menus" :key="menu.value"
+                                  v-if="menu.id === 6">
                         {{ menu.label }}
                     </el-menu-item>
                     <el-submenu :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id === 2">
                         <template slot="title">{{ menu.label }}</template>
-                        <el-menu-item :index="m.value" v-for="m in menu.children" :key="m.value">
+                        <el-menu-item :ref='m.value' :index="m.value" v-for="m in menu.children" :key="m.value">
                             {{ m.label }}
                         </el-menu-item>
                     </el-submenu>
-                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value"
+                    <el-menu-item :ref='menu.value' :index="menu.value" v-for="menu in menus" :key="menu.value"
                                   v-if="menu.id !== 2 && menu.id !==6">
                         {{ menu.label }}
                     </el-menu-item>
@@ -77,6 +78,7 @@ import Account from '../script/server/account.js'
 import App from '../script/app.js'
 import LeftMenuFrame from '../components/LeftMenuFrame.vue'
 import md5 from 'js-md5';
+import Env from "../script/server/env";
 
 export default {
     created: function () {
@@ -105,10 +107,17 @@ export default {
     },
     mounted: function () {
 
+
         let comp = this;
         Menu.getMenu().then(res => {
             comp.menus = res.menus
-            comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
+            if (this.$route.query.key) {
+                console.log('set')
+                this.activeMenuIndex = this.$route.query.key
+                comp.leftMenus = this.getMenu(this.$route.query.key).children
+            } else {
+                comp.leftMenus = comp.menus.filter(menu => menu.value === 'my')[0].children
+            }
         })
 
         Account.getLoginUser().then(res => {
@@ -127,6 +136,9 @@ export default {
                 App.vueG.$emit('windowResize', document.body.clientWidth)
             })();
         };
+    },
+    updated() {
+
     },
     methods: {
         changePassword: function () {
@@ -176,7 +188,11 @@ export default {
                 //this.currentComponent = key
                 //否则，替换组件数据
                 //根据菜单决定取哪一种审计类型的菜单
-                this.leftMenus = this.getMenu(key).children
+                let routeUrl = this.$router.resolve({
+                    path: "/index",
+                    query: {key: key}
+                });
+                window.open(routeUrl.href, '_blank')
             }
         },
         getMenu(key) {

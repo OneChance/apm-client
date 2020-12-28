@@ -60,6 +60,15 @@ const oper = {
         payCondition: [
             {required: true, message: '请选择付款情况', trigger: 'blur'},
         ],
+        feeFrom: [
+            {required: true, message: '填写经费来源', trigger: 'blur'},
+        ],
+        itemCode: [
+            {required: true, message: '填写经费代码', trigger: 'blur'},
+        ],
+        projectPlace: [
+            {required: true, message: '请选择项目地点', trigger: 'blur'},
+        ],
     },
     rules2: {
         payTypeOther: [

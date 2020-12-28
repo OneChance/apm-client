@@ -41,7 +41,7 @@ export default {
     getIntermediaryUsers(data) {
         return User.getIntermediaryUsers(data)
     },
-    upload(content, typeId, uploadList, failRefeshList) {
+    upload(content, typeId, uploadList, failRefeshList, listType) {
 
         let fd = new FormData()
 
@@ -77,13 +77,16 @@ export default {
                 type.mFiles.push(fileData)
                 uploadList.push(type)
             }
-
+            if (listType === 'submission') {
+                //先将文件放入上传列表,用于显示数量
+                failRefeshList.filter(f => f.mId === typeId)[0].mFiles.push(fileData)
+            }
         }).catch(res => {
             //刷新下列表，避免列表显示上传失败的文件
             failRefeshList.filter(f => f.mId === res.info.typeId)[0].mFiles = failRefeshList.filter(f => f.mId === res.info.typeId)[0].mFiles.filter(() => true)
         })
     },
-    removeFile(file, list) {
+    removeFile(file, list, showList) {
         if (file.status === 'uploading') {
             if (file.raw.source) {
                 file.raw.source.cancel('cancel-upload')
@@ -95,6 +98,17 @@ export default {
                 types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
                 if (types.mFiles.length < size) {
                     break
+                }
+            }
+        }
+        if (showList && showList.length > 0) {
+            for (let types of showList) {
+                let size = types.mFiles.length
+                if (size !== 0) {
+                    types.mFiles = types.mFiles.filter(f => f.uid !== file.uid)
+                    if (types.mFiles.length < size) {
+                        break
+                    }
                 }
             }
         }
@@ -186,7 +200,8 @@ export default {
                     mName: fType.material.name,
                     mFiles: [], //上传的文件列表
                     mFileIds: '', //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
-                    mNote: fType.material.description //上传文件的备注
+                    mNote: '',
+                    description: fType.material.description
                 })
             }
         })

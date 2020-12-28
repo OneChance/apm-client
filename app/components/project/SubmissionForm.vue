@@ -25,11 +25,31 @@
                         </tr>
                         <tr>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">工程项目名称</th>
-                            <td colspan="3">
+                            <td>
                                 <el-form-item prop="projectName">
                                     <el-input v-model="submissionForm.projectName"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
                                               placeholder="填写工程项目名称"></el-input>
+                                </el-form-item>
+                            </td>
+                            <th :class="(step==='submission' || step==='reject')?'form-required':''">项目地点</th>
+                            <td>
+                                <el-form-item prop="projectPlace">
+                                    <el-select v-model="submissionForm.projectPlace" placeholder="请选择项目地点"
+                                               class="form-select">
+                                        <el-option label="荷花池" value="荷花池"></el-option>
+                                        <el-option label="文汇路" value="文汇路"></el-option>
+                                        <el-option label="瘦西湖" value="瘦西湖"></el-option>
+                                        <el-option label="江杨南路" value="江杨南路"></el-option>
+                                        <el-option label="江杨北路" value="江杨北路"></el-option>
+                                        <el-option label="扬子津东" value="扬子津东"></el-option>
+                                        <el-option label="扬子津西" value="扬子津西"></el-option>
+                                        <el-option label="淮海路" value="淮海路"></el-option>
+                                        <el-option label="广陵学院" value="广陵学院"></el-option>
+                                        <el-option label="康源乳业" value="康源乳业"></el-option>
+                                        <el-option label="高邮园区" value="高邮园区"></el-option>
+                                        <el-option label="其他" value="其他"></el-option>
+                                    </el-select>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -43,6 +63,26 @@
                                                class="form-select"
                                                @change="unitChange"
                                                placeholder="填写施工单位名称" style="width: 220px;">
+                                        <el-option
+                                            v-for="unit in units"
+                                            :key="unit.value"
+                                            :label="unit.label"
+                                            :value="unit.value">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th :class="(step==='submission' || step==='reject')?'form-required':''">送审单位</th>
+                            <td colspan="3">
+                                <el-form-item prop="auditUnit">
+                                    <el-select v-model="submissionForm.auditUnit"
+                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                               filterable
+                                               class="form-select"
+                                               @change="unitChange"
+                                               placeholder="请选择送审单位" style="width: 220px;">
                                         <el-option
                                             v-for="unit in units"
                                             :key="unit.value"
@@ -179,7 +219,9 @@
                                               placeholder="填写中标合同金额"></el-input>
                                 </el-form-item>
                             </td>
-                            <th>经费来源</th>
+                            <th :class="(step==='submission' || step==='reject')?'form-required':''">
+                                经费来源
+                            </th>
                             <td>
                                 <el-form-item prop="feeFrom">
                                     <el-input v-model="submissionForm.feeFrom"
@@ -189,21 +231,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>经费代码</th>
+                            <th :class="(step==='submission' || step==='reject')?'form-required':''">
+                                经费代码
+                            </th>
                             <td>
                                 <el-form-item prop="itemCode">
                                     <el-input v-model="submissionForm.itemCode"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>预算</th>
-                            <td colspan="3">
-                                <el-form-item prop="budget">
-                                    <el-input v-model="submissionForm.budget"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                              placeholder="填写预算"></el-input>
+                                              :placeholder="this.visible ? '填写经费代码' : '' "></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -317,26 +352,6 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr>
-                            <th>项目内容</th>
-                            <td colspan="3">
-                                <el-form-item prop="content">
-                                    <el-input v-model="submissionForm.content" placeholder="填写项目内容"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>项目概况</th>
-
-
-                            <td colspan="3">
-                                <el-form-item prop="description">
-                                    <el-input v-model="submissionForm.description" placeholder="填写项目概况"
-                                              :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
-                                </el-form-item>
-                            </td>
-                        </tr>
                         <tr class="print-not-show">
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">资料清单组</th>
                             <td colspan="3">
@@ -353,17 +368,23 @@
                         </tr>
                         <tr>
                             <td colspan="4" class="compact-td">
-                                <table class="form-table print-not-show">
+                                <table class="form-table">
                                     <tr>
                                         <th class="first-th">资料清单</th>
-                                        <th>附件</th>
+                                        <th class="print-not-show">附件</th>
+                                        <th class="upload-num">数量</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.submissionForm.details">
                                         <th :class="((step==='submission' || step==='reject') && fileType.mRequired)?'form-required':''">
-                                            {{ fileType.mName }}
+                                            <el-tooltip class="item" effect="dark" :content="fileType.description"
+                                                        v-if="fileType.description"
+                                                        placement="top-start">
+                                                <p style="display: inline">{{ fileType.mName }}</p>
+                                            </el-tooltip>
+                                            <p style="display: inline" v-else>{{ fileType.mName }}</p>
                                         </th>
-                                        <td>
+                                        <td class="print-not-show">
                                             <el-upload class="upload-demo"
                                                        action="noAction" :http-request="upload"
                                                        :with-credentials="true"
@@ -378,6 +399,9 @@
                                                 </el-button>
                                             </el-upload>
                                         </td>
+                                        <td style="text-align: center">
+                                            {{ fileType.mFiles.length }}
+                                        </td>
                                         <td>
                                             <el-input type="textarea"
                                                       autosize
@@ -387,7 +411,6 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <files-info class="print-info" v-bind:files="this.submissionForm.details"></files-info>
                             </td>
                         </tr>
                         <tr v-if="stepCode>=25 && (allocInfoView || assigned)" class="print-not-show">
@@ -1006,7 +1029,6 @@ import Comment from "../../script/server/comment";
 import ClientCallProject from "../../script/client/project/clientCall"
 import ClientCallCommon from "../../script/client/clientCall"
 import ConstructionUnit from "../../script/server/constructionUnit";
-import FilesInfo from "../FilesInfo";
 
 export default {
     name: "SubmissionForm",
@@ -1056,8 +1078,8 @@ export default {
                         })
                     })
 
-                    //基础数据加载完成后开始加载表单
-                    this.submissionForm.details = []
+                    //初始化表单
+                    this.resetForm()
 
                     this.$nextTick(() => {
                         if (this.from === 'addform') {
@@ -1390,7 +1412,6 @@ export default {
                 }, 2000)
 
             } else {
-                this.resetForm()
                 $(".upload-btn").show()
             }
         }
@@ -1411,9 +1432,11 @@ export default {
                 auditNo: '',
                 contractNo: '',
                 projectName: '',
+                projectPlace: '',
                 feeFrom: '',
                 budget: '',
                 constructionUnit: '',
+                auditUnit: '',
                 startDate: '',
                 endDate: '',
                 contractMoney: '',
@@ -1747,7 +1770,11 @@ export default {
             return ClientCallCommon.removeableConfirm(file, steps, message, this.step)
         },
         removeFileFromList(file) {
-            ClientCallCommon.removeFile(file, this.uploadFiles)
+            let showList = []
+            if (this.step === 'submission' || this.step === 'reject') {
+                showList = this.submissionForm.details
+            }
+            ClientCallCommon.removeFile(file, this.uploadFiles, showList)
         },
         handlePreview(file) {
             ClientCallCommon.filePreview(file, this)
@@ -1763,6 +1790,7 @@ export default {
         upload(content) {
 
             let failRefeshList = []
+            let listType = ''
 
             if (this.step === 'survey') {
                 failRefeshList = this.submissionForm.surveyFiles
@@ -1777,9 +1805,9 @@ export default {
             } else {
                 //送审阶段上传的资料清单
                 failRefeshList = this.submissionForm.details
+                listType = 'submission'
             }
-
-            ClientCallCommon.upload(content, this.uploadParams.id, this.uploadFiles, failRefeshList)
+            ClientCallCommon.upload(content, this.uploadParams.id, this.uploadFiles, failRefeshList, listType)
         },
         payConditionChange(val) {
             if (val === '其他') {
@@ -1798,9 +1826,7 @@ export default {
             }
         }
     },
-    components: {
-        FilesInfo
-    }
+    components: {}
 }
 </script>
 

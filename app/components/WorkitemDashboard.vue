@@ -72,7 +72,12 @@ export default {
                 },
                 {
                     prop: 'creator.name',
-                    label: '送审人',
+                    label: '送审部门',
+                    width: 80
+                },
+                {
+                    prop: 'nextStageStr',
+                    label: '上一步',
                     width: 70
                 },
                 {
