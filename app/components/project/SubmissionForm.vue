@@ -81,13 +81,12 @@
                                                :disabled="(step!=='submission' && step!=='reject')||readonly"
                                                filterable
                                                class="form-select"
-                                               @change="unitChange"
                                                placeholder="请选择送审单位" style="width: 220px;">
                                         <el-option
-                                            v-for="unit in units"
-                                            :key="unit.value"
-                                            :label="unit.label"
-                                            :value="unit.value">
+                                            v-for="org in orgs"
+                                            :key="org.code"
+                                            :label="org.name"
+                                            :value="org.code">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>
@@ -1029,6 +1028,7 @@ import Comment from "../../script/server/comment";
 import ClientCallProject from "../../script/client/project/clientCall"
 import ClientCallCommon from "../../script/client/clientCall"
 import ConstructionUnit from "../../script/server/constructionUnit";
+import Org from '../../script/server/org'
 
 export default {
     name: "SubmissionForm",
@@ -1061,11 +1061,13 @@ export default {
                 this.printLoading = true
                 this.uploadFiles = []
 
-                MaterialFile.getMaterialGroups().then(res => {
-                    this.materialGroups = res.list
-                })
+                //所有基础数据请求
+                let promises = []
 
-                ConstructionUnit.getConstructionUnits({
+                promises.push(MaterialFile.getMaterialGroups().then(res => {
+                    this.materialGroups = res.list
+                }))
+                promises.push(ConstructionUnit.getConstructionUnits({
                     page: 1,
                     pageSize: 999999,
                 }).then(res => {
@@ -1077,7 +1079,12 @@ export default {
                             links: unit.links
                         })
                     })
+                }))
+                promises.push(Org.getOrgs().then(res => {
+                    this.orgs = res.list
+                }))
 
+                Promise.all(promises).then(() => {
                     //初始化表单
                     this.resetForm()
 
@@ -1514,6 +1521,7 @@ export default {
             comment: '',
             comments: [],
             users: [],
+            orgs: [],
             units: [],
             members: [],
             projectMans: [],

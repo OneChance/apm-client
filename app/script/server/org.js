@@ -1,6 +1,9 @@
 import Net from './net.js'
 
 export default {
+    getOrgs:function (){
+      return Net.get('/dept/list/')
+    },
     getCompOrg: function () {
         //return Net.post('/signIn/', data);
         return [{
