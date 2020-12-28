@@ -111,9 +111,9 @@ export default {
             let oldParent = this.submitDepInfo.parent;
             let newParent = this.curParent[this.curParent.length - 1]
             if (oldParent !== newParent) {
-                //console.log('parent change from ' + oldParent + ' to ' + newParent)
+                console.log('parent change from ' + oldParent + ' to ' + newParent)
             }
-            //console.log(this.submitDepInfo)
+            console.log(this.submitDepInfo)
         },
         delete(node, data) {
 
@@ -131,10 +131,6 @@ export default {
                     message: '删除成功!'
                 });
             }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });
             });
         },
         renderContent(h, {node, data}) {

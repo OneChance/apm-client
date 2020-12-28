@@ -13,21 +13,26 @@
                 <el-menu :default-active="activeMenuIndex" class="el-menu-demo navi-menu" mode="horizontal"
                          background-color="#e1184a"
                          text-color="#fff"
-                         active-text-color="#fff"
-                         @select="handleSelect">
-                    <el-menu-item :ref='menu.value' :index="menu.value" v-for="menu in menus" :key="menu.value"
+                         active-text-color="#fff">
+                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value"
                                   v-if="menu.id === 6">
-                        {{ menu.label }}
+                        <div @click="handleSelect(menu.value,$event)">
+                            {{ menu.label }}
+                        </div>
                     </el-menu-item>
                     <el-submenu :index="menu.value" v-for="menu in menus" :key="menu.value" v-if="menu.id === 2">
                         <template slot="title">{{ menu.label }}</template>
                         <el-menu-item :ref='m.value' :index="m.value" v-for="m in menu.children" :key="m.value">
-                            {{ m.label }}
+                            <div @click="handleSelect(m.value,$event)">
+                                {{ m.label }}
+                            </div>
                         </el-menu-item>
                     </el-submenu>
-                    <el-menu-item :ref='menu.value' :index="menu.value" v-for="menu in menus" :key="menu.value"
+                    <el-menu-item :index="menu.value" v-for="menu in menus" :key="menu.value"
                                   v-if="menu.id !== 2 && menu.id !==6">
-                        {{ menu.label }}
+                        <div @click="handleSelect(menu.value,$event)">
+                            {{ menu.label }}
+                        </div>
                     </el-menu-item>
                 </el-menu>
             </el-col>
@@ -106,8 +111,6 @@ export default {
         }
     },
     mounted: function () {
-
-
         let comp = this;
         Menu.getMenu().then(res => {
             comp.menus = res.menus
@@ -136,9 +139,6 @@ export default {
                 App.vueG.$emit('windowResize', document.body.clientWidth)
             })();
         };
-    },
-    updated() {
-
     },
     methods: {
         changePassword: function () {
@@ -175,7 +175,7 @@ export default {
                 localStorage.removeItem("apm_token");
             })
         },
-        handleSelect(key) {
+        handleSelect(key, event) {
             if (key === 'logout') {
                 this.signOut()
             } else if (key === 'changePassword') {
@@ -194,6 +194,7 @@ export default {
                 });
                 window.open(routeUrl.href, '_blank')
             }
+            event.stopPropagation()
         },
         getMenu(key) {
             let menuList = []
