@@ -4,7 +4,7 @@
             <el-menu
                 id="left-menu"
                 :default-active="leftActiveIndex"
-                class="el-menu-vertical-demo my-menu"
+                :class="'my-menu '+widthClass"
                 text-color="#303133"
                 active-text-color="#e1184a"
                 @select="handleSelect"
@@ -101,6 +101,7 @@ export default {
             isCollapse: true,
             currentComponent: '',
             willDoCount: 0,
+            widthClass:'el-menu-vertical-demo'
         }
     },
     props: ['menus'],
@@ -119,6 +120,7 @@ export default {
             } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
+                this.widthClass = 'el-menu-vertical-small'
             }
         }
     },
@@ -179,13 +181,5 @@ export default {
 </script>
 
 <style scoped>
-
-.el-menu-vertical-demo {
-
-}
-
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 200px;
-}
 
 </style>

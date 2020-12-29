@@ -1,18 +1,20 @@
 <template>
     <el-form :inline="true" :model='query' ref='query' class="demo-form-inline query-form">
         <el-form-item prop="auditNo" v-if="!formName">
-            <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
+            <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="projectName" v-if="!formName">
-            <el-input v-model="query.projectName" placeholder="项目名称" style="width: 300px;"></el-input>
+            <el-input v-model="query.projectName" placeholder="项目名称" style="width: 300px;" size="small"></el-input>
         </el-form-item>
-        <el-button type="primary" @click="queryList" v-if="!formName">查询</el-button>
-        <el-button @click="$refs['query'].resetFields()" v-if="!formName">重置</el-button>
-        <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name"
-                   :size="btnSize">
-            {{ btn.name }}
-        </el-button>
-        <el-button v-if="formName==='done'" size="mini" class="hold-btn">占位</el-button>
+        <el-form-item>
+            <el-button type="primary" @click="queryList" v-if="!formName" size="small">查询</el-button>
+            <el-button @click="$refs['query'].resetFields()" v-if="!formName" size="small">重置</el-button>
+            <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name"
+                       :size="btnSize" >
+                {{ btn.name }}
+            </el-button>
+            <el-button v-if="formName==='done'" size="mini" class="hold-btn">占位</el-button>
+        </el-form-item>
     </el-form>
 </template>
 
@@ -33,7 +35,7 @@ export default {
                 status: '',
                 auditNo: '',
             },
-            btnSize: ''
+            btnSize: 'small'
         }
     },
     mounted: function () {

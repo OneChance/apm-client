@@ -1,7 +1,7 @@
 <template>
     <el-form :inline="true" :model='query' ref='query' class="demo-form-inline query-form">
         <el-form-item prop="status" v-if="stepCode===0 || stepCode ===-10">
-            <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 160px;">
+            <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 160px;" size="small">
                 <el-option
                     v-for="status in statusList"
                     :key="status.value"
@@ -11,19 +11,20 @@
             </el-select>
         </el-form-item>
         <el-form-item prop="itemCode">
-            <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;"></el-input>
+            <el-input v-model="query.itemCode" placeholder="立项代码" style="width: 150px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="auditNo">
-            <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;"></el-input>
+            <el-input v-model="query.auditNo" placeholder="审计编号" style="width: 150px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="contractNo">
-            <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;"></el-input>
+            <el-input v-model="query.contractNo" placeholder="合同编码" style="width: 150px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="projectName">
-            <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;"></el-input>
+            <el-input v-model="query.projectName" placeholder="工程项目" style="width: 300px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="constructionUnit">
-            <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;">
+            <el-select v-model="query.constructionUnit" filterable placeholder="施工单位" style="width: 220px;"
+                       size="small">
                 <el-option
                     v-for="unit in units"
                     :key="unit.value"
@@ -33,11 +34,11 @@
             </el-select>
         </el-form-item>
         <el-form-item prop="contractMoney">
-            <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;"></el-input>
+            <el-input v-model="query.contractMoney" placeholder="中标/合同金额" style="width: 120px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="assignedId"
                       v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced].indexOf(stepCode)===-1 ">
-            <el-select v-model="query.assignedId" filterable placeholder="中介机构" style="width: 200px;">
+            <el-select v-model="query.assignedId" filterable placeholder="中介机构" style="width: 200px;" size="small">
                 <el-option
                     v-for="inter in inters"
                     :key="inter.value"
@@ -48,7 +49,7 @@
         </el-form-item>
         <el-form-item prop="auditType"
                       v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced].indexOf(stepCode)===-1 ">
-            <el-select v-model="query.auditType" filterable placeholder="审计方式" style="width: 110px;">
+            <el-select v-model="query.auditType" filterable placeholder="审计方式" style="width: 110px;" size="small">
                 <el-option
                     v-for="aType in auditTypes"
                     :key="aType.value"
@@ -60,25 +61,27 @@
         <el-form-item prop="submissionPrice"
                       v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced,
                       stepCodes.surveyPrepare,stepCodes.survey,stepCodes.argueHandle,stepCodes.auditFirst].indexOf(stepCode)===-1 ">
-            <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;"></el-input>
+            <el-input v-model="query.submissionPrice" placeholder="送审金额" style="width: 120px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="secondAuditPrice"
                       v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced,
                       stepCodes.surveyPrepare,stepCodes.survey,stepCodes.argueHandle,stepCodes.auditFirst].indexOf(stepCode)===-1 ">
-            <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;"></el-input>
+            <el-input v-model="query.secondAuditPrice" placeholder="审定金额" style="width: 120px;" size="small"></el-input>
         </el-form-item>
         <el-form-item prop="auditFee"
                       v-if="[stepCodes.submissionSave,stepCodes.auditProject,stepCodes.alloced,
                       stepCodes.surveyPrepare,stepCodes.survey,stepCodes.argueHandle,stepCodes.auditFirst].indexOf(stepCode)===-1 ">
-            <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;"></el-input>
+            <el-input v-model="query.auditFee" placeholder="审计费用" style="width: 120px;" size="small"></el-input>
         </el-form-item>
 
-        <el-button type="primary" @click="queryList">查询</el-button>
-        <el-button @click="$refs['query'].resetFields()">重置</el-button>
-        <el-button type="success" @click="exportData" v-if="needExport">导出</el-button>
-        <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name">
-            {{ btn.name }}
-        </el-button>
+        <el-form-item>
+            <el-button type="primary" @click="queryList" size="small">查询</el-button>
+            <el-button @click="$refs['query'].resetFields()" size="small">重置</el-button>
+            <el-button type="success" @click="exportData" v-if="needExport" size="small">导出</el-button>
+            <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name">
+                {{ btn.name }}
+            </el-button>
+        </el-form-item>
     </el-form>
 </template>
 

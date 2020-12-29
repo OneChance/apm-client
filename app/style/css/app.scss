@@ -18,7 +18,7 @@ body {
   user-select: none;
 }
 
-.header-navi{
+.header-navi {
   .el-menu-item {
     padding: 0 !important;
 
@@ -39,7 +39,16 @@ body {
 }
 
 #left-menu {
+  min-height: calc(100vh - 60px);
   height: calc(100%);
+
+  .fa {
+
+  }
+
+  * {
+    font-size: 0.9em;
+  }
 }
 
 .box-card {
@@ -115,6 +124,14 @@ body {
 
 .query-form {
   margin-bottom: 10px;
+
+  .el-form-item {
+    margin-right: 0 !important;
+  }
+
+  .el-form-item__content {
+    line-height: 30px
+  }
 }
 
 .card-content {
@@ -252,10 +269,12 @@ body {
   color: #fff !important;
 }
 
-#left-menu {
-  .fa {
-    margin-right: 10px;
-  }
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 160px;
+}
+
+.el-menu-vertical-small:not(.el-menu--collapse) {
+  width: 130px;
 }
 
 .left-oper {
