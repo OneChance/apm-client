@@ -18,13 +18,16 @@ body {
   user-select: none;
 }
 
-.el-menu-item {
-  padding: 0 !important;
+.header-navi{
+  .el-menu-item {
+    padding: 0 !important;
 
-  div {
-    padding: 0 20px;
+    div {
+      padding: 0 20px;
+    }
   }
 }
+
 
 .form-required:after {
   content: '*';

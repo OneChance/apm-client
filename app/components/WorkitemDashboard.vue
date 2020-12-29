@@ -71,7 +71,7 @@ export default {
                     label: '项目名称',
                 },
                 {
-                    prop: 'creator.name',
+                    prop: 'auditUnit',
                     label: '送审部门',
                     width: 80
                 },
