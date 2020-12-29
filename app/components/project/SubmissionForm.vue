@@ -1699,6 +1699,7 @@ export default {
                 if (this.step === 'submission') {
                     //保存不验证必填
                     ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.submissionForm.details)
+                    console.log(this.submissionForm)
                     event(this.submissionForm)
                 } else if (this.stepCode === 10) { //审计立项不同意
                     event({
