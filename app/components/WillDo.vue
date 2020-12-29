@@ -3,7 +3,7 @@
         <el-card ref='comp' class="box-card">
             <div slot="header" class="clearfix header" v-if="formName">
                 <el-row>
-                    <el-col :span="6"><span class="sign-title">待办事项</span></el-col>
+                    <el-col :span="6"><span class="sign-title">待办任务</span></el-col>
                     <el-col :span="2" :offset="16">
                         <el-button type="info" plain size="mini" @click="more()">更多</el-button>
                     </el-col>

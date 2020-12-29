@@ -83,10 +83,10 @@ export default {
 
         switch (this.formName) {
             case 'done':
-                this.name = '已办事项';
+                this.name = '已办任务';
                 break
             case 'myWork':
-                this.name = '我的项目';
+                this.name = '我的任务单';
                 break
             case 'myCreate':
                 this.name = '我发起的';
