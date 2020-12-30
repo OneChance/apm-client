@@ -1,15 +1,12 @@
 <template id="index">
     <div>
-        <el-row :gutter="24" class="header-bar">
-            <el-col :span="4">
-                <div class="logo fl">
-                    <i class="fa fa-bars fa-lg small-menu-bar" aria-hidden="true"></i>
-                    <span class="logo-title">
-                        扬州大学审计系统
-                    </span>
-                </div>
-            </el-col>
-            <el-col :span="16" class="header-navi">
+        <div class="header-bar">
+            <div class="header-title">
+                <span class="logo-title">
+                        扬州大学工程审计管理信息系统
+                </span>
+            </div>
+            <div class="header-navi">
                 <el-menu :default-active="activeMenuIndex" class="el-menu-demo navi-menu" mode="horizontal"
                          background-color="#e1184a"
                          text-color="#fff"
@@ -35,8 +32,8 @@
                         </div>
                     </el-menu-item>
                 </el-menu>
-            </el-col>
-            <el-col :span="4" class="header-bar-right">
+            </div>
+            <div class="header-bar-right">
                 <el-menu class="el-menu-demo" mode="horizontal"
                          background-color="#e1184a"
                          text-color="#fff"
@@ -48,8 +45,20 @@
                         <el-menu-item index="logout">退出</el-menu-item>
                     </el-submenu>
                 </el-menu>
+            </div>
+        </div>
+
+        <!--<el-row class="header-bar">
+            <el-col>
+
             </el-col>
-        </el-row>
+            <el-col class="header-navi">
+
+            </el-col>
+            <el-col  class="header-bar-right">
+
+            </el-col>
+        </el-row>-->
 
         <div class="main_center" id="main_center">
             <component v-bind:menus="leftMenus" v-bind:is="currentComponent" class="tab"></component>

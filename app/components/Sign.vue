@@ -3,7 +3,7 @@
         <div class="center">
             <el-card class="box-card login-card">
                 <div slot="header" class="clearfix header">
-                    <span class="sign-title">扬州大学审计系统</span>
+                    <span class="sign-title">扬州大学工程审计管理信息系统</span>
                 </div>
                 <el-form :model="form">
                     <el-form-item>
@@ -23,7 +23,6 @@
                 </el-form>
             </el-card>
         </div>
-        <div class="foot">2020 版权所有</div>
     </div>
 </template>
 
@@ -83,7 +82,7 @@ export default {
 <style scoped>
 
 .login-card {
-    width: 350px;
+    width: 380px;
     height: fit-content;
     margin-top: 160px;
 }

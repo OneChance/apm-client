@@ -1,552 +1,567 @@
 $barHeight: 60px;
 
 body {
-  overflow-x: hidden;
-  margin: 0;
+    overflow-x: hidden;
+    margin: 0;
 }
 
 .title {
-  text-align: center;
-  font-size: 20px;
-  margin-top: 0;
+    text-align: center;
+    font-size: 20px;
+    margin-top: 0;
 }
 
 .el-menu {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.header-navi {
-  .el-menu-item {
-    padding: 0 !important;
-
-    div {
-      padding: 0 20px;
-    }
-  }
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .click-cover {
-  padding: 0 !important;
+    padding: 0 !important;
 
-  div {
-    padding: 0 20px;
-  }
+    div {
+        padding: 0 20px;
+    }
 }
 
 
 .form-required:after {
-  content: '*';
-  color: red;
+    content: '*';
+    color: red;
 }
 
 .el-aside {
-  width: initial !important;
+    width: initial !important;
 }
 
 #left-menu {
-  min-height: calc(100vh - 60px);
-  height: calc(100%);
+    min-height: calc(100vh - 60px);
+    height: calc(100%);
 
-  .fa {
+    .fa {
 
-  }
+    }
 
-  * {
-    font-size: 0.9em;
-  }
+    * {
+        font-size: 0.9em;
+    }
 }
 
 .box-card {
-  .el-input {
-    margin-bottom: 10px;
-  }
+    .el-input {
+        margin-bottom: 10px;
+    }
 
-  .el-form-item {
-    margin-bottom: 0 !important;
-  }
+    .el-form-item {
+        margin-bottom: 0 !important;
+    }
 }
 
 .files-down {
-  .el-dialog {
-    width: 80%;
-  }
+    .el-dialog {
+        width: 80%;
+    }
 }
 
 .el-table {
 
-  * {
-    font-size: 0.8em;
-  }
-
-  .el-table__row {
-    .cell {
-      padding-left: 1px;
-      padding-right: 1px;
+    * {
+        font-size: 0.8em;
     }
-  }
 
-  th {
-    padding: 2px !important;
-  }
+    .el-table__row {
+        .cell {
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+    }
 
-  td {
-    padding: 2px !important;
-  }
+    th {
+        padding: 2px !important;
+    }
+
+    td {
+        padding: 2px !important;
+    }
 }
 
 .work-dashboard {
-  .box-card {
-    margin-bottom: 10px;
-  }
+    .box-card {
+        margin-bottom: 10px;
+    }
 
-  .el-card__body {
-    padding: 10px !important;
-  }
+    .el-card__body {
+        padding: 10px !important;
+    }
 
-  .el-card__body {
-    height: 338px;
-  }
+    .el-card__body {
+        height: 338px;
+    }
 }
 
 .el-steps {
-  * {
-    font-size: 0.7em !important;
-  }
+    * {
+        font-size: 0.7em !important;
+    }
 
-  .el-step.is-center .el-step__description {
-    padding-left: 18% !important;
-    padding-right: 18% !important;
-  }
+    .el-step.is-center .el-step__description {
+        padding-left: 18% !important;
+        padding-right: 18% !important;
+    }
 }
 
 .steps {
-  width: 90vw
+    width: 90vw
 }
 
 .el-popup-parent--hidden {
-  padding-right: 0 !important;
+    padding-right: 0 !important;
 }
 
 .query-form {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 
-  .el-form-item {
-    margin-right: 0 !important;
-  }
+    .el-form-item {
+        margin-right: 0 !important;
+    }
 
-  .el-form-item__content {
-    line-height: 30px
-  }
+    .el-form-item__content {
+        line-height: 30px
+    }
 }
 
 .card-content {
-  display: -webkit-flex; /* Safari */
-  display: flex;
-  justify-content: center;
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    justify-content: center;
 }
 
 .line {
-  text-align: center;
+    text-align: center;
 }
 
 .box-card {
-  width: 98%;
+    width: 98%;
 }
 
 .tree-btn {
-  padding: 5px !important;
+    padding: 5px !important;
 }
 
 .el-cascader {
-  width: 100%;
+    width: 100%;
 }
 
 .hiddenRow {
-  display: none;
+    display: none;
 }
 
 .tree-icon {
-  padding-right: 5px;
+    padding-right: 5px;
 }
 
 .el-cascader-panel .el-radio {
-  position: absolute;
-  z-index: 10;
-  padding: 0 10px;
-  width: 132px;
-  height: 34px;
-  line-height: 34px;
+    position: absolute;
+    z-index: 10;
+    padding: 0 10px;
+    width: 132px;
+    height: 34px;
+    line-height: 34px;
 }
 
 .el-cascader-panel .el-radio__input {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 //字体图标
 .fa {
-  width: 20px;
-  color: #e1184a !important;
+    width: 20px;
+    color: #e1184a !important;
 }
 
 .success-fa {
-  color: #67C23A !important;
+    color: #67C23A !important;
 }
 
 .warning-fa {
-  color: #E6A23C !important;
+    color: #E6A23C !important;
 }
 
 .primary-fa {
-  color: #409EFF !important;
+    color: #409EFF !important;
 
 }
 
 .right-fa {
-  float: right;
-  margin-right: 10px;
-  cursor: pointer;
+    float: right;
+    margin-right: 10px;
+    cursor: pointer;
 }
 
 
 //可点击的字体图标
 .click-fa {
-  cursor: pointer;
-  padding-left: 5px;
-  padding-right: 5px;
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 //树结构图标颜色
 .tree-icon i {
-  color: #909399 !important;
+    color: #909399 !important;
 }
 
 .el-badge__content {
-  top: 15px !important;
-  right: 0 !important;
+    top: 15px !important;
+    right: 0 !important;
 }
 
 .header-bar {
-  background-color: #e1184a;
+    height: $barHeight;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    background-color: #e1184a;
 
-  .el-submenu__icon-arrow {
-    color: white !important;
-  }
+    .el-menu.el-menu--horizontal {
+        border-bottom: 0 !important;
+    }
+
+    .el-submenu__icon-arrow {
+        color: white !important;
+    }
+
+    .header-title {
+        width: 360px;
+        color: white;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        margin-right: 20px;
+    }
+
+    .header-navi {
+        height: 100%;
+
+        .el-menu-item {
+            padding: 0 !important;
+
+            div {
+                padding: 0 20px;
+            }
+        }
+    }
+
+    .header-bar-right {
+        height: 100%;
+        position: absolute;
+        right: 0;
+    }
 }
 
 .my-menu {
-  .el-submenu__icon-arrow {
-    color: #e1184a !important;
-  }
-}
-
-.header-bar-right {
-  display: flex;
-  justify-content: flex-end;
-  height: $barHeight;
-  line-height: $barHeight;
-}
-
-.header-navi {
-  height: $barHeight;
+    .el-submenu__icon-arrow {
+        color: #e1184a !important;
+    }
 }
 
 .logo {
-  height: $barHeight;
-  line-height: $barHeight;
-  width: 100%;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 500;
-  margin-left: 10px;
-  text-align: center;
+    height: $barHeight;
+    line-height: $barHeight;
+    width: 100%;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 16px;
+    text-align: center;
 }
 
 .logo-title {
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
 .exit-button {
-  color: #fff !important;
+    color: #fff !important;
 }
 
 .header-bar-user {
-  color: #fff !important;
+    color: #fff !important;
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 160px;
+    width: 160px;
 }
 
 .el-menu-vertical-small:not(.el-menu--collapse) {
-  width: 130px;
+    width: 130px;
 }
 
 .left-oper {
-  display: none;
+    display: none;
 }
 
 .right-button-group {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .navbar-menu-wrapper {
-  width: auto;
-  position: relative;
-  top: auto;
-  left: auto;
-  bottom: auto;
-  background-color: transparent;
-  overflow: visible;
-  display: flex;
-  order: 2;
-  transform: none;
-  z-index: auto;
-  flex: 1;
+    width: auto;
+    position: relative;
+    top: auto;
+    left: auto;
+    bottom: auto;
+    background-color: transparent;
+    overflow: visible;
+    display: flex;
+    order: 2;
+    transform: none;
+    z-index: auto;
+    flex: 1;
 }
 
 //小屏幕菜单缩略按钮
 .small-menu-bar {
-  display: none !important;
-  color: #fff !important;
+    display: none !important;
+    color: #fff !important;
 }
 
 .small-menu {
-  display: none !important;
+    display: none !important;
 }
 
 //表格
 .table-center {
-  tr {
-    th > div {
-      text-align: center;
-    }
+    tr {
+        th > div {
+            text-align: center;
+        }
 
-    td > div {
-      text-align: center;
+        td > div {
+            text-align: center;
+        }
     }
-  }
 }
 
 .form-dialog {
-  .el-dialog {
-    width: 900px;
-  }
+    .el-dialog {
+        width: 900px;
+    }
 }
 
 .form-select {
-  width: 100% !important;
+    width: 100% !important;
 }
 
 .el-upload-list__item-name {
-  white-space: normal !important; //防止上传的附件名字太长出现省略号
+    white-space: normal !important; //防止上传的附件名字太长出现省略号
 }
 
 
 .compact-td {
-  padding: 0 !important;
-  border-left: 0 !important;
-  border-bottom: 0 !important;
-
-  .form-table {
+    padding: 0 !important;
+    border-left: 0 !important;
     border-bottom: 0 !important;
 
-    th {
-      border-top-width: 0 !important;
-      border-right-width: 0 !important;
+    .form-table {
+        border-bottom: 0 !important;
+
+        th {
+            border-top-width: 0 !important;
+            border-right-width: 0 !important;
+        }
     }
-  }
 }
 
 //表格表单
 .form-table {
-  width: 100%;
-  font-family: verdana, arial, sans-serif;
-  font-size: 11px;
-  color: #333333;
-  border-width: 1px;
-  border-color: #666666;
-  border-collapse: collapse;
-
-  .el-input.is-disabled .el-input__inner {
-    background-color: white !important;
-  }
-
-  .first-th {
-    width: 105px;
-  }
-
-  th {
+    width: 100%;
+    font-family: verdana, arial, sans-serif;
+    font-size: 11px;
+    color: #333333;
     border-width: 1px;
-    padding: 8px;
-    border-style: solid;
     border-color: #666666;
-    background-color: #f9f8f8;
-  }
+    border-collapse: collapse;
 
-  td {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
-  }
+    .el-input.is-disabled .el-input__inner {
+        background-color: white !important;
+    }
 
-  .form-input-code {
-    width: 160px;
-  }
+    .first-th {
+        width: 105px;
+    }
 
-  .el-input__inner {
-    border: 0;
-  }
+    th {
+        border-width: 1px;
+        padding: 8px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #f9f8f8;
+    }
 
-  .el-form-item {
-    margin-bottom: 0;
-  }
+    td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #666666;
+        background-color: #ffffff;
+    }
 
-  .el-form-item__error {
-    position: relative;
-  }
+    .form-input-code {
+        width: 160px;
+    }
+
+    .el-input__inner {
+        border: 0;
+    }
+
+    .el-form-item {
+        margin-bottom: 0;
+    }
+
+    .el-form-item__error {
+        position: relative;
+    }
 }
 
 .comment {
-  .form-table {
-    td {
-      padding: 5px;
+    .form-table {
+        td {
+            padding: 5px;
+        }
     }
-  }
 }
 
 .upload-type {
-  width: 15% !important
+    width: 15% !important
 }
 
 .upload-num {
-  width: 8%;
+    width: 8%;
 }
 
 .upload-note {
-  width: 30%;
+    width: 30%;
 }
 
 //分页导航
 .page-nav {
-  margin-top: 10px;
-  float: right;
-  margin-bottom: 10px;
+    margin-top: 10px;
+    float: right;
+    margin-bottom: 10px;
 }
 
 //角色分配用户对话框样式
 .role-user {
-  .el-dialog {
-    width: 823px
-  }
+    .el-dialog {
+        width: 823px
+    }
 
-  //穿梭框宽度
-  .el-transfer-panel {
-    width: 300px !important;
-  }
+    //穿梭框宽度
+    .el-transfer-panel {
+        width: 300px !important;
+    }
 }
 
 //资料清单分配对话框样式
 .material-group {
-  .el-dialog {
-    width: 1100px;
-    height: 650px;
-  }
+    .el-dialog {
+        width: 1100px;
+        height: 650px;
+    }
 
-  //穿梭框宽度
-  .el-transfer-panel {
-    width: 425px !important;
-  }
+    //穿梭框宽度
+    .el-transfer-panel {
+        width: 425px !important;
+    }
 
-  .el-transfer-panel__body {
-    height: 320px;
-  }
+    .el-transfer-panel__body {
+        height: 320px;
+    }
 
-  .el-transfer-panel__list {
-    height: 270px !important;
-  }
+    .el-transfer-panel__list {
+        height: 270px !important;
+    }
 }
 
 .el-input.is-disabled .el-input__inner {
-  color: #3e3d3d !important;
+    color: #3e3d3d !important;
 }
 
 .el-textarea.is-disabled .el-textarea__inner {
-  color: #3e3d3d !important;
+    color: #3e3d3d !important;
 }
 
 //单选按钮
 .el-radio {
-  margin-right: 0 !important;
+    margin-right: 0 !important;
 }
 
 .el-radio.is-bordered + .el-radio.is-bordered {
-  margin-left: 0 !important;
+    margin-left: 0 !important;
 }
 
 .editing {
-  background-color: #c9f0c2 !important;
+    background-color: #c9f0c2 !important;
 }
 
 //适配小屏幕
 @media screen and (max-width: 480px) {
-  body {
-    .navi-menu {
-      display: none;
-    }
+    body {
+        .navi-menu {
+            display: none;
+        }
 
-    //导航菜单
-    .small-menu {
-      display: inline-block !important;
-      order: 3;
-      width: 260px;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      background-color: #fff;
-      overflow: hidden;
-      z-index: 1060;
-      transform: translateX(-270px);
-      transition: all 0.4s;
-    }
+        //导航菜单
+        .small-menu {
+            display: inline-block !important;
+            order: 3;
+            width: 260px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #fff;
+            overflow: hidden;
+            z-index: 1060;
+            transform: translateX(-270px);
+            transition: all 0.4s;
+        }
 
-    //菜单缩略按钮
-    .small-menu-bar {
-      display: inline-block !important;
-      margin-right: 10px;
-    }
+        //菜单缩略按钮
+        .small-menu-bar {
+            display: inline-block !important;
+            margin-right: 10px;
+        }
 
-    //logo加文宽度
-    .header-bar {
-      .logo {
-        width: 150px;
-      }
-    }
+        //logo加文宽度
+        .header-bar {
+            .logo {
+                width: 150px;
+            }
+        }
 
-    //弹出2级菜单图标颜色
-    .el-menu--popup i {
-      color: #e1184a !important;
+        //弹出2级菜单图标颜色
+        .el-menu--popup i {
+            color: #e1184a !important;
+        }
     }
-  }
 }
 
 //打印
 .survey-th {
-  width: 15%;
+    width: 15%;
 }
 
 .table-select {
-  width: 100%;
+    width: 100%;
 }
 
 //占位按钮
 .hold-btn {
-  border: 1px solid #ffffff !important;
-  color: #ffffff !important;
-  cursor: auto !important;
+    border: 1px solid #ffffff !important;
+    color: #ffffff !important;
+    cursor: auto !important;
 }
