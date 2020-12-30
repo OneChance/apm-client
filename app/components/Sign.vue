@@ -3,9 +3,12 @@
         <div class="center">
             <el-card class="box-card login-card">
                 <div slot="header" class="clearfix header">
-                    <span class="sign-title">扬州大学工程审计管理信息系统</span>
+                    <span class="sign-title">
+                        <p style="margin: 5px 0;font-family: fangsong,serif;">扬州大学</p>
+                        <p style="margin: 0;">工程审计管理信息系统</p>
+                    </span>
                 </div>
-                <el-form :model="form">
+                <el-form :model=" form">
                     <el-form-item>
                         <el-input v-model="name" placeholder="用户名"></el-input>
                     </el-form-item>
@@ -20,7 +23,7 @@
                     <el-form-item>
                         <el-button type="danger" class="sign-btn" @click="authCenter">统一身份认证</el-button>
                     </el-form-item>
-                </el-form>
+                        </el-form>
             </el-card>
         </div>
     </div>
@@ -82,7 +85,7 @@ export default {
 <style scoped>
 
 .login-card {
-    width: 380px;
+    width: 350px;
     height: fit-content;
     margin-top: 160px;
 }
