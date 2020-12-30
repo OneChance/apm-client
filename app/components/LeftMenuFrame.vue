@@ -3,6 +3,7 @@
         <el-aside>
             <el-menu
                 id="left-menu"
+                :active-index="leftActiveIndex"
                 :default-active="leftActiveIndex"
                 :class="'my-menu '+widthClass"
                 text-color="#303133"
@@ -34,11 +35,13 @@
                         </template>
                     </el-menu-item>
                 </el-submenu>
-                <el-menu-item index="collapse">
-                    <i class="fa fa-bars fa-lg fa-inverse"></i>
-                    <span slot="title">
+                <el-menu-item index="collapse" class="click-cover">
+                    <div @click="collapse($event)">
+                        <i class="fa fa-bars fa-lg fa-inverse"></i>
+                        <span slot="title">
                         菜单缩放
                     </span>
+                    </div>
                 </el-menu-item>
             </el-menu>
         </el-aside>
@@ -101,7 +104,7 @@ export default {
             isCollapse: true,
             currentComponent: '',
             willDoCount: 0,
-            widthClass:'el-menu-vertical-demo'
+            widthClass: 'el-menu-vertical-demo'
         }
     },
     props: ['menus'],
@@ -109,18 +112,18 @@ export default {
         menus: function (newVal) {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
-
-            this.leftActiveIndex = 'workitemDashboard'
-            this.currentComponent = 'workitemDashboard'
-
             if (newVal.length === 2) {//我的事项菜单
+                this.leftActiveIndex = 'workitemDashboard'
+                this.currentComponent = 'workitemDashboard'
                 ClientCall.getWorkitems(Config.pageAll, 'willDo').then(res => {
                     this.willDoCount = res.list.totalElements
                 })
             } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
-                this.widthClass = 'el-menu-vertical-small'
+                if (newVal[0].value !== 'sysMaterialFile') {
+                    this.widthClass = 'el-menu-vertical-small'
+                }
             }
         }
     },
@@ -130,10 +133,12 @@ export default {
         })
     },
     methods: {
+        collapse(event) {
+            this.isCollapse = !this.isCollapse
+            event.stopPropagation()
+        },
         handleSelect(key) {
-            if (key === 'collapse') {
-                this.isCollapse = !this.isCollapse
-            } else {
+            if (key !== 'collapse') {
                 this.currentComponent = key
             }
         },

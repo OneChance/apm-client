@@ -115,7 +115,6 @@ export default {
         Menu.getMenu().then(res => {
             comp.menus = res.menus
             if (this.$route.query.key) {
-                console.log('set')
                 this.activeMenuIndex = this.$route.query.key
                 comp.leftMenus = this.getMenu(this.$route.query.key).children
             } else {

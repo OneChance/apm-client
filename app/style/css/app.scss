@@ -28,6 +28,14 @@ body {
   }
 }
 
+.click-cover {
+  padding: 0 !important;
+
+  div {
+    padding: 0 20px;
+  }
+}
+
 
 .form-required:after {
   content: '*';
