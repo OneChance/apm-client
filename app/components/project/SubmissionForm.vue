@@ -86,7 +86,7 @@
                                             v-for="org in orgs"
                                             :key="org.code"
                                             :label="org.name"
-                                            :value="org.code">
+                                            :value="org.name">
                                         </el-option>
                                     </el-select>
                                 </el-form-item>

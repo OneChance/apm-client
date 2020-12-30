@@ -87,6 +87,7 @@ export default {
 .login-card {
     width: 350px;
     height: fit-content;
+    height: -moz-fit-content;
     margin-top: 160px;
 }
 
@@ -133,16 +134,6 @@ export default {
 .logo span {
     border-left: 1px solid #b9bfcf;
     padding-left: 10px;
-}
-
-.foot {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 12px;
-    position: absolute;
-    bottom: 30px;
-    left: calc(50% - 55px);
-    color: #e1184a;
 }
 
 .sign-local-btn {

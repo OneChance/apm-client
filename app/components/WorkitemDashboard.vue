@@ -77,11 +77,6 @@ export default {
                 },
                 {
                     prop: 'nextStageStr',
-                    label: '上一步',
-                    width: 70
-                },
-                {
-                    prop: 'nextStageStr',
                     label: '下一步',
                     width: 100
                 },
