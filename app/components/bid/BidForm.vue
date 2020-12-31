@@ -600,13 +600,22 @@ export default {
                                                 label: label
                                             })
                                         })
-
-                                        if (this.bidForm.memberIds) {
-                                            this.bidForm.members = []
-                                            this.bidForm.memberIds.split(',').forEach(id => {
-                                                this.bidForm.members.push(id - 0)
+                                    })
+                                } else {
+                                    ClientCallCommon.getEmps().then(result => {
+                                        result.list.content.forEach(user => {
+                                            let label = user.name + '(' + user.username + ")"
+                                            this.members.push({
+                                                value: user.id,
+                                                label: label
                                             })
-                                        }
+                                        })
+                                    })
+                                }
+                                if (this.bidForm.memberIds) {
+                                    this.bidForm.members = []
+                                    this.bidForm.memberIds.split(',').forEach(id => {
+                                        this.bidForm.members.push(id - 0)
                                     })
                                 }
                             }
