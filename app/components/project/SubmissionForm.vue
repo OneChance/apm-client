@@ -40,8 +40,8 @@
                                         <el-option label="荷花池" value="荷花池"></el-option>
                                         <el-option label="文汇路" value="文汇路"></el-option>
                                         <el-option label="瘦西湖" value="瘦西湖"></el-option>
-                                        <el-option label="江杨南路" value="江杨南路"></el-option>
-                                        <el-option label="江杨北路" value="江杨北路"></el-option>
+                                        <el-option label="江阳南路" value="江阳南路"></el-option>
+                                        <el-option label="江阳北路" value="江阳北路"></el-option>
                                         <el-option label="扬子津东" value="扬子津东"></el-option>
                                         <el-option label="扬子津西" value="扬子津西"></el-option>
                                         <el-option label="淮海路" value="淮海路"></el-option>
@@ -935,7 +935,7 @@
 
                         <!--这里的意见非表单数据 是写入意见表的-->
                         <tr v-if="stepCode===10||stepCode===30||stepCode===65" class="print-not-show">
-                            <th :class="(stepCode===10||stepCode===30||stepCode===65) && !readonly?'editing':''">审计意见
+                            <th :class="(stepCode===10||stepCode===30||stepCode===65) && !readonly?'editing':''">审批意见
                             </th>
                             <td colspan="3">
                                 <el-input type="textarea" v-model="comment"

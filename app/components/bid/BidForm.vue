@@ -261,7 +261,7 @@
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.auditFirstFiles">
-                                        <th :class="stepCode===40 && !readonly?'editing form-required':''">
+                                        <th :class="stepCode===40 && !readonly?(fileType.nullable?'editing':'editing form-required'):''">
                                             {{ fileType.mName }}
                                         </th>
                                         <td>
@@ -526,7 +526,8 @@ export default {
                                         mName: '审定单',
                                         mFiles: [],
                                         mFileIds: '',
-                                        mNote: ''
+                                        mNote: '',
+                                        nullable: true
                                     },
                                     {
                                         mId: '-5',
@@ -550,7 +551,10 @@ export default {
                                         mNote: ''
                                     },
                                 ]
+                            } else {
+                                result.bid.auditFirstFiles.filter(t => t.mId === -4)[0].nullable = true
                             }
+
                             //加载复审资料附件
                             if (!result.bid.auditSecondFiles || result.bid.auditSecondFiles.length === 0) {
                                 result.bid.auditSecondFiles = [
@@ -743,11 +747,19 @@ export default {
         },
         calAuditFirst: function () {
             this.bidForm.auditFirstSub = this.bidForm.submissionPrice - this.bidForm.firstAuditPrice
-            this.bidForm.auditFirstSubRatio = ((this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100).toFixed(2)
+            if (!isNaN(parseFloat(this.bidForm.submissionPrice))) {
+                this.bidForm.auditFirstSubRatio = ((this.bidForm.auditFirstSub / this.bidForm.submissionPrice).toFixed(4) * 100).toFixed(2)
+            } else {
+                this.bidForm.auditFirstSubRatio = ''
+            }
         },
         calAuditSecond: function () {
             this.bidForm.auditSecondSub = this.bidForm.firstAuditPrice - this.bidForm.secondAuditPrice
-            this.bidForm.auditSecondSubRatio = ((this.bidForm.auditSecondSub / this.bidForm.firstAuditPrice).toFixed(4) * 100).toFixed(2)
+            if (!isNaN(parseFloat(this.bidForm.firstAuditPrice))) {
+                this.bidForm.auditSecondSubRatio = ((this.bidForm.auditSecondSub / this.bidForm.firstAuditPrice).toFixed(4) * 100).toFixed(2)
+            } else {
+                this.bidForm.auditSecondSubRatio = ''
+            }
         },
         commit: function (event, type) {
             if (((this.step === 'bid' && event.name.indexOf('save') === -1) ||

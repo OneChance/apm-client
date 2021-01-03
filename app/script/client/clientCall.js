@@ -127,7 +127,7 @@ export default {
     fileListCheck(list) {
         let fileOk = true
         for (let type of list) {
-            if (!type.mFileIds) {
+            if (!type.mFileIds && !type.nullable) {
                 setTimeout(function () {
                     App.vueG.$notify.error({
                         title: '提交失败!',
