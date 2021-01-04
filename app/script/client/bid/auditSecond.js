@@ -11,6 +11,9 @@ const oper = {
         secondAuditPrice: [
             {required: true, validator: FormValidator.priceValidator, trigger: 'blur'},
         ],
+        auditSecondNote: [
+            {required: true, message: '请输入复审说明', trigger: 'blur'},
+        ]
     },
 }
 

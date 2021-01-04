@@ -9,9 +9,7 @@ const oper = {
         {name: '不同意', color: 'danger', event: auditReject, type: 'reject'}
     ],
     rules: {
-        auditNo: [
-            {required: true, message: '请填写审计编号', trigger: 'blur'}
-        ],
+
     },
 }
 

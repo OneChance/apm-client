@@ -105,7 +105,6 @@ export default {
                 //加载所有角色
                 Role.getRoles(Config.pageAll).then(result => {
                     let search = result.list.content.map(r => r.name);
-                    console.log(result)
                     result.list.content.forEach((role, index) => {
                         this.alloc.push({
                             label: role.name,

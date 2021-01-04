@@ -6,13 +6,13 @@
                     <p class="title">工程结算送审表</p>
                     <table class="form-table">
                         <tr>
-                            <th :class="(stepCode===10 && !readonly)?'form-required first-th editing':'first-th'"
+                            <th :class="(stepCode===10 && !readonly)?' first-th editing':'first-th'"
                                 class="">审计编号
                             </th>
                             <td>
                                 <el-form-item prop="auditNo">
                                     <el-input v-model="submissionForm.auditNo"
-                                              :disabled="step!=='project' || readonly"></el-input>
+                                              disabled=true></el-input>
                                 </el-form-item>
                             </td>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">合同编号</th>
@@ -857,6 +857,17 @@
                             </td>
                         </tr>
 
+                        <tr v-if="stepCode>=70 && auditFirstInfoView" class="print-not-show">
+                            <th :class="stepCode===70 && !readonly?'editing':''">审计发现问题及建议</th>
+                            <td colspan="3">
+                                <el-form-item prop="qas">
+                                    <el-input type="textarea" v-model="submissionForm.qas"
+                                              :disabled="stepCode!==70 || readonly"
+                                              placeholder="审计发现问题及建议"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
                         <tr v-if="stepCode>=80 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===80 && !readonly?'editing form-required':''">复审审定金额</th>
                             <td>
@@ -924,16 +935,16 @@
                             </td>
                         </tr>
 
-                        <!--<tr v-if="stepCode>=80 && auditSecondInfoView" class="print-not-show">
+                        <tr v-if="stepCode>=80 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===80 && !readonly?'editing form-required':''">复审说明</th>
                             <td colspan="3">
                                 <el-form-item prop="auditSecondNote">
                                     <el-input type="textarea" v-model="submissionForm.auditSecondNote"
                                               :disabled="step!=='auditSecond' || readonly"
-                                              placeholder="审计备注"></el-input>
+                                              placeholder="复审说明"></el-input>
                                 </el-form-item>
                             </td>
-                        </tr>-->
+                        </tr>
 
                         <tr v-if="stepCode>=80 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===80 && !readonly?'editing form-required':''">审计备注
@@ -1530,10 +1541,11 @@ export default {
                 viewPeoplesEntrustUnitIds2: '',
                 auditFirstSub: '',
                 auditFirstSubRatio: '',
+                qas: '',
                 //审计复审
                 secondAuditPrice: '',
                 auditNote: '',
-                /*auditSecondNote:'',*/
+                auditSecondNote: '',
                 auditSecondSub: '',
                 auditSecondSubRatio: '',
                 auditSecondFiles: [],
@@ -1646,11 +1658,17 @@ export default {
                                 event(this.submissionForm)
                             }
                         } else if (this.step === 'project') { //审计立项同意
-                            event({
-                                targetId: this.submissionForm.id,
-                                workitemId: this.workitemId,
-                                content: this.comment,
-                                auditNo: this.submissionForm.auditNo
+                            this.$confirm('是否确认立项通过,通过后系统将自动编号?', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                event({
+                                    targetId: this.submissionForm.id,
+                                    workitemId: this.workitemId,
+                                    content: this.comment,
+                                    auditNo: this.submissionForm.auditNo
+                                })
                             })
                         } else if (this.stepCode === 25) { //分配组员同意
                             event({
@@ -1699,6 +1717,7 @@ export default {
                                     viewPeoplesBuildUnitIds2: this.submissionForm.viewPeoplesBuildUnitIds2,
                                     viewPeoplesConstructUnitIds2: this.submissionForm.viewPeoplesConstructUnit2.toString(),
                                     viewPeoplesEntrustUnitIds2: this.submissionForm.viewPeoplesEntrustUnitIds2,
+                                    qas: this.submissionForm.qas
                                 })
                             }
                         } else if (this.step === 'auditSecond') {
@@ -1712,7 +1731,7 @@ export default {
                                     auditSecondSub: this.submissionForm.auditSecondSub,
                                     auditSecondSubRatio: this.submissionForm.auditSecondSubRatio,
                                     auditNote: this.submissionForm.auditNote,
-                                    /*auditSecondNote:this.submissionForm.auditSecondNote,*/
+                                    auditSecondNote: this.submissionForm.auditSecondNote,
                                     auditSecondFiles: this.submissionForm.auditSecondFiles,
                                 })
                             }

@@ -13,12 +13,12 @@
                                               :disabled="stepCode>0"></el-input>
                                 </el-form-item>
                             </td>
-                            <th :class="stepCode===10 && !readonly?'editing form-required first-th':'first-th'">审计编号
+                            <th :class="stepCode===10 && !readonly?'editing first-th':'first-th'">审计编号
                             </th>
                             <td>
                                 <el-form-item prop="auditNo">
                                     <el-input v-model="bidForm.auditNo"
-                                              :disabled="stepCode!==10 || readonly"></el-input>
+                                              disabled=true></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -292,6 +292,17 @@
                             </td>
                         </tr>
 
+                        <tr v-if="stepCode>=40 && auditFirstInfoView" class="print-not-show">
+                            <th :class="stepCode===40 && !readonly?'editing':''">审计发现问题及建议</th>
+                            <td colspan="3">
+                                <el-form-item prop="qas">
+                                    <el-input type="textarea" v-model="bidForm.qas"
+                                              :disabled="stepCode!==40 || readonly"
+                                              placeholder="审计发现问题及建议"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
                         <tr v-if="stepCode>=50 && auditSecondInfoView" class="print-not-show">
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审审定金额</th>
                             <td>
@@ -357,6 +368,17 @@
                                         </td>
                                     </tr>
                                 </table>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=50 && auditSecondInfoView" class="print-not-show">
+                            <th :class="stepCode===50 && !readonly?'editing form-required':''">复审说明</th>
+                            <td colspan="3">
+                                <el-form-item prop="auditSecondNote">
+                                    <el-input type="textarea" v-model="bidForm.auditSecondNote"
+                                              :disabled="stepCode!==50 || readonly"
+                                              placeholder="复审说明"></el-input>
+                                </el-form-item>
                             </td>
                         </tr>
 
@@ -732,9 +754,11 @@ export default {
                 auditFirstFiles: [],
                 auditFirstSub: '',
                 auditFirstSubRatio: '',
+                qas: '',
                 //审计复审
                 secondAuditPrice: '',
                 auditNote: '',
+                auditSecondNote: '',
                 auditSecondSub: '',
                 auditSecondSubRatio: '',
                 auditSecondFiles: [],
@@ -797,11 +821,17 @@ export default {
                                 event(this.bidForm)
                             }
                         } else if (this.step === 'project') {
-                            event({
-                                targetId: this.bidForm.id,
-                                workitemId: this.workitemId,
-                                content: this.comment,
-                                auditNo: this.bidForm.auditNo
+                            this.$confirm('是否确认立项通过,通过后系统将自动编号?', '提示', {
+                                confirmButtonText: '确定',
+                                cancelButtonText: '取消',
+                                type: 'warning'
+                            }).then(() => {
+                                event({
+                                    targetId: this.bidForm.id,
+                                    workitemId: this.workitemId,
+                                    content: this.comment,
+                                    auditNo: this.bidForm.auditNo
+                                })
                             })
                         } else if (this.stepCode === 25) { //分配组员同意
                             event({
@@ -821,6 +851,7 @@ export default {
                                     auditFirstSub: this.bidForm.auditFirstSub,
                                     auditFirstSubRatio: this.bidForm.auditFirstSubRatio,
                                     auditFirstFiles: this.bidForm.auditFirstFiles,
+                                    qas: this.bidForm.qas
                                 })
                             }
                         } else if (this.step === 'auditSecond') {
@@ -835,6 +866,7 @@ export default {
                                     auditSecondSubRatio: this.bidForm.auditSecondSubRatio,
                                     auditNote: this.bidForm.auditNote,
                                     auditSecondFiles: this.bidForm.auditSecondFiles,
+                                    auditSecondNote: this.bidForm.auditSecondNote
                                 })
                             }
                         }
