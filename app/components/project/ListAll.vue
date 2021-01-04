@@ -111,7 +111,7 @@ export default {
                     {prop: 'itemCode', label: '经费代码', width: '80'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
                     {prop: 'contractMoney', label: '中标/合同金额', width: '110'},
-                    {prop: 'assigned.name', label: '中介机构', width: '220'},
+                    {prop: 'assigned.thirdparty.name', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '80'},
                     {prop: 'submissionPrice', label: '送审金额', width: '80'},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '80'},

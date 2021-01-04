@@ -9,5 +9,17 @@ export default {
     },
     saveRoleUsers: function (data) {
         return Net.jsonPost('/role/addOrUpdate/', data);
-    }
+    },
+    getRoleGroups: function (data) {
+        return Net.get('/role/group/list/', data)
+    },
+    getRoleGroup: function (data) {
+        return Net.get('/role/group/get/', data);
+    },
+    saveGroupRoles: function (data) {
+        console.log(data)
+    },
+    deleteGroup(data) {
+        return Net.post('/role/group/delete/', data);
+    },
 }

@@ -61,7 +61,8 @@
         </el-row>-->
 
         <div class="main_center" id="main_center">
-            <component v-bind:menus="leftMenus" v-bind:is="currentComponent" class="tab"></component>
+            <component v-bind:menus="leftMenus" :type="$route.query.key" v-bind:is="currentComponent"
+                       class="tab"></component>
         </div>
 
         <el-dialog title="修改密码"

@@ -3,29 +3,29 @@
         <el-card class="box-card">
             <el-form :inline="true" class="demo-form-inline" ref='query' :model='query'>
                 <el-form-item prop="userName">
-                    <el-input v-model="query.userName" placeholder="用户名"></el-input>
+                    <el-input v-model="query.userName" placeholder="用户名" size="mini"></el-input>
                 </el-form-item>
                 <el-form-item prop="name">
-                    <el-input v-model="query.name" placeholder="姓名"></el-input>
+                    <el-input v-model="query.name" placeholder="姓名" size="mini"></el-input>
                 </el-form-item>
                 <el-form-item prop="states">
-                    <el-select v-model="query.states" placeholder="状态" style="width:100px">
+                    <el-select v-model="query.states" placeholder="状态" style="width:100px" size="mini">
                         <el-option key="NORMAL" label="正常" value="NORMAL"></el-option>
                         <el-option key="DISABLE" label="禁用" value="DISABLE"></el-option>
                         <el-option key="DELETE" label="删除" value="DELETE"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="types">
-                    <el-select v-model="query.types" placeholder="分组" style="width:100px">
+                    <el-select v-model="query.types" placeholder="分组" style="width:100px" size="mini">
                         <el-option key="INSIDE" label="内部" value="INSIDE"></el-option>
                         <el-option key="OUTSIDE" label="外部" value="OUTSIDE"></el-option>
                         <el-option key="THIRDPARTY" label="中介" value="THIRDPARTY"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="queryList">查询</el-button>
-                    <el-button @click="$refs['query'].resetFields()">重置</el-button>
-                    <el-button type="success" @click="add">新增</el-button>
+                    <el-button type="primary" @click="queryList" size="mini">查询</el-button>
+                    <el-button @click="$refs['query'].resetFields()" size="mini">重置</el-button>
+                    <el-button type="success" @click="add" size="mini">新增</el-button>
                 </el-form-item>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig"></table-component>
@@ -76,7 +76,7 @@
                     <el-form-item label="联系方式" prop="telphone">
                         <el-input v-model="form.telphone"></el-input>
                     </el-form-item>
-                    <el-form-item label="角色" prop="roles">
+                    <el-form-item label="权限组" prop="roles">
                         <el-select
                             class="form-select"
                             v-model="form.roles" multiple placeholder="请选择">
@@ -116,7 +116,7 @@ export default {
     watch: {
         userInfoDialogVisible: function (vis) {
             if (vis) {
-                Role.getRoles(Config.pageAll).then(res => {
+                Role.getRoleGroups(Config.pageAll).then(res => {
                     this.roles = res.list.content
                 })
 

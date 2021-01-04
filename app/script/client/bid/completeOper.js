@@ -19,12 +19,12 @@ const oper = {
 
 export default oper
 
-function backToAuditSecond(comment, formId, workitemId) {
-    ClientCall.batchBackToAuditSecond(comment, [
+function backToAuditSecond(form) {
+    ClientCall.batchBackToAuditSecond(form.comment, [
         {
-            targetId: formId,
-            workitemId: workitemId,
-            comment: comment
+            targetId: form.targetId,
+            workitemId: form.workitemId,
+            comment: form.comment
         }
     ], 0).then(result => {
         if (result) {
@@ -33,12 +33,13 @@ function backToAuditSecond(comment, formId, workitemId) {
     })
 }
 
-function arc(comment, formId, workitemId) {
-    ClientCall.batchArc(comment, [
+function arc(form) {
+    ClientCall.batchArc(form.comment, [
         {
-            targetId: formId,
-            workitemId: workitemId,
-            comment: comment
+            targetId: form.targetId,
+            workitemId: form.workitemId,
+            comment: form.comment,
+            projectSum: form.projectSum
         }
     ], 1).then(result => {
         if (result) {

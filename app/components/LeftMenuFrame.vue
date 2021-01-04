@@ -61,6 +61,7 @@ import WorkitemDashboard from '../components/WorkitemDashboard.vue'
 import SysCampOrg from '../components/SysCampOrg.vue'
 import SysRight from '../components/SysRight.vue'
 import SysRole from '../components/SysRole.vue'
+import SysRoleGroup from "../components/SysRoleGroup.vue";
 import SysMenu from '../components/SysMenu.vue'
 import SysMaterialFile from '../components/SysMaterialFile.vue'
 import SysMaterialFileGroup from '../components/SysMaterialFileGroup.vue'
@@ -107,12 +108,13 @@ export default {
             widthClass: 'el-menu-vertical-demo'
         }
     },
-    props: ['menus'],
+    props: ['menus', 'type'],
     watch: {
         menus: function (newVal) {
             this.oneLevelMenu = newVal.filter(menu => menu.children === null)
             this.MultiLevelMenu = newVal.filter(menu => menu.children !== null)
-            if (newVal.length === 2) {//我的事项菜单
+
+            if (!this.type || this.type === 'my') {//我的事项菜单
                 this.leftActiveIndex = 'workitemDashboard'
                 this.currentComponent = 'workitemDashboard'
                 ClientCall.getWorkitems(Config.pageAll, 'willDo').then(res => {
@@ -121,7 +123,7 @@ export default {
             } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
-                if (newVal[0].value !== 'sysMaterialFile') {
+                if (this.type !== 'sys') {
                     this.widthClass = 'el-menu-vertical-small'
                 }
             }
@@ -151,6 +153,7 @@ export default {
         SysCampOrg,
         SysRight,
         SysRole,
+        SysRoleGroup,
         AuditSubmission,
         AuditProject,
         MissionAlloc,

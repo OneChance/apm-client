@@ -371,6 +371,17 @@
                             </td>
                         </tr>
 
+                        <tr v-if="stepCode>=60 && completeInfoView" class="print-not-show">
+                            <th :class="stepCode===60 && !readonly?'editing':''">项目总结</th>
+                            <td colspan="3">
+                                <el-form-item prop="projectSum">
+                                    <el-input type="textarea" v-model="bidForm.projectSum"
+                                              :disabled="stepCode!==60 || readonly"
+                                              placeholder="项目总结"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
 
                         <!--这里的意见非表单数据 是写入意见表的-->
                         <tr v-if="(step==='project' || step === 'assigned') && !readonly" class="print-not-show">
@@ -510,6 +521,7 @@ export default {
                             needRolesMap.set('allocInfoView', [11, 14, 15, 32, 30])
                             needRolesMap.set('auditFirstInfoView', [11, 18, 33, 30])
                             needRolesMap.set('auditSecondInfoView', [11, 19, 34, 30])
+                            needRolesMap.set('completeInfoView', [11, 16])
 
                             //页面内容查看权限控制
                             ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
@@ -726,6 +738,7 @@ export default {
                 auditSecondSub: '',
                 auditSecondSubRatio: '',
                 auditSecondFiles: [],
+                projectSum: '',
             },
             materialGroups: [],
             uploadParams: {
@@ -738,6 +751,7 @@ export default {
             allocInfoView: false,
             auditFirstInfoView: false,
             auditSecondInfoView: false,
+            completeInfoView: false,
         }
     },
     methods: {
@@ -849,6 +863,13 @@ export default {
                     event({
                         targetId: this.bidForm.id,
                         workitemId: this.workitemId,
+                    })
+                } else if (this.stepCode === 60) {
+                    event({
+                        targetId: this.bidForm.id,
+                        workitemId: this.workitemId,
+                        projectSum: this.bidForm.projectSum,
+                        comment: this.comment
                     })
                 } else {
                     event(this.comment, this.bidForm.id, this.workitemId)

@@ -10,7 +10,7 @@
                             <th>建设单位</th>
                             <td>
                                 <el-form-item prop="buildUnit">
-                                    <el-input v-model="auditNoteForm.buildUnit"></el-input>
+                                    <el-input v-model="auditNoteForm.buildUnit" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                             <th>施工单位</th>
@@ -30,7 +30,7 @@
                             <th>建筑面积</th>
                             <td>
                                 <el-form-item prop="floorArea">
-                                    <el-input v-model="auditNoteForm.floorArea"></el-input>
+                                    <el-input v-model="auditNoteForm.floorArea" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -65,7 +65,8 @@
                         <tr>
                             <td colspan="4">
                                 <el-form-item prop="budget">
-                                    <el-input type="textarea" autosize v-model="auditNoteForm.auditInfo"></el-input>
+                                    <el-input type="textarea" autosize v-model="auditNoteForm.auditInfo"
+                                              :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -73,7 +74,8 @@
                             <th rowspan="5">审计意见及说明</th>
                             <td colspan="3">
                                 <el-form-item prop="note1">
-                                    <el-input type="textarea" autosize v-model="auditNoteForm.note1"></el-input>
+                                    <el-input type="textarea" autosize v-model="auditNoteForm.note1"
+                                              :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -136,7 +138,7 @@
         </template>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取 消</el-button>
-            <el-button @click="save" type="success">保存</el-button>
+            <el-button @click="save" type="success" v-if="editable">保存</el-button>
             <el-button @click="visible = false;print()">打印</el-button>
         </div>
     </el-dialog>
@@ -148,6 +150,7 @@ import ClientCallProject from "../../script/client/project/clientCall"
 import Common from "../../script/common.js"
 import ConstructionUnit from "../../script/server/constructionUnit"
 import ClientCallBid from "../../script/client/bid/clientCall";
+import ClientCallCommon from "../../script/client/clientCall";
 
 export default {
     name: "AuditNoteForm",
@@ -160,6 +163,7 @@ export default {
                 ClientCallProject.getSubmission({
                     id: this.formId
                 }).then(result => {
+                    this.auditNoteForm.buildUnit = result.submission.auditUnit
                     this.auditNoteForm.submissionId = this.formId
                     this.auditNoteForm.auditNo = result.submission.auditNo
                     this.auditNoteForm.projectName = result.submission.projectName
@@ -167,7 +171,7 @@ export default {
                     this.auditNoteForm.auditMoney = result.submission.secondAuditPrice
                     this.auditNoteForm.sub = result.submission.subtractPrice
                     this.auditNoteForm.auditFee = result.submission.auditFee
-                    this.auditNoteForm.auditUnit = result.submission.assigned.name
+                    this.auditNoteForm.auditUnit = result.submission.assigned.thirdparty ? result.submission.assigned.thirdparty.name : result.submission.assigned.name
                     this.auditNoteForm.payType = result.submission.payType
                     this.auditNoteForm.auditNote = result.submission.auditNote
 
@@ -204,6 +208,17 @@ export default {
                         this.auditNoteForm.constructionUnit = res.construction.name
                     })
                 })
+
+                let needRolesMap = new Map()
+
+                needRolesMap.set('editable', [21])
+
+                //页面内容查看权限控制
+                ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
+                    for (let [key, value] of checkRes.entries()) {
+                        this[key] = value
+                    }
+                })
             }
         },
     },
@@ -212,6 +227,7 @@ export default {
     },
     data: function () {
         return {
+            editable: false,
             auditNoteForm: {
                 submissionId: '',
                 id: '',

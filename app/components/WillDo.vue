@@ -83,6 +83,9 @@ export default {
 
     },
     mounted() {
+        if (this.showPara && this.showPara.height) {
+            this.tableConfig.height = this.showPara.height
+        }
         if (this.cols) {
             this.tableConfig.cols = this.cols
         } else {
@@ -169,7 +172,6 @@ export default {
                     event: this.editRow,
                 },],
                 operWidth: 50,
-                height: this.showPara && this.showPara.height ? this.showPara.height : ''
             },
             listChecks: [],
             formId: -1,

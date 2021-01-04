@@ -35,13 +35,15 @@
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">项目地点</th>
                             <td>
                                 <el-form-item prop="projectPlace">
-                                    <el-select v-model="submissionForm.projectPlace" placeholder="请选择项目地点"
+                                    <el-select v-model="submissionForm.projectPlace"
+                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                               placeholder="请选择项目地点"
                                                class="form-select">
                                         <el-option label="荷花池" value="荷花池"></el-option>
                                         <el-option label="文汇路" value="文汇路"></el-option>
                                         <el-option label="瘦西湖" value="瘦西湖"></el-option>
-                                        <el-option label="江阳南路" value="江阳南路"></el-option>
-                                        <el-option label="江阳北路" value="江阳北路"></el-option>
+                                        <el-option label="江阳路南" value="江阳路南"></el-option>
+                                        <el-option label="江阳路北" value="江阳路北"></el-option>
                                         <el-option label="扬子津东" value="扬子津东"></el-option>
                                         <el-option label="扬子津西" value="扬子津西"></el-option>
                                         <el-option label="淮海路" value="淮海路"></el-option>
@@ -922,13 +924,36 @@
                             </td>
                         </tr>
 
+                        <!--<tr v-if="stepCode>=80 && auditSecondInfoView" class="print-not-show">
+                            <th :class="stepCode===80 && !readonly?'editing form-required':''">复审说明</th>
+                            <td colspan="3">
+                                <el-form-item prop="auditSecondNote">
+                                    <el-input type="textarea" v-model="submissionForm.auditSecondNote"
+                                              :disabled="step!=='auditSecond' || readonly"
+                                              placeholder="审计备注"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>-->
+
                         <tr v-if="stepCode>=80 && auditSecondInfoView" class="print-not-show">
-                            <th :class="stepCode===80 && !readonly?'editing form-required':''">审计备注</th>
+                            <th :class="stepCode===80 && !readonly?'editing form-required':''">审计备注
+                            </th>
                             <td colspan="3">
                                 <el-form-item prop="auditNote">
                                     <el-input type="textarea" v-model="submissionForm.auditNote"
                                               :disabled="step!=='auditSecond' || readonly"
                                               placeholder="审计备注"></el-input>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="stepCode>=90 && completeInfoView" class="print-not-show">
+                            <th :class="stepCode===90 && !readonly?'editing':''">项目总结</th>
+                            <td colspan="3">
+                                <el-form-item prop="projectSum">
+                                    <el-input type="textarea" v-model="submissionForm.projectSum"
+                                              :disabled="stepCode!==90 || readonly"
+                                              placeholder="项目总结"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -1099,7 +1124,6 @@ export default {
                             }).then(result => {
 
 
-
                                 if (this.stepCode >= 50) {
                                     if (result.submission.auditType === '内审') {
                                         ClientCallCommon.getEmps().then(result => {
@@ -1142,6 +1166,7 @@ export default {
                                 needRolesMap.set('argueInfoView', [11, 6, 26, 29])
                                 needRolesMap.set('auditFirstInfoView', [11, 7, 27, 29])
                                 needRolesMap.set('auditSecondInfoView', [11, 8, 28, 29])
+                                needRolesMap.set('completeInfoView', [11, 10])
 
                                 //页面内容查看权限控制
                                 ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
@@ -1508,12 +1533,14 @@ export default {
                 //审计复审
                 secondAuditPrice: '',
                 auditNote: '',
+                /*auditSecondNote:'',*/
                 auditSecondSub: '',
                 auditSecondSubRatio: '',
                 auditSecondFiles: [],
                 //争议处理，申请人补充上传资料
                 supplementFiles: [],
                 nextStep: '',
+                projectSum: '',
                 /*--------------------------submission end -----------------------------------*/
             },
             materialGroups: [],
@@ -1536,6 +1563,7 @@ export default {
             argueInfoView: false,
             auditFirstInfoView: false,
             auditSecondInfoView: false,
+            completeInfoView: false,
             pickerOptions: {
                 disabledDate: time => {
                     return time.getTime() <= Date.now() - 8.64e7
@@ -1684,6 +1712,7 @@ export default {
                                     auditSecondSub: this.submissionForm.auditSecondSub,
                                     auditSecondSubRatio: this.submissionForm.auditSecondSubRatio,
                                     auditNote: this.submissionForm.auditNote,
+                                    /*auditSecondNote:this.submissionForm.auditSecondNote,*/
                                     auditSecondFiles: this.submissionForm.auditSecondFiles,
                                 })
                             }
@@ -1736,6 +1765,13 @@ export default {
                         workitemId: this.workitemId,
                         supplementFiles: this.submissionForm.supplementFiles,
                         type: 1
+                    })
+                } else if (this.stepCode === 90) {
+                    event({
+                        targetId: this.submissionForm.id,
+                        workitemId: this.workitemId,
+                        projectSum: this.submissionForm.projectSum,
+                        comment: this.comment
                     })
                 } else {
                     event(

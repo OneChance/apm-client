@@ -3,11 +3,11 @@
         <el-card class="box-card">
             <el-form :inline="true" class="demo-form-inline">
                 <el-form-item>
-                    <el-input v-model="query.name" placeholder="单位名称"></el-input>
+                    <el-input v-model="query.name" placeholder="单位名称" size="mini"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmit">查询</el-button>
-                    <el-button type="success" @click="add">新增</el-button>
+                    <el-button type="primary" @click="onSubmit" size="mini">查询</el-button>
+                    <el-button type="success" @click="add" size="mini">新增</el-button>
                 </el-form-item>
             </el-form>
             <table-component v-bind:tableConfig="tableConfig"></table-component>

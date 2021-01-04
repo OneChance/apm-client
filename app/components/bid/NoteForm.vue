@@ -17,7 +17,8 @@
                             <th>建设单位</th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
-                                    <el-input v-model="noteForm.constructionUnit" placeholder="填写建设单位"></el-input>
+                                    <el-input v-model="noteForm.constructionUnit" placeholder="填写建设单位"
+                                              :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -25,7 +26,8 @@
                             <th>设计单位</th>
                             <td colspan="3">
                                 <el-form-item prop="disignUnit">
-                                    <el-input v-model="noteForm.disignUnit" placeholder="填写设计单位"></el-input>
+                                    <el-input v-model="noteForm.disignUnit" placeholder="填写设计单位"
+                                              :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -93,7 +95,8 @@
                         <tr>
                             <td colspan="4">
                                 <el-form-item prop="budget">
-                                    <el-input type="textarea" autosize v-model="noteForm.auditInfo"></el-input>
+                                    <el-input type="textarea" autosize v-model="noteForm.auditInfo"
+                                              :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -106,21 +109,21 @@
                         <tr>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.note1"></el-input>
+                                    <el-input v-model="noteForm.note1" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.note2"></el-input>
+                                    <el-input v-model="noteForm.note2" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.note3"></el-input>
+                                    <el-input v-model="noteForm.note3" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -158,7 +161,7 @@
         </template>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false">取 消</el-button>
-            <el-button @click="save" type="success">保存</el-button>
+            <el-button @click="save" type="success" v-if="editable">保存</el-button>
             <el-button @click="print()">打印</el-button>
         </div>
     </el-dialog>
@@ -168,6 +171,7 @@
 
 import ClientCallBid from "../../script/client/bid/clientCall"
 import Common from "../../script/common.js"
+import ClientCallCommon from "../../script/client/clientCall";
 
 export default {
     name: "NoteForm",
@@ -193,7 +197,7 @@ export default {
                     this.noteForm.auditFee = result.bid.auditFee
                     this.noteForm.auditUnit = result.bid.thirdparty ? result.bid.thirdparty.name : ''
                     this.noteForm.auditNote = result.bid.auditNote
-                    this.noteForm.auditMan = result.bid.assigned.name
+                    this.noteForm.auditMan = result.bid.assigned.thirdparty ? result.bid.assigned.thirdparty.name : result.bid.assigned.name
                     this.noteForm.auditInfo = result.bid.bidUnit + "\n     你单位送来的该工程，经审核，建议招标控制价为" + this.noteForm.auditMoney + "元。大写:" + Common.priceCN(
                         this.noteForm.auditMoney) + "。\n" +
                         "请按审计结果办理招投标相关手续。\n" +
@@ -221,6 +225,17 @@ export default {
                     this.noteForm.note4 = '审计备注: ' + this.noteForm.auditNote
 
                 })
+
+                let needRolesMap = new Map()
+
+                needRolesMap.set('editable', [21])
+
+                //页面内容查看权限控制
+                ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
+                    for (let [key, value] of checkRes.entries()) {
+                        this[key] = value
+                    }
+                })
             }
         },
     },
@@ -229,6 +244,7 @@ export default {
     },
     data: function () {
         return {
+            editable: false,
             dialogVisible: false,
             noteForm: {
                 bidId: '',

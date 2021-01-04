@@ -60,7 +60,7 @@ export default {
                     {prop: 'projectName', label: '工程项目', width: '220'},
                     {prop: 'constructionUnit', label: '施工单位', width: '220'},
                     {prop: 'contractMoney', label: '中标或合同金额', width: '220'},
-                    {prop: 'assigned.name', label: '中介机构', width: '220'},
+                    {prop: 'assigned.thirdparty.name', label: '中介机构', width: '220'},
                     {prop: 'auditType', label: '审计方式', width: '100'},
                     {prop: 'submissionPrice', label: '送审金额', width: '150'},
                     {prop: 'secondAuditPrice', label: '审定金额', width: '150'},
