@@ -857,7 +857,7 @@
                             </td>
                         </tr>
 
-                        <tr v-if="stepCode>=70 && auditFirstInfoView" class="print-not-show">
+                        <tr v-if="stepCode>=70 && (auditFirstInfoView|| assigned)" class="print-not-show">
                             <th :class="stepCode===70 && !readonly?'editing':''">审计发现问题及建议</th>
                             <td colspan="3">
                                 <el-form-item prop="qas">
