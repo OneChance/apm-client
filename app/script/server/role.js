@@ -17,7 +17,7 @@ export default {
         return Net.get('/role/group/get/', data);
     },
     saveGroupRoles: function (data) {
-        console.log(data)
+        return Net.jsonPost('/role/group/addOrUpdate/', data);
     },
     deleteGroup(data) {
         return Net.post('/role/group/delete/', data);

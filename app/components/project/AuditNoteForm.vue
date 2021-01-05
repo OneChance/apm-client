@@ -211,7 +211,7 @@ export default {
 
                 let needRolesMap = new Map()
 
-                needRolesMap.set('editable', [21])
+                needRolesMap.set('editable', ['admin', 'submission_audit_dept_approver'])
 
                 //页面内容查看权限控制
                 ClientCallCommon.checkRights(needRolesMap).then(checkRes => {

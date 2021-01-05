@@ -98,7 +98,7 @@ export default {
             })
         },
         genNoteForm: function (row) {
-            ClientCallCommon.checkRights(new Map([['show', [36, 16]]])).then(checkRes => {
+            ClientCallCommon.checkRights(new Map([['show', ['admin', 'bid_note']]])).then(checkRes => {
                 if (checkRes.get('show')) {
                     this.noteFormVisible = false
                     this.dialogVisible = false

@@ -540,10 +540,10 @@ export default {
 
                             let needRolesMap = new Map()
 
-                            needRolesMap.set('allocInfoView', [11, 14, 15, 32, 30])
-                            needRolesMap.set('auditFirstInfoView', [11, 18, 33, 30])
-                            needRolesMap.set('auditSecondInfoView', [11, 19, 34, 30])
-                            needRolesMap.set('completeInfoView', [11, 16])
+                            needRolesMap.set('allocInfoView', ['admin', 'bid_distribution_approver', 'bid_check_approver', 'bid_view_alloc', 'bid_view'])
+                            needRolesMap.set('auditFirstInfoView', ['admin', 'bid_audit_first_approver', 'bid_view_first', 'bid_view'])
+                            needRolesMap.set('auditSecondInfoView', ['admin', 'bid_audit_second_approver', 'bid_view_second', 'bid_view'])
+                            needRolesMap.set('completeInfoView', ['admin', 'bid_filed_approver','bid_view'])
 
                             //页面内容查看权限控制
                             ClientCallCommon.checkRights(needRolesMap).then(checkRes => {

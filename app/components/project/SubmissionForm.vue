@@ -1171,13 +1171,13 @@ export default {
 
                                 let needRolesMap = new Map()
 
-                                needRolesMap.set('allocInfoView', [11, 2, 3, 23, 29])
-                                needRolesMap.set('prepareInfoView', [11, 4, 24, 29])
-                                needRolesMap.set('surveyInfoView', [11, 5, 25, 29])
-                                needRolesMap.set('argueInfoView', [11, 6, 26, 29])
-                                needRolesMap.set('auditFirstInfoView', [11, 7, 27, 29])
-                                needRolesMap.set('auditSecondInfoView', [11, 8, 28, 29])
-                                needRolesMap.set('completeInfoView', [11, 10])
+                                needRolesMap.set('allocInfoView', ['admin', 'submission_distribution_approver', 'submission_check_approver', 'submission_view_alloc', 'submission_view'])
+                                needRolesMap.set('prepareInfoView', ['admin', 'submission_survey_prepare_approver', 'submission_view_prepare', 'submission_view'])
+                                needRolesMap.set('surveyInfoView', ['admin', 'submission_survey_scene_approver', 'submission_view_survey', 'submission_view'])
+                                needRolesMap.set('argueInfoView', ['admin', 'submission_argue_approver', 'submission_view_argue', 'submission_view'])
+                                needRolesMap.set('auditFirstInfoView', ['admin', 'submission_audit_first_approver', 'submission_view_first', 'submission_view'])
+                                needRolesMap.set('auditSecondInfoView', ['admin', 'submission_audit_second_approver', 'submission_view_second', 'submission_view'])
+                                needRolesMap.set('completeInfoView', ['admin', 'submission_filed_approver'])
 
                                 //页面内容查看权限控制
                                 ClientCallCommon.checkRights(needRolesMap).then(checkRes => {

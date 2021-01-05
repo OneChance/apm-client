@@ -165,7 +165,7 @@ export default {
             this.formId = row.id
         },
         fileList: function (row) {
-            ClientCallCommon.checkRights(new Map([['show', [37, 11]]])).then(checkRes => {
+            ClientCallCommon.checkRights(new Map([['show', ['submission_file', 'admin']]])).then(checkRes => {
                 if (checkRes.get('show')) {
                     this.dialogVisible = false
                     this.fileListVisible = false

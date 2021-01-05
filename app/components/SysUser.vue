@@ -76,15 +76,15 @@
                     <el-form-item label="联系方式" prop="telphone">
                         <el-input v-model="form.telphone"></el-input>
                     </el-form-item>
-                    <el-form-item label="权限组" prop="roles">
+                    <el-form-item label="权限组" prop="roleGroups">
                         <el-select
                             class="form-select"
-                            v-model="form.roles" multiple placeholder="请选择">
+                            v-model="form.roleGroups" multiple placeholder="请选择">
                             <el-option
-                                v-for="role in roles"
-                                :key="role.id"
-                                :label="role.name"
-                                :value="role.id">
+                                v-for="group in rGroups"
+                                :key="group.id"
+                                :label="group.name"
+                                :value="group.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -117,7 +117,7 @@ export default {
         userInfoDialogVisible: function (vis) {
             if (vis) {
                 Role.getRoleGroups(Config.pageAll).then(res => {
-                    this.roles = res.list.content
+                    this.rGroups = res.list.content
                 })
 
                 ClientCallCommon.getIntermediary().then(res => {
@@ -145,7 +145,7 @@ export default {
                 thirdparty: {
                     id: ''
                 },
-                roles: [],
+                roleGroups: [],
                 state: 'NORMAL',
                 type: '',
                 deptName: '',
@@ -203,7 +203,7 @@ export default {
                 operWidth: 100
             },
             userInfoDialogVisible: false,
-            roles: [],
+            rGroups: [],
             inters: [],
         }
     },
@@ -266,8 +266,8 @@ export default {
                     } else {
                         this.form.password = md5(this.form.password)
                     }
-                    this.form.roles = this.form.roles.map(roleId => {
-                        return {role: {id: roleId}}
+                    this.form.roleGroups = this.form.roleGroups.map(groupId => {
+                        return {groupId: groupId}
                     })
                     User.saveUser(this.form).then(() => {
                         this.operSuccess(this)
@@ -299,7 +299,7 @@ export default {
                         }
                     }
                     this.oldPassword = this.form.password
-                    this.form.roles = this.form.roles.map(role => role.role.id)
+                    this.form.roleGroups = this.form.roleGroups.map(group => group.groupId)
                 })
             })
         },

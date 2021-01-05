@@ -246,7 +246,7 @@ export default {
                 for (let key of checkRes.keys()) {
                     let needRoles = needRolesMap.get(key)
                     for (let i = 0; i < needRoles.length; i++) {
-                        if (res.user.roles.map(role => role.role.id).includes(needRoles[i])) {
+                        if (res.user.roles.map(role => role.rkey).includes(needRoles[i])) {
                             checkRes.set(key, true)
                             break;
                         }

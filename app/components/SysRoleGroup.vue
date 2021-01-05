@@ -19,7 +19,11 @@
                    :close-on-click-modal="false"
                    class="role-user">
             <template>
-                <el-input v-model="form.name" placeholder="权限组名称" style="margin-bottom: 10px"></el-input>
+                <el-form label-width="100px">
+                    <el-form-item prop="name" label="权限组名称">
+                        <el-input v-model="form.name" placeholder="权限组名称"></el-input>
+                    </el-form-item>
+                </el-form>
                 <el-transfer
                     filterable
                     :filter-method="filterMethod"
@@ -119,10 +123,9 @@ export default {
                     this.form.name = row.name
                     //加载该权限组已分配的角色
                     Role.getRoleGroup({id: row.id}).then(result => {
-                        console.log(result)
-                        /* result.role.users.forEach(u => {
-                             this.alloced.push(u.user.id)
-                         })*/
+                        result.role_group.roles.forEach(r => {
+                            this.alloced.push(r.roleId)
+                        })
                     })
                 }
             });
@@ -147,7 +150,7 @@ export default {
             }
             let roles = []
             this.alloced.forEach(r => {
-                roles.push({role: {id: r}})
+                roles.push({roleId: r})
             })
             if (roles.length === 0) {
                 this.$notify.error({
@@ -166,6 +169,7 @@ export default {
                     message: '操作成功',
                     type: 'success'
                 });
+                this.list()
                 this.roleUsersDialogVisible = false;
             })
         },
