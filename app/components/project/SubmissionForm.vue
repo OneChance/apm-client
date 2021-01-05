@@ -1658,18 +1658,22 @@ export default {
                                 event(this.submissionForm)
                             }
                         } else if (this.step === 'project') { //审计立项同意
-                            this.$confirm('是否确认立项通过,通过后系统将自动编号?', '提示', {
-                                confirmButtonText: '确定',
-                                cancelButtonText: '取消',
-                                type: 'warning'
-                            }).then(() => {
-                                event({
-                                    targetId: this.submissionForm.id,
-                                    workitemId: this.workitemId,
-                                    content: this.comment,
-                                    auditNo: this.submissionForm.auditNo
+                            let commitData = {
+                                targetId: this.submissionForm.id,
+                                workitemId: this.workitemId,
+                                content: this.comment,
+                            }
+                            if (this.submissionForm.auditNo) {
+                                event(commitData)
+                            } else {
+                                this.$confirm('是否确认立项通过,通过后系统将自动编号?', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning'
+                                }).then(() => {
+                                    event(commitData)
                                 })
-                            })
+                            }
                         } else if (this.stepCode === 25) { //分配组员同意
                             event({
                                 targetId: this.submissionForm.id,
