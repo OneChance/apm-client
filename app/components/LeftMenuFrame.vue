@@ -123,9 +123,7 @@ export default {
             } else {
                 this.leftActiveIndex = newVal[0].value
                 this.currentComponent = newVal[0].value
-                if (this.type !== 'sys') {
-                    this.widthClass = 'el-menu-vertical-small'
-                }
+                this.widthClass = ''
             }
         }
     },
