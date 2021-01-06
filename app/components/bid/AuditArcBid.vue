@@ -2,19 +2,20 @@
     <div class="card-content">
         <el-card class="box-card">
             <bid-query ref="query"
-                              v-bind:tableConfigObject="tableConfig"
-                              v-bind:stepCode="stepCode"
-                              v-bind:buttons="buttons"
-                              v-bind:checkedList="listChecks">
+                       v-bind:tableConfigObject="tableConfig"
+                       v-bind:stepCode="stepCode"
+                       v-bind:buttons="buttons"
+                       v-bind:needExport="true"
+                       v-bind:checkedList="listChecks">
             </bid-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>
         <bid-form v-bind:visible="dialogVisible"
-                         v-bind:from="'editform'"
-                         v-bind:step="'auditArc'"
-                         v-bind:stepCode="stepCode"
-                         v-bind:formId="formId">
+                  v-bind:from="'editform'"
+                  v-bind:step="'auditArc'"
+                  v-bind:stepCode="stepCode"
+                  v-bind:formId="formId">
         </bid-form>
     </div>
 </template>

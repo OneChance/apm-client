@@ -5,6 +5,7 @@
                               v-bind:tableConfigObject="tableConfig"
                               v-bind:stepCode="stepCode"
                               v-bind:buttons="buttons"
+                              v-bind:needExport="true"
                               v-bind:checkedList="listChecks">
             </submission-query>
             <table-component v-bind:tableConfig="tableConfig">

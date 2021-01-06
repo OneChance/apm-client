@@ -4,6 +4,7 @@
             <submission-query ref="query"
                               v-bind:tableConfigObject="tableConfig"
                               v-bind:stepCode="stepCode"
+                              v-bind:needExport="true"
                               v-bind:buttons="buttons">
             </submission-query>
             <table-component v-bind:tableConfig="tableConfig">

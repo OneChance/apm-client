@@ -4,6 +4,7 @@
             <bid-query ref="query"
                        v-bind:tableConfigObject="tableConfig"
                        v-bind:stepCode="stepCode"
+                       v-bind:needExport="true"
                        v-bind:buttons="buttons"
                        v-bind:checkedList="listChecks">
             </bid-query>

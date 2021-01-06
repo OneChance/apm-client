@@ -78,7 +78,8 @@
             <el-button type="primary" @click="queryList" size="small">查询</el-button>
             <el-button @click="$refs['query'].resetFields()" size="small">重置</el-button>
             <el-button type="success" @click="exportData" v-if="needExport" size="small">导出</el-button>
-            <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name" size="small">
+            <el-button v-for="btn in buttons" :type="btn.color" @click="btnClick(btn.event)" :key="btn.name"
+                       size="small">
                 {{ btn.name }}
             </el-button>
         </el-form-item>

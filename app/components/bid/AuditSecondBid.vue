@@ -1,7 +1,9 @@
 <template>
     <div class="card-content">
         <el-card class="box-card">
-            <bid-query ref="query" v-bind:tableConfigObject="tableConfig" v-bind:stepCode="stepCode"></bid-query>
+            <bid-query ref="query" v-bind:tableConfigObject="tableConfig"
+                       v-bind:needExport="true"
+                       v-bind:stepCode="stepCode"></bid-query>
             <table-component v-bind:tableConfig="tableConfig">
             </table-component>
         </el-card>

@@ -3,6 +3,7 @@
         <el-card class="box-card">
             <submission-query ref="query"
                               v-bind:tableConfigObject="tableConfig"
+                              v-bind:needExport="true"
                               v-bind:stepCode="stepCode">
             </submission-query>
             <table-component v-bind:tableConfig="tableConfig">
