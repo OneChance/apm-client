@@ -48,17 +48,6 @@
             </div>
         </div>
 
-        <!--<el-row class="header-bar">
-            <el-col>
-
-            </el-col>
-            <el-col class="header-navi">
-
-            </el-col>
-            <el-col  class="header-bar-right">
-
-            </el-col>
-        </el-row>-->
 
         <div class="main_center" id="main_center">
             <component v-bind:menus="leftMenus" :type="$route.query.key" v-bind:is="currentComponent"

@@ -1,7 +1,7 @@
 <template>
     <el-form :inline="true" :model='query' ref='query' class="demo-form-inline query-form">
-        <el-form-item prop="status" v-if="stepCode===0 || stepCode ===-10">
-            <el-select v-model="query.status" filterable placeholder="审计状态" style="width: 160px;" size="small">
+        <el-form-item prop="statuses" v-if="stepCode===0 || stepCode ===-10">
+            <el-select v-model="query.statuses" filterable placeholder="审计状态" style="width: 160px;" size="small">
                 <el-option
                     v-for="status in statusList"
                     :key="status.value"
@@ -76,7 +76,7 @@ export default {
             stepCodes: Config.stepCodeBid,
             query: {
                 projectName: '',
-                status: '',
+                statuses: '',
                 itemCode: '',
                 auditNo: '',
                 contractNo: '',
@@ -125,7 +125,7 @@ export default {
         },
         exportData: function () {
             let exportOptions = {
-                status: 0
+                statuses: [0]
             }
             for (let op in this.query) {
                 if (this.query[op]) {
@@ -144,11 +144,15 @@ export default {
                 data[op] = this.query[op]
             }
 
-            if (!data['status']) {
-                if (this.stepCode === -10) {
-                    data['status'] = 0
+            if (!data['statuses']) {
+                if (this.stepCode === 0) {
+                    data['statuses'] = []    //0或空查所有
+                } else if (this.stepCode === -10) {
+                    data['statuses'] = [-10, 10]   //送审阶段查保存的和已提交的到立项阶段的
+                } else if (this.stepCode === 10) {
+                    data['statuses'] = [20, 30, 40, 50, 60, 70, 80]  //立项阶段查所有通过立项阶段的
                 } else {
-                    data['status'] = this.stepCode
+                    data['statuses'] = [this.stepCode]
                 }
             }
 

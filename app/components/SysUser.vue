@@ -22,6 +22,17 @@
                         <el-option key="THIRDPARTY" label="中介" value="THIRDPARTY"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item prop="thridparty">
+                    <el-select v-model="query.thridparty" filterable placeholder="请选择中介机构" class="table-select"
+                               size="mini">
+                        <el-option
+                            v-for="inter in inters"
+                            :key="inter.id"
+                            :label="inter.name"
+                            :value="inter.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="queryList" size="mini">查询</el-button>
                     <el-button @click="$refs['query'].resetFields()" size="mini">重置</el-button>
@@ -119,10 +130,6 @@ export default {
                 Role.getRoleGroups(Config.pageAll).then(res => {
                     this.rGroups = res.list.content
                 })
-
-                ClientCallCommon.getIntermediary().then(res => {
-                    this.inters = res.list.content
-                })
             }
         }
     },
@@ -132,7 +139,8 @@ export default {
                 userName: '',
                 name: '',
                 states: [],
-                types: []
+                types: [],
+                thridparty: ''
             },
             oldPassword: '',
             form: {
@@ -208,7 +216,10 @@ export default {
         }
     },
     mounted: function () {
-        this.list()
+        ClientCallCommon.getIntermediary().then(res => {
+            this.inters = res.list.content
+            this.list()
+        })
     },
     methods: {
         typeChange: function (type) {
@@ -320,6 +331,9 @@ export default {
             let data = Common.copyObject(Config.page)
             for (let prop in config) {
                 data[prop] = config[prop]
+            }
+            for (let op in this.query) {
+                data[op] = this.query[op]
             }
             this.tableConfig.currentPage = data.page
 

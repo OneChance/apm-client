@@ -12,7 +12,7 @@ export default {
         return Net.jsonPost('/bid/restart/', data);
     },
     getSubmissions: function (data) {
-        return Net.get('/bid/list/', data)
+        return Net.qsGet('/bid/list/', data)
     },
     exportSubmissions: function (data) {
         return Net.exportData('/bid/export/', data)

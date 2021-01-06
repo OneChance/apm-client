@@ -12,7 +12,7 @@ export default {
         return Net.jsonPost('/submission/addOrUpdate/', data);
     },
     getSubmissions: function (data) {
-        return Net.get('/submission/list/', data)
+        return Net.qsGet('/submission/list/', data)
     },
     exportSubmissions: function (data) {
         return Net.exportData('/submission/export/', data)
