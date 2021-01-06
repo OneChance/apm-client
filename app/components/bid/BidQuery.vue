@@ -150,7 +150,7 @@ export default {
                 } else if (this.stepCode === -10) {
                     data['statuses'] = [-10, 10]   //送审阶段查保存的和已提交的到立项阶段的
                 } else if (this.stepCode === 10) {
-                    data['statuses'] = [20, 30, 40, 50, 60, 70, 80]  //立项阶段查所有通过立项阶段的
+                    data['statuses'] = [20, 25, 30, 40, 50, 60, 70, 80]  //立项阶段查所有通过立项阶段的
                 } else {
                     data['statuses'] = [this.stepCode]
                 }

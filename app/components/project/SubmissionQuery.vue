@@ -189,7 +189,7 @@ export default {
                 } else if (this.stepCode === -10) {
                     data['statuses'] = [-10, 10]
                 } else if (this.stepCode === 10) {
-                    data['statuses'] = [20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
+                    data['statuses'] = [20, 25, 30, 40, 50, 60, 65, 70, 80, 90, 100, 110]
                 } else {
                     data['statuses'] = [this.stepCode]
                 }
