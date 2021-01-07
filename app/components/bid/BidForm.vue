@@ -117,7 +117,7 @@
                             </td>
                         </tr>
 
-                        <tr>
+                        <tr class="print-not-show">
                             <th :class="stepCode<0?'form-required':''">资料清单组</th>
                             <td colspan="3">
                                 <el-form-item prop="materialGroup">
@@ -137,14 +137,15 @@
                                 <table class="form-table">
                                     <tr>
                                         <th class="first-th">资料清单</th>
-                                        <th>附件</th>
+                                        <th class="print-not-show">附件</th>
+                                        <th class="upload-num">数量</th>
                                         <th class="upload-note">备注</th>
                                     </tr>
                                     <tr v-for="fileType of this.bidForm.details">
                                         <th :class="stepCode<0 && fileType.mRequired?'form-required':''">
                                             {{ fileType.mName }}
                                         </th>
-                                        <td>
+                                        <td class="print-not-show">
                                             <el-upload class="upload-demo"
                                                        action="noAction" size="mini"
                                                        :http-request="upload"
@@ -159,6 +160,9 @@
                                                            @click="toUpload(fileType.mId)">点击上传
                                                 </el-button>
                                             </el-upload>
+                                        </td>
+                                        <td style="text-align: center">
+                                            {{ fileType.mFiles.length }}
                                         </td>
                                         <td>
                                             <el-input type="textarea" size="mini"
@@ -485,7 +489,8 @@
                        :key="oper.name">
                 {{ oper.name }}
             </el-button>
-            <el-button @click="print()">打印</el-button>
+            <el-button v-if="step !== 'submission' && step !== 'reject'" @click="print()" :loading="printLoading">打印
+            </el-button>
         </div>
     </el-dialog>
 </template>
@@ -493,12 +498,9 @@
 <script>
 
 import MaterialFile from "../../script/server/materialFile";
-import Upload from "../../script/server/upload";
 import Bid from "../../script/server/bid";
 import Comment from "../../script/server/comment";
-import Env from "../../script/server/env"
 import ClientCallCommon from "../../script/client/clientCall"
-import Config from "../../script/config";
 
 export default {
     name: "BidForm",
@@ -517,201 +519,207 @@ export default {
             if (newVal) {
 
                 this.uploadFiles = []
+                this.printLoading = true
 
-                MaterialFile.getMaterialGroups().then(res => {
+                //所有基础数据请求
+                let promises = []
+                promises.push(MaterialFile.getMaterialGroups().then(res => {
                     this.materialGroups = res.list
-                })
+                }))
 
-                this.bidForm.details = []
+                Promise.all(promises).then(() => {
+                    //初始化表单
+                    this.resetForm()
+                    this.$nextTick(() => {
+                        if (this.from === 'addform') {
+                            this.$refs['bidForm'].resetFields();
+                            $(".comment").hide()
+                        } else if (this.from === 'editform') {
+                            //加载form
+                            Bid.getSubmission({
+                                id: this.formId
+                            }).then(result => {
 
-                this.$nextTick(() => {
-                    if (this.from === 'addform') {
-                        this.$refs['bidForm'].resetFields();
-                        $(".comment").hide()
-                    } else if (this.from === 'editform') {
-                        //加载form
-                        Bid.getSubmission({
-                            id: this.formId
-                        }).then(result => {
+                                this.comment = '';
 
-                            this.comment = '';
+                                this.self = this.$root.loginUser.id === result.bid.creatorId
+                                this.assigned = result.bid.assigned && this.$root.loginUser.id === result.bid.assigned.id
 
-                            this.self = this.$root.loginUser.id === result.bid.creatorId
-                            this.assigned = result.bid.assigned && this.$root.loginUser.id === result.bid.assigned.id
+                                let needRolesMap = new Map()
 
-                            let needRolesMap = new Map()
+                                needRolesMap.set('allocInfoView', ['admin', 'bid_distribution_approver', 'bid_check_approver', 'bid_view_alloc', 'bid_view'])
+                                needRolesMap.set('auditFirstInfoView', ['admin', 'bid_audit_first_approver', 'bid_view_first', 'bid_view'])
+                                needRolesMap.set('auditSecondInfoView', ['admin', 'bid_audit_second_approver', 'bid_view_second', 'bid_view'])
+                                needRolesMap.set('completeInfoView', ['admin', 'bid_filed_approver', 'bid_view'])
 
-                            needRolesMap.set('allocInfoView', ['admin', 'bid_distribution_approver', 'bid_check_approver', 'bid_view_alloc', 'bid_view'])
-                            needRolesMap.set('auditFirstInfoView', ['admin', 'bid_audit_first_approver', 'bid_view_first', 'bid_view'])
-                            needRolesMap.set('auditSecondInfoView', ['admin', 'bid_audit_second_approver', 'bid_view_second', 'bid_view'])
-                            needRolesMap.set('completeInfoView', ['admin', 'bid_filed_approver', 'bid_view'])
-
-                            //页面内容查看权限控制
-                            ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
-                                for (let [key, value] of checkRes.entries()) {
-                                    this[key] = value
-                                }
-                            })
-
-                            //加载初审资料附件
-                            if (!result.bid.auditFirstFiles || result.bid.auditFirstFiles.length === 0) {
-                                result.bid.auditFirstFiles = [
-                                    {
-                                        mId: '-4',
-                                        mName: '审定单',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: '',
-                                        nullable: true
-                                    },
-                                    {
-                                        mId: '-5',
-                                        mName: '初审报告',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-6',
-                                        mName: '审计工作底稿',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-7',
-                                        mName: '计价文本',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                ]
-                            } else {
-                                result.bid.auditFirstFiles.filter(t => t.mId === -4)[0].nullable = true
-                            }
-
-                            //加载复审资料附件
-                            if (!result.bid.auditSecondFiles || result.bid.auditSecondFiles.length === 0) {
-                                result.bid.auditSecondFiles = [
-                                    {
-                                        mId: '-8',
-                                        mName: '审定单',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-9',
-                                        mName: '初审报告',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-10',
-                                        mName: '审计工作底稿',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                    {
-                                        mId: '-11',
-                                        mName: '计价文本',
-                                        mFiles: [],
-                                        mFileIds: '',
-                                        mNote: ''
-                                    },
-                                ]
-                            }
-
-                            for (let p in result.bid) {
-                                this.bidForm[p] = result.bid[p]
-                            }
-
-                            if (this.stepCode >= 25) {
-                                this.members = []
-                                if (result.bid.thirdparty) {
-                                    ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.bid.thirdparty.id}).then(res => {
-                                        res.list.forEach(user => {
-                                            let label = user.name + '(' + user.username + ")"
-                                            this.members.push({
-                                                value: user.id,
-                                                label: label
-                                            })
-                                        })
-                                    })
-                                } else {
-                                    ClientCallCommon.getEmps().then(result => {
-                                        result.list.content.forEach(user => {
-                                            let label = user.name + '(' + user.username + ")"
-                                            this.members.push({
-                                                value: user.id,
-                                                label: label
-                                            })
-                                        })
-                                    })
-                                }
-                                if (this.bidForm.memberIds) {
-                                    this.bidForm.members = []
-                                    this.bidForm.memberIds.split(',').forEach(id => {
-                                        this.bidForm.members.push(id - 0)
-                                    })
-                                }
-                            }
-
-                            if (this.bidForm.materialGroup) {
-                                MaterialFile.getMaterialGroup({
-                                    id: this.bidForm.materialGroup
-                                }).then(res => {
-                                    for (let fType of res.materialGroup.details) {
-                                        let detail = this.bidForm.details.filter(f => f.mId === fType.material.id)[0]
-                                        if (detail) {
-                                            detail.mRequired = fType.required
-                                        } else {
-                                            this.bidForm.details.push({
-                                                mRequired: fType.required,
-                                                mId: fType.material.id,
-                                                mName: fType.material.name,
-                                                mFiles: [],
-                                                mFileIds: '',
-                                                mNote: ''
-                                            })
-                                        }
+                                //页面内容查看权限控制
+                                ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
+                                    for (let [key, value] of checkRes.entries()) {
+                                        this[key] = value
                                     }
                                 })
-                            }
 
-                            //获取意见
-                            this.comments = []
-                            Comment.getComment({
-                                target: 'bid',
-                                targetId: this.bidForm.id
-                            }).then(res => {
-                                this.comments = res.list
-                            })
-
-                            if (this.stepCode >= 80) {
-                                //将复审审定金额默认设置为初审审定金额
-                                if (!this.bidForm.secondAuditPrice || this.bidForm.secondAuditPrice === 0) {
-                                    this.bidForm.secondAuditPrice = this.bidForm.firstAuditPrice
+                                //加载初审资料附件
+                                if (!result.bid.auditFirstFiles || result.bid.auditFirstFiles.length === 0) {
+                                    result.bid.auditFirstFiles = [
+                                        {
+                                            mId: '-4',
+                                            mName: '审定单',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: '',
+                                            nullable: true
+                                        },
+                                        {
+                                            mId: '-5',
+                                            mName: '初审报告',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-6',
+                                            mName: '审计工作底稿',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-7',
+                                            mName: '计价文本',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                    ]
+                                } else {
+                                    result.bid.auditFirstFiles.filter(t => t.mId === -4)[0].nullable = true
                                 }
-                            }
 
-                            //初始化附件
-                            if (this.step === 'auditFirst') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditFirstFiles)
-                            } else if (this.step === 'auditSecond') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditSecondFiles)
-                            } else if (this.step === 'bid' || this.step === 'reject') {
-                                ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.details)
-                            }
-                        })
-                    }
-                    $(".print-info").hide()
-                    $(".print-not-show").show()
-                });
+                                //加载复审资料附件
+                                if (!result.bid.auditSecondFiles || result.bid.auditSecondFiles.length === 0) {
+                                    result.bid.auditSecondFiles = [
+                                        {
+                                            mId: '-8',
+                                            mName: '审定单',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-9',
+                                            mName: '初审报告',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-10',
+                                            mName: '审计工作底稿',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                        {
+                                            mId: '-11',
+                                            mName: '计价文本',
+                                            mFiles: [],
+                                            mFileIds: '',
+                                            mNote: ''
+                                        },
+                                    ]
+                                }
+
+                                for (let p in result.bid) {
+                                    this.bidForm[p] = result.bid[p]
+                                }
+
+                                if (this.stepCode >= 25) {
+                                    this.members = []
+                                    if (result.bid.thirdparty) {
+                                        ClientCallCommon.getIntermediaryUsers({thirdpartyId: result.bid.thirdparty.id}).then(res => {
+                                            res.list.forEach(user => {
+                                                let label = user.name + '(' + user.username + ")"
+                                                this.members.push({
+                                                    value: user.id,
+                                                    label: label
+                                                })
+                                            })
+                                        })
+                                    } else {
+                                        ClientCallCommon.getEmps().then(result => {
+                                            result.list.content.forEach(user => {
+                                                let label = user.name + '(' + user.username + ")"
+                                                this.members.push({
+                                                    value: user.id,
+                                                    label: label
+                                                })
+                                            })
+                                        })
+                                    }
+                                    if (this.bidForm.memberIds) {
+                                        this.bidForm.members = []
+                                        this.bidForm.memberIds.split(',').forEach(id => {
+                                            this.bidForm.members.push(id - 0)
+                                        })
+                                    }
+                                }
+
+                                if (this.bidForm.materialGroup) {
+                                    MaterialFile.getMaterialGroup({
+                                        id: this.bidForm.materialGroup
+                                    }).then(res => {
+                                        for (let fType of res.materialGroup.details) {
+                                            let detail = this.bidForm.details.filter(f => f.mId === fType.material.id)[0]
+                                            if (detail) {
+                                                detail.mRequired = fType.required
+                                            } else {
+                                                this.bidForm.details.push({
+                                                    mRequired: fType.required,
+                                                    mId: fType.material.id,
+                                                    mName: fType.material.name,
+                                                    mFiles: [],
+                                                    mFileIds: '',
+                                                    mNote: ''
+                                                })
+                                            }
+                                        }
+                                    })
+                                }
+
+                                //获取意见
+                                this.comments = []
+                                Comment.getComment({
+                                    target: 'bid',
+                                    targetId: this.bidForm.id
+                                }).then(res => {
+                                    this.comments = res.list
+                                })
+
+                                if (this.stepCode >= 80) {
+                                    //将复审审定金额默认设置为初审审定金额
+                                    if (!this.bidForm.secondAuditPrice || this.bidForm.secondAuditPrice === 0) {
+                                        this.bidForm.secondAuditPrice = this.bidForm.firstAuditPrice
+                                    }
+                                }
+
+                                //初始化附件
+                                if (this.step === 'auditFirst') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditFirstFiles)
+                                } else if (this.step === 'auditSecond') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditSecondFiles)
+                                } else if (this.step === 'bid' || this.step === 'reject') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.details)
+                                }
+                            })
+                        }
+                        $(".print-info").hide()
+                        $(".print-not-show").show()
+                    });
+                }).then(() => {
+                    this.printLoading = false
+                })
             } else {
-                this.resetForm()
                 $(".upload-btn").show()
             }
         }
@@ -914,11 +922,14 @@ export default {
             }
         },
         print: function () {
+            this.visible = false
             $(".upload-btn").hide()
             $(".print-info").show()
             $(".print-not-show").hide()
             let formName = this.formName ? this.formName + 'bid' : 'bid'
-            this.$print(this.$refs[formName])
+            this.$nextTick(() => {
+                this.$print(this.$refs[formName])
+            })
         },
         //资料清单移除方法
         handleRemove(file) {
@@ -937,7 +948,11 @@ export default {
             return ClientCallCommon.removeableConfirm(file, steps, message, this.step)
         },
         removeFileFromList(file) {
-            ClientCallCommon.removeFile(file, this.uploadFiles)
+            let showList = []
+            if (this.step === 'bid' || this.step === 'reject') {
+                showList = this.bidForm.details
+            }
+            ClientCallCommon.removeFile(file, this.uploadFiles, showList)
         },
         handlePreview(file) {
             ClientCallCommon.filePreview(file, this)
@@ -953,6 +968,7 @@ export default {
         upload(content) {
 
             let failRefeshList = []
+            let listType = ''
 
             if (this.step === 'auditFirst') {
                 failRefeshList = this.bidForm.auditFirstFiles
@@ -960,9 +976,10 @@ export default {
                 failRefeshList = this.bidForm.auditSecondFiles
             } else {
                 failRefeshList = this.bidForm.details
+                listType = 'submission'
             }
 
-            ClientCallCommon.upload(content, this.uploadParams.id, this.uploadFiles, failRefeshList)
+            ClientCallCommon.upload(content, this.uploadParams.id, this.uploadFiles, failRefeshList, listType)
 
         },
     },

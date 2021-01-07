@@ -1455,13 +1455,9 @@ export default {
                         $(".print-info").hide()
                         $(".print-not-show").show()
                     });
-                })
-
-                //延时两秒可打印,防止页面元素没有加载完成,样式错误
-                setTimeout(() => {
+                }).then(() => {
                     this.printLoading = false
-                }, 2000)
-
+                })
             } else {
                 $(".upload-btn").show()
             }
