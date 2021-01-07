@@ -23,7 +23,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="thridparty">
-                    <el-select v-model="query.thridparty" filterable placeholder="请选择中介机构" class="table-select"
+                    <el-select v-model="query.thirdpartyId" filterable placeholder="请选择中介机构" class="table-select"
                                size="mini">
                         <el-option
                             v-for="inter in inters"
@@ -140,7 +140,7 @@ export default {
                 name: '',
                 states: [],
                 types: [],
-                thridparty: ''
+                thirdpartyId: ''
             },
             oldPassword: '',
             form: {

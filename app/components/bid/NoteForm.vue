@@ -9,7 +9,8 @@
                             <th>项目编号</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNo">
-                                    <el-input v-model="noteForm.projectNo" placeholder="填写项目编号" disabled></el-input>
+                                    <el-input v-model="noteForm.projectNo" placeholder="填写项目编号" size="mini"
+                                              disabled></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -17,7 +18,7 @@
                             <th>建设单位</th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
-                                    <el-input v-model="noteForm.constructionUnit" placeholder="填写建设单位"
+                                    <el-input v-model="noteForm.constructionUnit" placeholder="填写建设单位" size="mini"
                                               :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
@@ -26,7 +27,7 @@
                             <th>设计单位</th>
                             <td colspan="3">
                                 <el-form-item prop="disignUnit">
-                                    <el-input v-model="noteForm.disignUnit" placeholder="填写设计单位"
+                                    <el-input v-model="noteForm.disignUnit" placeholder="填写设计单位" size="mini"
                                               :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
@@ -35,7 +36,7 @@
                             <th>工程名称</th>
                             <td colspan="3">
                                 <el-form-item prop="projectName">
-                                    <el-input v-model="noteForm.projectName" :disabled="true"></el-input>
+                                    <el-input v-model="noteForm.projectName" :disabled="true" size="mini"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -43,7 +44,7 @@
                             <th>编制单位</th>
                             <td colspan="3">
                                 <el-form-item prop="bidUnit">
-                                    <el-input v-model="noteForm.bidUnit" :disabled="true"></el-input>
+                                    <el-input v-model="noteForm.bidUnit" :disabled="true" size="mini"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -51,7 +52,7 @@
                             <th>外审单位</th>
                             <td colspan="3">
                                 <el-form-item prop="auditUnit">
-                                    <el-input v-model="noteForm.auditUnit" :disabled="true"></el-input>
+                                    <el-input v-model="noteForm.auditUnit" :disabled="true" size="mini"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -59,7 +60,7 @@
                             <th>预算价</th>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.budget" :disabled="true"></el-input>
+                                    <el-input v-model="noteForm.budget" :disabled="true" size="mini"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
@@ -67,13 +68,14 @@
                             <th>送审价</th>
                             <td>
                                 <el-form-item prop="subMoney">
-                                    <el-input v-model.number="noteForm.subMoney" :disabled="true"></el-input>
+                                    <el-input v-model.number="noteForm.subMoney" :disabled="true"
+                                              size="mini"></el-input>
                                 </el-form-item>
                             </td>
                             <th>核增</th>
                             <td>
                                 <el-form-item prop="add">
-                                    <el-input v-model.number="noteForm.add" :disabled="true"></el-input>
+                                    <el-input v-model.number="noteForm.add" :disabled="true" size="mini"></el-input>
                                 </el-form-item>
                             </td>
 
@@ -82,20 +84,21 @@
                             <th>审核价</th>
                             <td>
                                 <el-form-item prop="auditMoney">
-                                    <el-input v-model.number="noteForm.auditMoney" :disabled="true"></el-input>
+                                    <el-input v-model.number="noteForm.auditMoney" size="mini"
+                                              :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
                             <th>核减</th>
                             <td>
                                 <el-form-item prop="sub">
-                                    <el-input v-model.number="noteForm.sub" :disabled="true"></el-input>
+                                    <el-input v-model.number="noteForm.sub" size="mini" :disabled="true"></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4">
                                 <el-form-item prop="budget">
-                                    <el-input type="textarea" autosize v-model="noteForm.auditInfo"
+                                    <el-input type="textarea" autosize v-model="noteForm.auditInfo" size="mini"
                                               :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
@@ -103,33 +106,33 @@
                         <tr>
                             <th rowspan="5">审计意见及说明</th>
                             <td colspan="3">
-                                <el-input v-model="noteForm.note0" disabled></el-input>
+                                <el-input v-model="noteForm.note0" size="mini" disabled></el-input>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.note1" :disabled='!editable'></el-input>
+                                    <el-input v-model="noteForm.note1" size="mini" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.note2" :disabled='!editable'></el-input>
+                                    <el-input v-model="noteForm.note2" size="mini" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
                                 <el-form-item prop="budget">
-                                    <el-input v-model="noteForm.note3" :disabled='!editable'></el-input>
+                                    <el-input v-model="noteForm.note3" size="mini" :disabled='!editable'></el-input>
                                 </el-form-item>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <el-input v-model="noteForm.note4" disabled></el-input>
+                                <el-input v-model="noteForm.note4" size="mini" disabled></el-input>
                             </td>
                         </tr>
                         <tr>

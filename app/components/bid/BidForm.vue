@@ -9,7 +9,7 @@
                             <th class="first-th">立项代码</th>
                             <td>
                                 <el-form-item prop="itemCode">
-                                    <el-input v-model="bidForm.itemCode"
+                                    <el-input v-model="bidForm.itemCode" size="mini"
                                               :disabled="stepCode>0"></el-input>
                                 </el-form-item>
                             </td>
@@ -17,7 +17,7 @@
                             </th>
                             <td>
                                 <el-form-item prop="auditNo">
-                                    <el-input v-model="bidForm.auditNo"
+                                    <el-input v-model="bidForm.auditNo" size="mini"
                                               disabled=true></el-input>
                                 </el-form-item>
                             </td>
@@ -26,7 +26,7 @@
                             <th :class="stepCode<0?'form-required':''">工程项目名称</th>
                             <td>
                                 <el-form-item prop="projectName">
-                                    <el-input v-model="bidForm.projectName"
+                                    <el-input v-model="bidForm.projectName" size="mini"
                                               :disabled="stepCode>0 || readonly"
                                               placeholder="填写工程项目名称"></el-input>
                                 </el-form-item>
@@ -34,7 +34,7 @@
                             <th>经费来源</th>
                             <td>
                                 <el-form-item prop="feeFrom">
-                                    <el-input v-model="bidForm.feeFrom"
+                                    <el-input v-model="bidForm.feeFrom" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写经费来源"></el-input>
                                 </el-form-item>
@@ -44,7 +44,7 @@
                             <th :class="stepCode<0?'form-required':''">编制单位名称</th>
                             <td colspan="3">
                                 <el-form-item prop="bidUnit">
-                                    <el-input v-model="bidForm.bidUnit"
+                                    <el-input v-model="bidForm.bidUnit" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写编制单位名称"></el-input>
                                 </el-form-item>
@@ -54,7 +54,7 @@
                             <th :class="stepCode<0?'form-required':''">编标人</th>
                             <td>
                                 <el-form-item prop="bidMan">
-                                    <el-input v-model="bidForm.bidMan"
+                                    <el-input v-model="bidForm.bidMan" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写编标人"></el-input>
                                 </el-form-item>
@@ -62,7 +62,7 @@
                             <th>联系电话</th>
                             <td>
                                 <el-form-item prop="bidManTel">
-                                    <el-input v-model="bidForm.bidManTel"
+                                    <el-input v-model="bidForm.bidManTel" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写联系电话"></el-input>
                                 </el-form-item>
@@ -72,7 +72,7 @@
                             <th :class="stepCode<0?'form-required':''">预计开工时间</th>
                             <td>
                                 <el-form-item prop="startDate">
-                                    <el-date-picker v-model="bidForm.startDate"
+                                    <el-date-picker v-model="bidForm.startDate" size="mini"
                                                     :disabled="stepCode>0"
                                                     format="yyyy-MM-dd"
                                                     value-format="yyyy-MM-dd" type="date" placeholder="选择预计开工时间">
@@ -84,7 +84,7 @@
                             <th>预算金额</th>
                             <td>
                                 <el-form-item prop="budget">
-                                    <el-input v-model="bidForm.budget"
+                                    <el-input v-model="bidForm.budget" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写预算"></el-input>
                                 </el-form-item>
@@ -92,7 +92,7 @@
                             <th>土建</th>
                             <td>
                                 <el-form-item prop="constructMoney">
-                                    <el-input v-model="bidForm.constructMoney"
+                                    <el-input v-model="bidForm.constructMoney" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写土建金额"></el-input>
                                 </el-form-item>
@@ -102,7 +102,7 @@
                             <th>报审金额</th>
                             <td>
                                 <el-form-item prop="subMoney">
-                                    <el-input v-model="bidForm.subMoney"
+                                    <el-input v-model="bidForm.subMoney" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写预算"></el-input>
                                 </el-form-item>
@@ -110,7 +110,7 @@
                             <th>安装</th>
                             <td>
                                 <el-form-item prop="installMoney">
-                                    <el-input v-model="bidForm.installMoney"
+                                    <el-input v-model="bidForm.installMoney" size="mini"
                                               :disabled="stepCode>0"
                                               placeholder="填写安装金额"></el-input>
                                 </el-form-item>
@@ -121,7 +121,7 @@
                             <th :class="stepCode<0?'form-required':''">资料清单组</th>
                             <td colspan="3">
                                 <el-form-item prop="materialGroup">
-                                    <el-select v-model="bidForm.materialGroup" placeholder="请选择"
+                                    <el-select v-model="bidForm.materialGroup" placeholder="请选择" size="mini"
                                                :disabled="stepCode>0"
                                                @change="materialGroupChange">
                                         <el-option v-for="group in materialGroups" :key="group.id" :label="group.name"
@@ -146,7 +146,7 @@
                                         </th>
                                         <td>
                                             <el-upload class="upload-demo"
-                                                       action="noAction"
+                                                       action="noAction" size="mini"
                                                        :http-request="upload"
                                                        :with-credentials="true"
                                                        :on-preview="handlePreview"
@@ -154,14 +154,14 @@
                                                        :before-remove="beforeRemove"
                                                        multiple
                                                        :file-list="fileType.mFiles">
-                                                <el-button size="small" type="primary" class="upload-btn"
+                                                <el-button size="mini" type="primary" class="upload-btn"
                                                            v-if="stepCode<0"
                                                            @click="toUpload(fileType.mId)">点击上传
                                                 </el-button>
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input type="textarea"
+                                            <el-input type="textarea" size="mini"
                                                       autosize v-model="fileType.mNote"
                                                       :disabled="stepCode>0"
                                                       placeholder="填写备注"></el-input>
@@ -174,7 +174,7 @@
                         <tr v-if="stepCode>=25 && (allocInfoView || assigned)" class="print-not-show">
                             <th>审计方式</th>
                             <td colspan="3">
-                                <el-input type="text" v-model="bidForm.auditType" disabled></el-input>
+                                <el-input type="text" v-model="bidForm.auditType" size="mini" disabled></el-input>
                             </td>
                         </tr>
 
@@ -182,7 +182,7 @@
                             class="print-not-show">
                             <th>中介公司</th>
                             <td colspan="3">
-                                <el-input type="text" v-model="bidForm.thirdparty.name" disabled></el-input>
+                                <el-input type="text" v-model="bidForm.thirdparty.name" size="mini" disabled></el-input>
                             </td>
                         </tr>
 
@@ -190,11 +190,12 @@
                             class="print-not-show">
                             <th>审计组长</th>
                             <td>
-                                <el-input type="text" v-model="bidForm.assigned.name" disabled></el-input>
+                                <el-input type="text" v-model="bidForm.assigned.name" size="mini" disabled></el-input>
                             </td>
                             <th>联系方式</th>
                             <td>
-                                <el-input type="text" v-model="bidForm.assigned.telphone" disabled></el-input>
+                                <el-input type="text" v-model="bidForm.assigned.telphone" size="mini"
+                                          disabled></el-input>
                             </td>
                         </tr>
 
@@ -203,7 +204,7 @@
                             <th :class="stepCode===25?'editing form-required':''">审计组员</th>
                             <td colspan="3">
                                 <el-form-item prop="members">
-                                    <el-select v-model="bidForm.members"
+                                    <el-select v-model="bidForm.members" size="mini"
                                                class="table-select" filterable
                                                multiple placeholder="请选择"
                                                :disabled="stepCode!==25 || readonly">
@@ -220,7 +221,7 @@
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">送审价</th>
                             <td>
                                 <el-form-item prop="submissionPrice">
-                                    <el-input v-model="bidForm.submissionPrice"
+                                    <el-input v-model="bidForm.submissionPrice" size="mini"
                                               :disabled="step!=='auditFirst' || readonly"
                                               placeholder="填写送审价"></el-input>
                                 </el-form-item>
@@ -228,7 +229,7 @@
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">初审审定金额</th>
                             <td>
                                 <el-form-item prop="firstAuditPrice">
-                                    <el-input v-model="bidForm.firstAuditPrice"
+                                    <el-input v-model="bidForm.firstAuditPrice" size="mini"
                                               :disabled="step!=='auditFirst' || readonly"
                                               placeholder="填写土建金额"></el-input>
                                 </el-form-item>
@@ -239,13 +240,13 @@
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">初审核减额</th>
                             <td>
                                 <el-form-item prop="auditFirstSub">
-                                    <el-input v-model="bidForm.auditFirstSub" disabled></el-input>
+                                    <el-input v-model="bidForm.auditFirstSub" size="mini" disabled></el-input>
                                 </el-form-item>
                             </td>
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">初审核减率</th>
                             <td>
                                 <el-form-item prop="auditFirstSubRatio">
-                                    <el-input v-model="bidForm.auditFirstSubRatio+'%'"
+                                    <el-input v-model="bidForm.auditFirstSubRatio+'%'" size="mini"
                                               disabled
                                     ></el-input>
                                 </el-form-item>
@@ -266,7 +267,7 @@
                                         </th>
                                         <td>
                                             <el-upload class="upload-demo"
-                                                       action="noAction"
+                                                       action="noAction" size="mini"
                                                        :http-request="upload"
                                                        :with-credentials="true"
                                                        :on-preview="handlePreview"
@@ -274,7 +275,7 @@
                                                        :before-remove="beforeRemoveAuditFirst"
                                                        multiple
                                                        :file-list="fileType.mFiles">
-                                                <el-button size="small" type="primary" class="upload-btn"
+                                                <el-button size="mini" type="primary" class="upload-btn"
                                                            v-if="step ==='auditFirst' && !readonly"
                                                            @click="toUpload(fileType.mId)">
                                                     点击上传
@@ -282,7 +283,7 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input type="textarea"
+                                            <el-input type="textarea" size="mini"
                                                       autosize v-model="fileType.mNote"
                                                       :disabled="step!=='auditFirst' || readonly"
                                                       placeholder="填写备注"></el-input>
@@ -296,7 +297,7 @@
                             <th :class="stepCode===40 && !readonly?'editing':''">审计发现问题及建议</th>
                             <td colspan="3">
                                 <el-form-item prop="qas">
-                                    <el-input type="textarea" v-model="bidForm.qas"
+                                    <el-input type="textarea" v-model="bidForm.qas" size="mini"
                                               :disabled="stepCode!==40 || readonly"
                                               placeholder="审计发现问题及建议"></el-input>
                                 </el-form-item>
@@ -307,7 +308,7 @@
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审审定金额</th>
                             <td>
                                 <el-form-item prop="secondAuditPrice">
-                                    <el-input v-model="bidForm.secondAuditPrice"
+                                    <el-input v-model="bidForm.secondAuditPrice" size="mini"
                                               :disabled="step!=='auditSecond' || readonly"
                                               placeholder="填写复审审定金额"></el-input>
                                 </el-form-item>
@@ -315,7 +316,7 @@
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审核减额</th>
                             <td>
                                 <el-form-item prop="secondAuditPrice">
-                                    <el-input v-model="bidForm.auditSecondSub"
+                                    <el-input v-model="bidForm.auditSecondSub" size="mini"
                                               disabled></el-input>
                                 </el-form-item>
                             </td>
@@ -325,7 +326,7 @@
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审核减率</th>
                             <td colspan="3">
                                 <el-form-item prop="secondAuditPrice">
-                                    <el-input v-model="bidForm.auditSecondSubRatio+'%'"
+                                    <el-input v-model="bidForm.auditSecondSubRatio+'%'" size="mini"
                                               disabled></el-input>
                                 </el-form-item>
                             </td>
@@ -347,7 +348,7 @@
                                             <el-upload class="upload-demo"
                                                        action="noAction"
                                                        :http-request="upload"
-                                                       :with-credentials="true"
+                                                       :with-credentials="true" size="mini"
                                                        :on-preview="handlePreview"
                                                        :on-remove="handleRemove"
                                                        :before-remove="beforeRemoveAuditSecond"
@@ -361,7 +362,7 @@
                                             </el-upload>
                                         </td>
                                         <td>
-                                            <el-input type="textarea"
+                                            <el-input type="textarea" size="mini"
                                                       autosize v-model="fileType.mNote"
                                                       :disabled="step!=='auditSecond' || readonly"
                                                       placeholder="填写备注"></el-input>
@@ -375,7 +376,7 @@
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">复审说明</th>
                             <td colspan="3">
                                 <el-form-item prop="auditSecondNote">
-                                    <el-input type="textarea" v-model="bidForm.auditSecondNote"
+                                    <el-input type="textarea" v-model="bidForm.auditSecondNote" size="mini"
                                               :disabled="stepCode!==50 || readonly"
                                               placeholder="复审说明"></el-input>
                                 </el-form-item>
@@ -386,7 +387,7 @@
                             <th :class="stepCode===50 && !readonly?'editing form-required':''">审计备注</th>
                             <td colspan="3">
                                 <el-form-item prop="auditNote">
-                                    <el-input type="textarea" v-model="bidForm.auditNote"
+                                    <el-input type="textarea" v-model="bidForm.auditNote" size="mini"
                                               :disabled="step!=='auditSecond' || readonly"
                                               placeholder="审计备注"></el-input>
                                 </el-form-item>
@@ -397,7 +398,7 @@
                             <th :class="stepCode===60 && !readonly?'editing':''">项目总结</th>
                             <td colspan="3">
                                 <el-form-item prop="projectSum">
-                                    <el-input type="textarea" v-model="bidForm.projectSum"
+                                    <el-input type="textarea" v-model="bidForm.projectSum" size="mini"
                                               :disabled="stepCode!==60 || readonly"
                                               placeholder="项目总结"></el-input>
                                 </el-form-item>
@@ -409,7 +410,7 @@
                         <tr v-if="(step==='project' || step === 'assigned') && !readonly" class="print-not-show">
                             <th :class="(stepCode===10||stepCode===30)&&!readonly?'editing':''">审批意见</th>
                             <td colspan="3">
-                                <el-input type="textarea" v-model="comment"></el-input>
+                                <el-input type="textarea" v-model="comment" size="mini"></el-input>
                             </td>
                         </tr>
 
@@ -543,7 +544,7 @@ export default {
                             needRolesMap.set('allocInfoView', ['admin', 'bid_distribution_approver', 'bid_check_approver', 'bid_view_alloc', 'bid_view'])
                             needRolesMap.set('auditFirstInfoView', ['admin', 'bid_audit_first_approver', 'bid_view_first', 'bid_view'])
                             needRolesMap.set('auditSecondInfoView', ['admin', 'bid_audit_second_approver', 'bid_view_second', 'bid_view'])
-                            needRolesMap.set('completeInfoView', ['admin', 'bid_filed_approver','bid_view'])
+                            needRolesMap.set('completeInfoView', ['admin', 'bid_filed_approver', 'bid_view'])
 
                             //页面内容查看权限控制
                             ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
