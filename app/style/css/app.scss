@@ -33,16 +33,12 @@ body {
 }
 
 .el-aside {
-    width: initial !important;
+    width: auto !important;
 }
 
 #left-menu {
     min-height: calc(100vh - 60px);
     height: calc(100%);
-
-    .fa {
-
-    }
 
     * {
         font-size: 0.9em;
@@ -296,6 +292,10 @@ body {
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 160px;
+}
+
+.el-menu-vertical-mini:not(.el-menu--collapse) {
+    width: 120px;
 }
 
 .left-oper {
