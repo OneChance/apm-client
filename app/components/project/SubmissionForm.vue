@@ -1018,11 +1018,11 @@
 
                         <tr class="print-info">
                             <th>送审部门(盖章)</th>
-                            <td style="height: 100px;">
+                            <td style="height: 65px;">
 
                             </td>
                             <th></th>
-                            <td style="height: 100px;">
+                            <td style="height: 65px;">
 
                             </td>
                         </tr>
