@@ -328,6 +328,7 @@ export default {
     filePreview(file, vueObj) {
         let officeFile = /.*\.(?:xlsx|xls|doc|docx|ppt)$/i;
         let pdfFile = /.*\.(?:pdf)$/i;
+        let imageFile = /.*\.(?:jpg|jpeg|png)$/i;
         if (officeFile.test(file.name)) {
             window.open(Config.ATTACH_URL + Env.baseURL + file.url)
         } else if (pdfFile.test(file.name)) {
@@ -336,6 +337,11 @@ export default {
                 query: {url: Env.baseURL + file.url}
             });
             window.open(routeUrl.href, '_blank');
+        } else if (imageFile.test(file.name)) {
+            let imgWin = window.open()
+            let img = imgWin.document.createElement("img")
+            img.src = Env.baseURL + file.url
+            imgWin.document.body.appendChild(img)
         } else {
             vueObj.$notify.error({
                 title: '操作失败!',
