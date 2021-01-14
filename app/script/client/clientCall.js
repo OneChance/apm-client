@@ -194,15 +194,17 @@ export default {
         }).then(res => {
             list.length = 0
             for (let fType of res.materialGroup.details) {
-                list.push({
-                    mRequired: fType.required,
-                    mId: fType.material.id, //清单类型id
-                    mName: fType.material.name,
-                    mFiles: [], //上传的文件列表
-                    mFileIds: '', //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
-                    mNote: '',
-                    description: fType.material.description
-                })
+                if (!fType.material.del) {
+                    list.push({
+                        mRequired: fType.required,
+                        mId: fType.material.id, //清单类型id
+                        mName: fType.material.name,
+                        mFiles: [], //上传的文件列表
+                        mFileIds: '', //上传的文件id集合(用于服务端接收 是mFiles数组中文件id的集合)
+                        mNote: '',
+                        description: fType.material.description
+                    })
+                }
             }
         })
     },
