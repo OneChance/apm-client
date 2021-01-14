@@ -340,6 +340,7 @@ export default {
         } else if (imageFile.test(file.name)) {
             let imgWin = window.open()
             let img = imgWin.document.createElement("img")
+            img.style = 'width:96vw'
             img.src = Env.baseURL + file.url
             imgWin.document.body.appendChild(img)
         } else {
