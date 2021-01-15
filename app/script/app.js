@@ -9,6 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import Print from '../plugin/print/print'
+import Image from "../components/file/Image";
 
 //使用路由插件
 Vue.use(VueRouter);
@@ -36,6 +37,7 @@ export default {
                 {path: '/sign', component: Sign},
                 {path: '/', component: Sign},
                 {path: '/pdf', component: Pdf},
+                {path: '/image', component: Image},
                 {
                     path: '/index',
                     component: Index,

@@ -338,11 +338,11 @@ export default {
             });
             window.open(routeUrl.href, '_blank');
         } else if (imageFile.test(file.name)) {
-            let imgWin = window.open()
-            let img = imgWin.document.createElement("img")
-            img.style = 'width:96vw'
-            img.src = Env.baseURL + file.url
-            imgWin.document.body.appendChild(img)
+            let routeUrl = vueObj.$router.resolve({
+                path: "/image",
+                query: {url: Env.baseURL + file.url}
+            });
+            window.open(routeUrl.href, '_blank');
         } else {
             vueObj.$notify.error({
                 title: '操作失败!',
