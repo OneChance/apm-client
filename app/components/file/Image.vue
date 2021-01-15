@@ -3,8 +3,11 @@
         class="img-preview"
         :src="$route.query.url"
         fit="contain"
-        :preview-src-list="srcList"
-    ></el-image>
+        :preview-src-list="srcList">
+        <div slot="placeholder" class="image-slot">
+            图片加载中<span class="dot">...</span>
+        </div>
+    </el-image>
 </template>
 
 <script>
