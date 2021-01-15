@@ -1,31 +1,30 @@
 <template id="login">
     <div>
-        <div class="center">
-            <el-card class="box-card login-card">
-                <div slot="header" class="clearfix header">
+        <div class="bg"></div>
+        <el-card class="box-card login-card">
+            <div slot="header" class="clearfix header">
                     <span class="sign-title">
                         <p style="margin: 5px 0;font-family: fangsong,serif;">扬州大学</p>
                         <p style="margin: 0;">工程审计管理信息系统</p>
                     </span>
-                </div>
-                <el-form :model=" form">
-                    <el-form-item>
-                        <el-input v-model="name" placeholder="用户名"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input type="password" v-model="password" placeholder="密码"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="danger" class="sign-btn sign-local-btn" @click="signIn" disabled="disabled">
-                            登陆
-                        </el-button>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="danger" class="sign-btn" @click="authCenter">统一身份认证</el-button>
-                    </el-form-item>
-                </el-form>
-            </el-card>
-        </div>
+            </div>
+            <el-form :model=" form">
+                <el-form-item>
+                    <el-input v-model="name" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-input type="password" v-model="password" placeholder="密码"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="danger" class="sign-btn sign-local-btn" @click="signIn" disabled="disabled">
+                        登陆
+                    </el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="danger" class="sign-btn" @click="authCenter">统一身份认证</el-button>
+                </el-form-item>
+            </el-form>
+        </el-card>
     </div>
 </template>
 
@@ -86,6 +85,9 @@ export default {
 
 .login-card {
     width: 350px;
+    position: fixed;
+    top: 180px;
+    left: calc(50vw - 180px);
 }
 
 .sign-title {
@@ -98,27 +100,17 @@ export default {
     text-align: center;
 }
 
-.clearfix:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
-}
-
 .sign-btn {
     width: 100%;
 }
 
-.center {
-    background-size: cover;
-    background-color: #f7f3f3;
-    display: flex;
+.bg {
+    /*background-size: cover;
+    background-image: url("./../assets/images/login-bg.jpg");
+    opacity: 0.7;*/
+    width: 100vw;
     height: 100vh;
-    justify-content: center;
-    align-items: start;
-    padding-top: 180px;
+    background-color: #f7f3f3;
 }
 
 .logo img {

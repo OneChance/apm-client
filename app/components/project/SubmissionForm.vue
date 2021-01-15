@@ -34,30 +34,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <th :class="(step==='submission' || step==='reject')?'form-required':''">项目地点</th>
-                            <td colspan="3">
-                                <el-form-item prop="projectPlace">
-                                    <el-select v-model="submissionForm.projectPlace" size="mini"
-                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
-                                               placeholder="请选择项目地点"
-                                               class="form-select">
-                                        <el-option label="荷花池" value="荷花池"></el-option>
-                                        <el-option label="文汇路" value="文汇路"></el-option>
-                                        <el-option label="瘦西湖" value="瘦西湖"></el-option>
-                                        <el-option label="江阳路南" value="江阳路南"></el-option>
-                                        <el-option label="江阳路北" value="江阳路北"></el-option>
-                                        <el-option label="扬子津东" value="扬子津东"></el-option>
-                                        <el-option label="扬子津西" value="扬子津西"></el-option>
-                                        <el-option label="淮海路" value="淮海路"></el-option>
-                                        <el-option label="广陵学院" value="广陵学院"></el-option>
-                                        <el-option label="康源乳业" value="康源乳业"></el-option>
-                                        <el-option label="高邮园区" value="高邮园区"></el-option>
-                                        <el-option label="其他" value="其他"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </td>
-                        </tr>
-                        <tr>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">施工单位名称</th>
                             <td colspan="3">
                                 <el-form-item prop="constructionUnit">
@@ -79,7 +55,7 @@
                         </tr>
                         <tr>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">送审单位</th>
-                            <td colspan="3">
+                            <td>
                                 <el-form-item prop="auditUnit">
                                     <el-select v-model="submissionForm.auditUnit" size="mini"
                                                :disabled="(step!=='submission' && step!=='reject')||readonly"
@@ -92,6 +68,28 @@
                                             :label="org.name"
                                             :value="org.name">
                                         </el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </td>
+                            <th :class="(step==='submission' || step==='reject')?'form-required':''">项目地点</th>
+                            <td>
+                                <el-form-item prop="projectPlace">
+                                    <el-select v-model="submissionForm.projectPlace" size="mini"
+                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
+                                               placeholder="请选择项目地点"
+                                               class="form-select">
+                                        <el-option label="荷花池" value="荷花池"></el-option>
+                                        <el-option label="文汇路" value="文汇路"></el-option>
+                                        <el-option label="瘦西湖" value="瘦西湖"></el-option>
+                                        <el-option label="江阳路南" value="江阳路南"></el-option>
+                                        <el-option label="江阳路北" value="江阳路北"></el-option>
+                                        <el-option label="扬子津东" value="扬子津东"></el-option>
+                                        <el-option label="扬子津西" value="扬子津西"></el-option>
+                                        <el-option label="淮海路" value="淮海路"></el-option>
+                                        <el-option label="广陵学院" value="广陵学院"></el-option>
+                                        <el-option label="康源乳业" value="康源乳业"></el-option>
+                                        <el-option label="高邮园区" value="高邮园区"></el-option>
+                                        <el-option label="其他" value="其他"></el-option>
                                     </el-select>
                                 </el-form-item>
                             </td>
