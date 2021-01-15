@@ -22,18 +22,20 @@
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"></el-input>
                                 </el-form-item>
                             </td>
-                        </tr>
+
                         <tr>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">工程项目名称</th>
-                            <td>
+                            <td colspan="3">
                                 <el-form-item prop="projectName">
                                     <el-input v-model="submissionForm.projectName" size="mini"
                                               :disabled="(step!=='submission' && step!=='reject')||readonly"
                                               placeholder="填写工程项目名称"></el-input>
                                 </el-form-item>
                             </td>
+                        </tr>
+                        <tr>
                             <th :class="(step==='submission' || step==='reject')?'form-required':''">项目地点</th>
-                            <td>
+                            <td colspan="3">
                                 <el-form-item prop="projectPlace">
                                     <el-select v-model="submissionForm.projectPlace" size="mini"
                                                :disabled="(step!=='submission' && step!=='reject')||readonly"

@@ -326,30 +326,44 @@ export default {
         )
     },
     filePreview(file, vueObj) {
-        let officeFile = /.*\.(?:xlsx|xls|doc|docx|ppt)$/i;
-        let pdfFile = /.*\.(?:pdf)$/i;
-        let imageFile = /.*\.(?:jpg|jpeg|png)$/i;
-        if (officeFile.test(file.name)) {
-            window.open(Config.ATTACH_URL + Env.baseURL + file.url)
-        } else if (pdfFile.test(file.name)) {
-            let routeUrl = vueObj.$router.resolve({
-                path: "/pdf",
-                query: {url: Env.baseURL + file.url}
-            });
-            window.open(routeUrl.href, '_blank');
-        } else if (imageFile.test(file.name)) {
-            let routeUrl = vueObj.$router.resolve({
-                path: "/image",
-                query: {url: Env.baseURL + file.url}
-            });
-            window.open(routeUrl.href, '_blank');
-        } else {
-            vueObj.$notify.error({
-                title: '操作失败!',
-                message: '该文件类型不支持在线预览!',
-                duration: 2000
+        let url = file.downloadUrl ? file.downloadUrl : Env.baseURL + file.url
+        vueObj.$confirm('您想要...', '文件操作', {
+            confirmButtonText: '下载',
+            cancelButtonText: '预览',
+            closeOnClickModal: false,
+            distinguishCancelAndClose: true
+        })
+            .then(_ => {
+                window.open(url)
             })
-        }
+            .catch(action => {
+                if (action === 'cancel') {
+                    let officeFile = /.*\.(?:xlsx|xls|doc|docx|ppt)$/i;
+                    let pdfFile = /.*\.(?:pdf)$/i;
+                    let imageFile = /.*\.(?:jpg|jpeg|png)$/i;
+                    if (officeFile.test(file.name)) {
+                        window.open(Config.ATTACH_URL + url)
+                    } else if (pdfFile.test(file.name)) {
+                        let routeUrl = vueObj.$router.resolve({
+                            path: "/pdf",
+                            query: {url: url}
+                        });
+                        window.open(routeUrl.href, '_blank');
+                    } else if (imageFile.test(file.name)) {
+                        let routeUrl = vueObj.$router.resolve({
+                            path: "/image",
+                            query: {url: url}
+                        });
+                        window.open(routeUrl.href, '_blank');
+                    } else {
+                        vueObj.$notify.error({
+                            title: '操作失败!',
+                            message: '该文件类型不支持在线预览!',
+                            duration: 2000
+                        })
+                    }
+                }
+            });
     },
     clearForm(form) {
         for (let p in form) {
