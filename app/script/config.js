@@ -5,7 +5,7 @@ export default {
     },
     page: {
         page: 1,
-        pageSize: 10
+        pageSize: 999999999
     },
     pageAll: {
         page: 1,

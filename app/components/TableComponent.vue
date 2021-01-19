@@ -66,7 +66,7 @@
             </el-table-column>
         </el-table>
 
-        <el-pagination v-if="tableConfig.page"
+        <!--<el-pagination v-if="tableConfig.page"
                        class="page-nav"
                        background
                        :small="small"
@@ -74,7 +74,7 @@
                        layout="prev, pager, next"
                        @current-change="handleCurrentChange"
                        :total="tableConfig.total">
-        </el-pagination>
+        </el-pagination>-->
 
         <el-dialog
             title="提示"
@@ -160,6 +160,10 @@ export default {
         App.vueG.$on('windowResize', (width) => {
             comp.elementSize(width)
         })
+
+        if (!this.tableConfig.height) {
+            this.tableConfig.height = 600
+        }
 
         if (this.tableConfig.steps) {
             this.tableConfig.steps.forEach(s => {
