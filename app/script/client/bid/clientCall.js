@@ -72,6 +72,18 @@ export default {
         })
         return Bid.allocApprove(checks)
     },
+    //争议处理
+    commitArgue: function (form) {
+        return Bid.commitArgue(form)
+    },
+    //争议处理审计处审核
+    commitArgueCheck: function (form) {
+        return Bid.commitArgueCheck(form)
+    },
+    //提交争议处理结果
+    commitArgueResolve: function (form) {
+        return Bid.commitArgueResolve(form)
+    },
     //初审
     commitAuditFirst: function (form) {
         return Bid.commitAuditFirst(form)
@@ -79,6 +91,10 @@ export default {
     //复审
     commitAuditSecond: function (form) {
         return Bid.commitAuditSecond(form)
+    },
+    //争议处理
+    takeAdvice: function (form) {
+        return Bid.takeAdvice(form)
     },
     batchArc(comment, checks, approve) {
         checks.forEach(check => {

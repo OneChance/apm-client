@@ -79,6 +79,7 @@ import Survey from "./project/Survey"
 import AuditComplete from "./project/AuditComplete";
 import AuditFirst from "./project/AuditFirst";
 import AuditSecond from "./project/AuditSecond";
+import TakeAdvice from "./project/TakeAdvice";
 import AuditArc from "./project/AuditArc";
 import ArgueHandle from "./project/ArgueHandle";
 import SysConstructionUnit from "./SysConstructionUnit";
@@ -89,9 +90,11 @@ import ListAllBid from "./bid/ListAllBid";
 import AuditSubmissionBid from './bid/AuditSubmissionBid.vue'
 import AuditProjectBid from "./bid/AuditProjectBid";
 import MissionAllocBid from "./bid/MissionAllocBid";
+import ArgueHandleBid from "./bid/ArgueHandleBid";
 import AuditCompleteBid from "./bid/AuditCompleteBid";
 import AuditFirstBid from "./bid/AuditFirstBid";
 import AuditSecondBid from "./bid/AuditSecondBid";
+import TakeAdviceBid from "./bid/TakeAdviceBid";
 import AuditArcBid from "./bid/AuditArcBid";
 import Config from "../script/config"
 
@@ -171,6 +174,7 @@ export default {
         AuditComplete,
         AuditFirst,
         AuditSecond,
+        TakeAdvice,
         AuditArc,
         ArgueHandle,
         SysConstructionUnit,
@@ -181,8 +185,10 @@ export default {
         AuditProjectBid,
         MissionAllocBid,
         AuditCompleteBid,
+        ArgueHandleBid,
         AuditFirstBid,
         AuditSecondBid,
+        TakeAdviceBid,
         AuditArcBid,
     }
 }

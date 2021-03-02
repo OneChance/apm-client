@@ -221,6 +221,98 @@
                             </td>
                         </tr>
 
+                        <tr v-if="stepCode===30" class="print-not-show">
+                            <th :class="stepCode===30 && !readonly?'editing form-required':''">下一阶段</th>
+                            <td colspan="3">
+                                <el-form-item prop="nextStep">
+                                    <el-select v-model="bidForm.nextStep" placeholder="请选择下一阶段" size="mini"
+                                               prop="nextStep"
+                                               :disabled="readonly">
+                                        <el-option key="60" label="争议处理" value="35">争议处理</el-option>
+                                        <el-option key="70" label="审计初审" value="40">审计初审</el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </td>
+                        </tr>
+
+                        <tr v-if="(stepCode>=35 && (argueInfoView || self)) || stepCode === -30" class="print-not-show">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th class="first-th">争议处理资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.bidForm.argueFiles">
+                                        <th>
+                                            {{ fileType.mName }}
+                                        </th>
+                                        <td :class="stepCode===35?'editing':''">
+                                            <el-upload class="upload-demo"
+                                                       action="noAction"
+                                                       :http-request="upload"
+                                                       :with-credentials="true"
+                                                       :on-preview="handlePreview"
+                                                       :on-remove="handleRemove"
+                                                       :before-remove="beforeRemoveArgue"
+                                                       multiple size="mini"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button type="primary" class="upload-btn" size="mini"
+                                                           v-if="step ==='argueHandle'" @click="toUpload(fileType.mId)">
+                                                    点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input type="textarea" size="mini"
+                                                      autosize v-model="fileType.mNote"
+                                                      :disabled="step!=='argueHandle' || readonly"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr v-if="step ==='argueDeal' || (stepCode>=35 && (argueInfoView || self))"
+                            class="print-not-show">
+                            <td colspan="4" class="compact-td">
+                                <table class="form-table">
+                                    <tr>
+                                        <th class="first-th">补充资料</th>
+                                        <th>附件</th>
+                                        <th class="upload-note">备注</th>
+                                    </tr>
+                                    <tr v-for="fileType of this.bidForm.supplementFiles">
+                                        <th :class="step==='argueDeal'?'form-required editing':''">
+                                            {{ fileType.mName }}
+                                        </th>
+                                        <td>
+                                            <el-upload class="upload-demo"
+                                                       action="noAction" size="mini"
+                                                       :http-request="upload"
+                                                       :with-credentials="true"
+                                                       :on-preview="handlePreview"
+                                                       :on-remove="handleRemove"
+                                                       :before-remove="beforeRemoveSupplement"
+                                                       :file-list="fileType.mFiles">
+                                                <el-button size="mini" type="primary" class="upload-btn"
+                                                           v-if="step ==='argueDeal'" @click="toUpload(fileType.mId)">
+                                                    点击上传
+                                                </el-button>
+                                            </el-upload>
+                                        </td>
+                                        <td>
+                                            <el-input type="textarea" size="mini"
+                                                      autosize v-model="fileType.mNote"
+                                                      :disabled="step!=='argueDeal' || readonly"
+                                                      placeholder="填写备注"></el-input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
                         <tr v-if="stepCode>=40 && (auditFirstInfoView|| assigned)" class="print-not-show">
                             <th :class="stepCode===40 && !readonly?'editing form-required':''">送审价</th>
                             <td>
@@ -551,6 +643,7 @@ export default {
                                 needRolesMap.set('auditFirstInfoView', ['admin', 'bid_audit_first_approver', 'bid_view_first', 'bid_view'])
                                 needRolesMap.set('auditSecondInfoView', ['admin', 'bid_audit_second_approver', 'bid_view_second', 'bid_view'])
                                 needRolesMap.set('completeInfoView', ['admin', 'bid_filed_approver', 'bid_view'])
+                                needRolesMap.set('argueInfoView', ['admin', 'bid_argue_approver', 'bid_view_argue', 'bid_view'])
 
                                 //页面内容查看权限控制
                                 ClientCallCommon.checkRights(needRolesMap).then(checkRes => {
@@ -558,6 +651,28 @@ export default {
                                         this[key] = value
                                     }
                                 })
+
+                                //加载争议处理资料
+                                if (!result.bid.argueFiles || result.bid.argueFiles.length === 0) {
+                                    result.bid.argueFiles = [{
+                                        mId: '-3',
+                                        mName: '联系单',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    },]
+                                }
+
+                                //加载补充资料附件
+                                if (!result.bid.supplementFiles || result.bid.supplementFiles.length === 0) {
+                                    result.bid.supplementFiles = [{
+                                        mId: '-12',
+                                        mName: '补充资料',
+                                        mFiles: [],
+                                        mFileIds: '',
+                                        mNote: ''
+                                    }]
+                                }
 
                                 //加载初审资料附件
                                 if (!result.bid.auditFirstFiles || result.bid.auditFirstFiles.length === 0) {
@@ -757,6 +872,10 @@ export default {
                     telphone: '',
                     thirdParty: false,
                 },
+                nextStep: '',
+                //争议处理
+                argueFiles: [],
+                supplementFiles: [],
                 //审计初审--------------
                 submissionPrice: '',
                 firstAuditPrice: '',
@@ -785,6 +904,7 @@ export default {
             auditFirstInfoView: false,
             auditSecondInfoView: false,
             completeInfoView: false,
+            argueInfoView: false,
         }
     },
     methods: {
@@ -811,7 +931,7 @@ export default {
         commit: function (event, type) {
             if (((this.step === 'bid' && event.name.indexOf('save') === -1) ||
                 this.step === 'project' ||
-                this.step === 'reject' || this.stepCode === 25 ||
+                this.step === 'reject' || this.stepCode === 25 || this.stepCode === 30 ||
                 this.step === 'auditFirst' ||
                 this.step === 'auditSecond') && type !== 'reject') {
 
@@ -851,6 +971,14 @@ export default {
                                 targetId: this.bidForm.id,
                                 workitemId: this.workitemId,
                                 memberIds: this.bidForm.members.toString(),
+                            })
+                        } else if (this.stepCode === 30) {
+                            event({
+                                targetId: this.bidForm.id,
+                                worktiemId: this.workitemId,
+                                status: this.bidForm.nextStep,
+                                comment: this.comment,
+                                type: 1
                             })
                         } else if (this.step === 'auditFirst') {
                             ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.auditFirstFiles)
@@ -909,6 +1037,28 @@ export default {
                         targetId: this.bidForm.id,
                         workitemId: this.workitemId,
                     })
+                } else if (this.stepCode === 35) {
+                    ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.argueFiles)
+                    event({
+                        targetId: this.bidForm.id,
+                        workitemId: this.workitemId,
+                        argueFiles: this.bidForm.argueFiles,
+                        type: 1
+                    })
+                } else if (this.stepCode === 36) { //争议处理审计处审核
+                    event({
+                        targetId: this.bidForm.id,
+                        workitemId: this.workitemId,
+                        content: this.comment,
+                    })
+                } else if (this.stepCode === -30) {
+                    ClientCallCommon.fileIdsConstruct(this.uploadFiles, this.bidForm.supplementFiles)
+                    event({
+                        targetId: this.bidForm.id,
+                        workitemId: this.workitemId,
+                        supplementFiles: this.bidForm.supplementFiles,
+                        type: 1
+                    })
                 } else if (this.stepCode === 60) {
                     event({
                         targetId: this.bidForm.id,
@@ -937,6 +1087,12 @@ export default {
         },
         beforeRemove(file) {
             return this.removeableConfirm(file, ['bid', 'reject'], '当前阶段不可移除资料清单附件!')
+        },
+        beforeRemoveArgue(file) {
+            return this.removeableConfirm(file, ['argueHandle'], '当前阶段不可移除争议处理资料附件!')
+        },
+        beforeRemoveSupplement(file) {
+            return this.removeableConfirm(file, ['argueDeal'], '当前阶段不可移除补充资料附件!')
         },
         beforeRemoveAuditFirst(file) {
             return this.removeableConfirm(file, ['auditFirst'], '当前阶段不可移除初审资料附件!')
@@ -970,7 +1126,11 @@ export default {
             let failRefeshList = []
             let listType = ''
 
-            if (this.step === 'auditFirst') {
+            if (this.step === 'argueDeal') {
+                failRefeshList = this.submissionForm.supplementFiles
+            } else if (this.step === 'argueHandle') {
+                failRefeshList = this.submissionForm.argueFiles
+            } else if (this.step === 'auditFirst') {
                 failRefeshList = this.bidForm.auditFirstFiles
             } else if (this.step === 'auditSecond') {
                 failRefeshList = this.bidForm.auditSecondFiles

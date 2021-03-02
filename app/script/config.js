@@ -25,18 +25,23 @@ export default {
         audit_dept: 65, //争议处理审核
         auditFirst: 70, //初审阶段
         auditSecond: 80, //复审阶段
+        takeAdvice:85,//征求意见
         auditComplete: 90, //完成阶段
         auditArc: 100, //归档阶段
     },
     stepCodeBid: {
+        argueDeal: -30,//争议处理中
         reject: -20,
         save: -10, //送审保存
         project: 10, //当前处于审计立项阶段
         alloced: 20, //分配
         memberl: 25,//分配组员
         assigned: 30, //分配审核
+        argueHandle: 35, //争议处理
+        audit_dept: 36, //争议处理审核
         auditFirst: 40, //初审阶段
         auditSecond: 50, //复审阶段
+        takeAdvice:55,//征求意见
         auditComplete: 60, //完成阶段
         auditArc: 70, //归档阶段
     },

@@ -109,15 +109,18 @@ export default {
                 steps: [
                     {label: '保存', step: '送审', index: 0},
                     {label: '退回', step: '送审', index: 0},
-                    {label: '处理争议', step: '送审', index: 0},
                     {label: '审计立项', step: '审计立项', index: 1},
                     {label: '审计分配', step: '审计分配', index: 2},
                     {label: '分配组员', step: '审计分配', index: 2},
                     {label: '分配审核', step: '分配审核', index: 3},
-                    {label: '初审', step: '初审', index: 4},
-                    {label: '复审', step: '复审', index: 5},
-                    {label: '完成', step: '完成', index: 6},
-                    {label: '归档', step: '归档', index: 7},
+                    {label: '争议处理', step: '争议处理', index: 4},
+                    {label: '争议处理(送审人)', step: '争议处理', index: 4},
+                    {label: '争议处理(审计处)', step: '争议处理', index: 4},
+                    {label: '初审', step: '初审', index: 5},
+                    {label: '复审', step: '复审', index: 6},
+                    {label: '征求意见', step: '征求意见', index: 7},
+                    {label: '完成', step: '完成', index: 8},
+                    {label: '归档', step: '归档', index: 9},
                 ],
                 oper: [
                     {

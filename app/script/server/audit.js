@@ -70,6 +70,10 @@ export default {
     commitAuditSecond: function (data) {
         return Net.jsonPost('/submission/audit/second/approve/', data);
     },
+    //征求意见
+    takeAdvice: function (data) {
+        return Net.jsonPost('/submission/takeadvice/', data);
+    },
     //从完成退回复审
     completeToAuditSecond(data) {
         return Net.jsonPost('/submission/complete/approves/', data);

@@ -127,12 +127,13 @@ export default {
                     {label: '勘察准备', step: '勘察准备', index: 4},
                     {label: '现场勘察', step: '现场勘察', index: 5},
                     {label: '争议处理', step: '争议处理', index: 6},
-                    {label: '处理争议(送审人)', step: '争议处理', index: 6},
+                    {label: '争议处理(送审人)', step: '争议处理', index: 6},
                     {label: '争议处理(审计处)', step: '争议处理', index: 6},
                     {label: '初审', step: '初审', index: 7},
                     {label: '复审', step: '复审', index: 8},
-                    {label: '完成', step: '完成', index: 9},
-                    {label: '归档', step: '归档', index: 10},
+                    {label: '征求意见', step: '征求意见', index: 9},
+                    {label: '完成', step: '完成', index: 10},
+                    {label: '归档', step: '归档', index: 11},
                 ],
                 oper: [
                     {

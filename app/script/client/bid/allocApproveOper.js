@@ -7,27 +7,33 @@ const oper = {
         {name: '同意', color: 'success', event: agree},
         {name: '不同意', color: 'danger', event: reject, type: 'reject'}
     ],
+    rules: {
+        nextStep: [
+            {required: true, message: '请选择下一阶段', trigger: 'blur'}
+        ],
+    }
 }
 
 export default oper
 
-function agree(comment, formId, workitemId) {
-    commitOper(1, comment, formId, workitemId)
+function agree(formData) {
+    commitOper(formData)
 }
 
 function reject(comment, formId, workitemId) {
-    commitOper(0, comment, formId, workitemId)
+    commitOper({
+        type: 0,
+        targetId: formId,
+        workitemId: workitemId,
+        comment: comment
+    })
 }
 
-function commitOper(approve, comment, formId, workitemId) {
-    ClientCall.batchAllocApprove(comment, [
-        {
-            type: approve,
-            targetId: formId,
-            workitemId: workitemId,
-            comment: comment
-        }
-    ], approve).then(result => {
+function commitOper(formData) {
+    console.log(formData)
+    ClientCall.batchAllocApprove(formData.comment, [
+        formData
+    ], formData.type).then(result => {
         if (result) {
             oper.comp.operSuccess()
         }

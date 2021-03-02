@@ -1,7 +1,7 @@
 /*客户端调用方法,封装服务端调用,包含待办和业务列表都会调用的提交方法*/
 
 import Audit from "../../server/audit";
-import Net from "../../server/net";
+import fr from "element-ui/src/locale/lang/fr";
 
 export default {
     //提交送审
@@ -101,6 +101,10 @@ export default {
     //复审
     commitAuditSecond: function (form) {
         return Audit.commitAuditSecond(form)
+    },
+    //争议处理
+    takeAdvice: function (form) {
+        return Audit.takeAdvice(form)
     },
     batchArc(comment, checks, approve) {
         checks.forEach(check => {

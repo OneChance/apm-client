@@ -42,6 +42,18 @@ export default {
     allocApprove: function (data) {
         return Net.jsonPost('/bid/check/approves/', data);
     },
+    //争议处理
+    commitArgue: function (data) {
+        return Net.jsonPost('/bid/argue/approve/', data);
+    },
+    //争议处理审计处审核
+    commitArgueCheck: function (data) {
+        return Net.jsonPost('/bid/audit/dept/approve/', data);
+    },
+    //提交争议处理结果
+    commitArgueResolve: function (data) {
+        return Net.jsonPost('/bid/argue/reject/approve/', data);
+    },
     //初审
     commitAuditFirst: function (data) {
         return Net.jsonPost('/bid/audit/first/approve/', data);
@@ -49,6 +61,10 @@ export default {
     //复审
     commitAuditSecond: function (data) {
         return Net.jsonPost('/bid/audit/second/approve/', data);
+    },
+    //征求意见
+    takeAdvice: function (data) {
+        return Net.jsonPost('/bid/takeadvice/', data);
     },
     //从完成退回复审
     completeToAuditSecond(data) {

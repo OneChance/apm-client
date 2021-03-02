@@ -60,9 +60,12 @@ import SurveyPrepare from "../script/client/project/surveyPrepare.js"
 import Survey from "../script/client/project/survey.js"
 import Argue from "../script/client/project/argue.js"
 import ArgueCheck from "../script/client/project/argueCheck.js"
+import ArgueResolve from "../script/client/project/argueResolve"
+import ArgueBid from "../script/client/bid/argue.js"
+import ArgueCheckBid from "../script/client/bid/argueCheck.js"
+import ArgueResolveBid from "../script/client/bid/argueResolve"
 import AuditFirstProject from "../script/client/project/auditFirst.js"
 import AuditSecondProject from "../script/client/project/auditSecond.js"
-import ArgueResolve from "../script/client/project/argueResolve"
 import CompleteProject from "../script/client/project/completeOper"
 import ArcProject from "../script/client/project/arcOper"
 import BidForm from "./bid/BidForm";
@@ -181,6 +184,9 @@ export default {
             allocMember: {'submission': AllocMemberProject, 'bid': AllocMemberBid},
             allocApprove: {'submission': AllocApproveProject, 'bid': AllocApproveBid},
             rejectedOper: {'submission': RejectedOperProject, 'bid': RejectedOperBid},
+            argue: {'submission': Argue, 'bid': ArgueBid},
+            argueResolve: {'submission': ArgueResolve, 'bid': ArgueResolveBid},
+            argueCheck: {'submission': ArgueCheck, 'bid': ArgueCheckBid},
             auditFirst: {'submission': AuditFirstProject, 'bid': AuditFirstBid},
             auditSecond: {'submission': AuditSecondProject, 'bid': AuditSecondBid},
             complete: {'submission': CompleteProject, 'bid': CompleteBid},
@@ -280,14 +286,22 @@ export default {
                             })
                         }
                     } else if (stage === 'check') { //批量审核分配
-                        this.clientCall[type].batchAllocApprove('', this.listChecks.map(form => {
-                            return {
-                                targetId: form.targetId,
-                                workitemId: form.id
-                            }
-                        }), approve).then(() => {
-                            this.operSuccess()
-                        })
+                        if (type === 'bid') {
+                            this.$notify.error({
+                                title: '操作失败!',
+                                message: '当前阶段不可批量操作,需要选择下一步节点！',
+                                duration: 3000
+                            })
+                        } else {
+                            this.clientCall[type].batchAllocApprove('', this.listChecks.map(form => {
+                                return {
+                                    targetId: form.targetId,
+                                    workitemId: form.id
+                                }
+                            }), approve).then(() => {
+                                this.operSuccess()
+                            })
+                        }
                     } else if (stage === 'complete') {
                         if (approve === 1) {//批量归档
                             this.clientCall[type].batchArc('', this.listChecks.map(form => {
@@ -350,6 +364,9 @@ export default {
             } else if (step === 'assigned') { //分配审核
                 this.allocApprove[type].comp = this
                 this.forms[type].formOpers = this.allocApprove[type].buttons
+                if (type === 'bid') {
+                    this.forms[type].rules = this.allocApprove[type].rules
+                }
             } else if (step === 'reject') {
                 this.rejectedOper[type].comp = this
                 this.forms[type].formOpers = this.rejectedOper[type].buttons
@@ -364,14 +381,14 @@ export default {
                 this.forms.submission.formOpers = Survey.buttons
                 this.forms.submission.rules = Survey.rules
             } else if (step === 'argueHandle') {
-                Argue.comp = this
-                this.forms.submission.formOpers = Argue.buttons
+                this.argue[type].comp = this
+                this.forms[type].formOpers = this.argue[type].buttons
             } else if (step === 'argueDeal') {
-                ArgueResolve.comp = this
-                this.forms.submission.formOpers = ArgueResolve.buttons
+                this.argueResolve[type].comp = this
+                this.forms[type].formOpers = this.argueResolve[type].buttons
             } else if (step === 'audit_dept') {  //争议处理审核
-                ArgueCheck.comp = this
-                this.forms.submission.formOpers = ArgueCheck.buttons
+                this.argueCheck[type].comp = this
+                this.forms[type].formOpers = this.argueCheck[type].buttons
             } else if (step === 'auditFirst') {
                 this.auditFirst[type].comp = this
                 this.forms[type].formOpers = this.auditFirst[type].buttons
