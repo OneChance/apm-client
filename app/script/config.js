@@ -25,7 +25,7 @@ export default {
         audit_dept: 65, //争议处理审核
         auditFirst: 70, //初审阶段
         auditSecond: 80, //复审阶段
-        takeAdvice:85,//征求意见
+        takeAdvice: 85,//征求意见
         auditComplete: 90, //完成阶段
         auditArc: 100, //归档阶段
     },
@@ -41,7 +41,7 @@ export default {
         audit_dept: 36, //争议处理审核
         auditFirst: 40, //初审阶段
         auditSecond: 50, //复审阶段
-        takeAdvice:55,//征求意见
+        takeAdvice: 55,//征求意见
         auditComplete: 60, //完成阶段
         auditArc: 70, //归档阶段
     },

@@ -24,7 +24,7 @@ function commitOper(approve, comment, formId, workitemId) {
         type: approve,
         targetId: formId,
         workitemId: workitemId,
-        comment: comment
+        content: comment
     }).then(result => {
         if (result) {
             oper.comp.operSuccess()

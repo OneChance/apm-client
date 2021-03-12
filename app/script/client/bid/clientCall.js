@@ -38,7 +38,7 @@ export default {
         })
     },
     //批量审计立项
-    batchAudit(approve, checks) {
+    batchAudit(checks, approve) {
         checks.forEach(check => {
             check.type = approve
             check.content = ''
@@ -46,7 +46,7 @@ export default {
         return Bid.saveAuditProjects(checks)
     },
     //批量分配
-    batchAlloc(form, checks, approve, auditType) {
+    batchAlloc(checks, approve, form) {
         checks.forEach(check => {
             check.type = approve
             check.content = ''
@@ -64,13 +64,9 @@ export default {
     allocMember(form) {
         return Bid.allocMember(form)
     },
-    //批量审核分配
-    batchAllocApprove(comment, checks, approve) {
-        checks.forEach(check => {
-            check.type = approve
-            check.comment = comment
-        })
-        return Bid.allocApprove(checks)
+    //审核分配
+    allocApprove(formData) {
+        return Bid.allocApprove(formData)
     },
     //争议处理
     commitArgue: function (form) {
@@ -96,22 +92,22 @@ export default {
     takeAdvice: function (form) {
         return Bid.takeAdvice(form)
     },
-    batchArc(comment, checks, approve) {
+    batchArc(checks, approve, comment) {
         checks.forEach(check => {
             check.type = approve
-            check.comment = comment
+            check.content = comment
         })
         return Bid.arc(checks)
     },
     //批量处理归档阶段的送审表,同意到结束,不同意回到完成
-    batchBackToComplete(comment, checks, approve) {
+    batchBackToComplete(checks, approve, comment) {
         checks.forEach(check => {
             check.type = approve
-            check.comment = comment
+            check.content = comment
         })
         return Bid.arcToComplete(checks)
     },
-    batchBackToAuditSecond(comment, checks, approve) {
+    batchBackToAuditSecond(checks, approve, comment) {
         checks.forEach(check => {
             check.type = approve
             check.comment = comment

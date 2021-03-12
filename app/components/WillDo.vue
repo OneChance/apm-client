@@ -48,36 +48,10 @@
 import TableComponent from "./TableComponent";
 import SubmissionForm from "./project/SubmissionForm";
 import AllocForm from "./AllocForm";
-import ClientCallProject from "../script/client/project/clientCall"
-import ClientCallBid from "../script/client/bid/clientCall"
 import ClientCallCommon from "../script/client/clientCall"
-import Config from "../script/config";
-import ProjectAuditProject from "../script/client/project/projectOper"
-import AllocMemberProject from '../script/client/project/allocMember'
-import AllocApproveProject from "../script/client/project/allocApproveOper"
-import RejectedOperProject from "../script/client/project/rejectedOper"
-import SurveyPrepare from "../script/client/project/surveyPrepare.js"
-import Survey from "../script/client/project/survey.js"
-import Argue from "../script/client/project/argue.js"
-import ArgueCheck from "../script/client/project/argueCheck.js"
-import ArgueResolve from "../script/client/project/argueResolve"
-import ArgueBid from "../script/client/bid/argue.js"
-import ArgueCheckBid from "../script/client/bid/argueCheck.js"
-import ArgueResolveBid from "../script/client/bid/argueResolve"
-import AuditFirstProject from "../script/client/project/auditFirst.js"
-import AuditSecondProject from "../script/client/project/auditSecond.js"
-import CompleteProject from "../script/client/project/completeOper"
-import ArcProject from "../script/client/project/arcOper"
 import BidForm from "./bid/BidForm";
-import ProjectAuditBid from "../script/client/bid/projectOper"
-import AllocMemberBid from '../script/client/bid/allocMember'
-import AllocApproveBid from "../script/client/bid/allocApproveOper"
-import RejectedOperBid from "../script/client/bid/rejectedOper"
-import AuditFirstBid from "../script/client/bid/auditFirst.js"
-import AuditSecondBid from "../script/client/bid/auditSecond.js"
-import CompleteBid from "../script/client/bid/completeOper"
-import ArcBid from "../script/client/bid/arcOper"
-import WorkitemQuery from "./WorkitemQuery";
+import WorkitemQuery from "./WorkitemQuery"
+import Scripts from "../script/client/willdo/scripts"
 
 export default {
     name: "WillDo",
@@ -86,6 +60,12 @@ export default {
 
     },
     mounted() {
+        //初始化待办处理脚本
+        Scripts.scripts.comp = this
+        for (let script in Scripts.scripts) {
+            this[script] = Scripts.scripts[script]
+        }
+
         if (this.showPara && this.showPara.height) {
             this.tableConfig.height = this.showPara.height
         }
@@ -179,19 +159,6 @@ export default {
             listChecks: [],
             formId: -1,
             workitemId: -1,
-            clientCall: {'submission': ClientCallProject, 'bid': ClientCallBid},
-            projectAudit: {'submission': ProjectAuditProject, 'bid': ProjectAuditBid},    //不同类型的送审表调用各自的立项审计脚本
-            allocMember: {'submission': AllocMemberProject, 'bid': AllocMemberBid},
-            allocApprove: {'submission': AllocApproveProject, 'bid': AllocApproveBid},
-            rejectedOper: {'submission': RejectedOperProject, 'bid': RejectedOperBid},
-            argue: {'submission': Argue, 'bid': ArgueBid},
-            argueResolve: {'submission': ArgueResolve, 'bid': ArgueResolveBid},
-            argueCheck: {'submission': ArgueCheck, 'bid': ArgueCheckBid},
-            auditFirst: {'submission': AuditFirstProject, 'bid': AuditFirstBid},
-            auditSecond: {'submission': AuditSecondProject, 'bid': AuditSecondBid},
-            complete: {'submission': CompleteProject, 'bid': CompleteBid},
-            arc: {'submission': ArcProject, 'bid': ArcBid},
-            stepCode: {'submission': Config.stepCode, 'bid': Config.stepCodeBid},
             currentType: '',
         }
     },
@@ -201,12 +168,12 @@ export default {
         },
         allocCallback(form) {
             let type = this.listChecks[0].target
-            this.clientCall[type].batchAlloc(form, this.listChecks.map(form => {
+            this.batch['distribution'][type][0](this.listChecks.map(form => {
                 return {
                     targetId: form.targetId,
                     workitemId: form.id
                 }
-            }), 1).then(() => {
+            }), 1, form).then(() => {
                 this.operSuccess()
             })
         },
@@ -251,92 +218,28 @@ export default {
                 } else {
                     let stage = this.listChecks[0].stage
                     let type = this.listChecks[0].target
-                    if (stage === 'project') { //批量审核立项
-                        if (approve === 0) {
-                            this.clientCall[type].batchAudit(approve, this.listChecks.map(form => {
-                                return {
-                                    targetId: form.targetId,
-                                    workitemId: form.id
-                                }
-                            })).then(result => {
-                                if (result) {
-                                    this.operSuccess()
-                                }
-                            })
-                        } else {
-                            this.$notify.error({
-                                title: '操作失败!',
-                                message: '审计立项阶段需要填写审计编号,不可批量审核同意！',
-                                duration: 3000
-                            })
-                        }
-                    } else if (stage === 'distribution') { //批量分配组长
-                        if (approve === 1) {
-                            this.forms.submission.visible = false
-                            this.forms.alloc.visible = false
-                            this.forms.alloc.visible = true
-                        } else {
-                            this.clientCall[type].batchAlloc(null, this.listChecks.map(form => {
-                                return {
-                                    targetId: form.targetId,
-                                    workitemId: form.id
-                                }
-                            }), 0).then(() => {
-                                this.operSuccess()
-                            })
-                        }
-                    } else if (stage === 'check') { //批量审核分配
-                        if (type === 'bid') {
-                            this.$notify.error({
-                                title: '操作失败!',
-                                message: '当前阶段不可批量操作,需要选择下一步节点！',
-                                duration: 3000
-                            })
-                        } else {
-                            this.clientCall[type].batchAllocApprove('', this.listChecks.map(form => {
-                                return {
-                                    targetId: form.targetId,
-                                    workitemId: form.id
-                                }
-                            }), approve).then(() => {
-                                this.operSuccess()
-                            })
-                        }
-                    } else if (stage === 'complete') {
-                        if (approve === 1) {//批量归档
-                            this.clientCall[type].batchArc('', this.listChecks.map(form => {
-                                return {
-                                    targetId: form.targetId,
-                                    workitemId: form.id
-                                }
-                            }), approve).then(() => {
-                                this.operSuccess()
-                            })
-                        } else {//批量打回复审
-                            this.clientCall[type].batchBackToAuditSecond('', this.listChecks.map(form => {
-                                return {
-                                    targetId: form.targetId,
-                                    workitemId: form.id
-                                }
-                            }), approve).then(() => {
-                                this.operSuccess()
-                            })
-                        }
-                    } else if (stage === 'filed') {
-                        this.clientCall[type].batchBackToComplete('', this.listChecks.map(form => {
-                            return {
-                                targetId: form.targetId,
-                                workitemId: form.id
-                            }
-                        }), approve).then(() => {
-                            this.operSuccess()
-                        })
-                    } else if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second', 'memberl', 'audit_dept'].indexOf(stage) !== -1) {
+                    if (['reject', 'survey_prepare', 'survey_scene', 'argue', 'audit_first', 'audit_second', 'memberl', 'audit_dept', 'take_advice'].indexOf(stage) !== -1
+                        || (stage === 'check' && type === 'bid')) {
                         this.$notify.error({
                             title: '操作失败!',
                             message: '当前阶段不可批量操作！',
                             duration: 3000
                         })
+                    } else {
+                        let batchRes = this.batch[stage][type][approve](this.listChecks.map(form => {
+                            return {
+                                targetId: form.targetId,
+                                workitemId: form.id
+                            }
+                        }), approve)
+
+                        if (batchRes) {
+                            batchRes.then(result => {
+                                if (result) {
+                                    this.operSuccess()
+                                }
+                            })
+                        }
                     }
                 }
             }
@@ -353,59 +256,13 @@ export default {
             }
             this.forms[type].visible = true
 
-            if (step === 'project') {
-                this.projectAudit[type].comp = this //设置当前组件,用于回调刷新列表方法
-                this.forms[type].formOpers = this.projectAudit[type].buttons
-                this.forms[type].rules = this.projectAudit[type].rules
-            } else if (step === 'memberl') { //分配组员
-                this.allocMember[type].comp = this
-                this.forms[type].formOpers = this.allocMember[type].buttons
-                this.forms[type].rules = this.allocMember[type].rules
-            } else if (step === 'assigned') { //分配审核
-                this.allocApprove[type].comp = this
-                this.forms[type].formOpers = this.allocApprove[type].buttons
-                if (type === 'bid') {
-                    this.forms[type].rules = this.allocApprove[type].rules
-                }
-            } else if (step === 'reject') {
-                this.rejectedOper[type].comp = this
-                this.forms[type].formOpers = this.rejectedOper[type].buttons
-                this.forms[type].rules = this.rejectedOper[type].rules
-                this.forms[type].rules2 = this.rejectedOper[type].rules2
-            } else if (step === 'surveyPrepare') {
-                SurveyPrepare.comp = this
-                this.forms.submission.formOpers = SurveyPrepare.buttons
-                this.forms.submission.rules = SurveyPrepare.rules
-            } else if (step === 'survey') {
-                Survey.comp = this
-                this.forms.submission.formOpers = Survey.buttons
-                this.forms.submission.rules = Survey.rules
-            } else if (step === 'argueHandle') {
-                this.argue[type].comp = this
-                this.forms[type].formOpers = this.argue[type].buttons
-            } else if (step === 'argueDeal') {
-                this.argueResolve[type].comp = this
-                this.forms[type].formOpers = this.argueResolve[type].buttons
-            } else if (step === 'audit_dept') {  //争议处理审核
-                this.argueCheck[type].comp = this
-                this.forms[type].formOpers = this.argueCheck[type].buttons
-            } else if (step === 'auditFirst') {
-                this.auditFirst[type].comp = this
-                this.forms[type].formOpers = this.auditFirst[type].buttons
-                this.forms[type].rules = this.auditFirst[type].rules
-            } else if (step === 'auditSecond') {
-                this.auditSecond[type].comp = this
-                this.forms[type].formOpers = this.auditSecond[type].buttons
-                this.forms[type].rules = this.auditSecond[type].rules
-            } else if (step === 'auditComplete') {
-                this.complete[type].comp = this
-                this.forms[type].formOpers = this.complete[type].buttons
-            } else if (step === 'auditArc') {
-                this.arc[type].comp = this
-                this.forms[type].formOpers = this.arc[type].buttons
-            } else {
-                this.forms[type].formOpers = []
+            if (this[step]) {
+                this[step][type].comp = this
+                this.forms[type].formOpers = this[step][type].buttons
+                this.forms[type].rules = this[step][type].rules
+                this.forms[type].rules2 = this[step][type].rules2
             }
+
             this.formId = row.targetId
             this.workitemId = row.id
             this.forms[type].stepCode = this.stepCode[type][step]

@@ -64,7 +64,7 @@ export default {
     },
     //征求意见
     takeAdvice: function (data) {
-        return Net.jsonPost('/bid/takeadvice/', data);
+        return Net.jsonPost('/bid/takeAdvice/', data);
     },
     //从完成退回复审
     completeToAuditSecond(data) {

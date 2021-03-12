@@ -25,15 +25,12 @@ function reject(comment, formId, workitemId) {
         type: 0,
         targetId: formId,
         workitemId: workitemId,
-        comment: comment
+        comment: comment,
     })
 }
 
 function commitOper(formData) {
-    console.log(formData)
-    ClientCall.batchAllocApprove(formData.comment, [
-        formData
-    ], formData.type).then(result => {
+    ClientCall.allocApprove(formData).then(result => {
         if (result) {
             oper.comp.operSuccess()
         }

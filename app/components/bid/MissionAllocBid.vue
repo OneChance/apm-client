@@ -85,7 +85,7 @@ export default {
             this.allocFormVisible = false
         },
         commitCallback(form) {
-            ClientCall.batchAlloc(form, this.listChecks.map(form => form.id), 1).then(() => {
+            ClientCall.batchAlloc(this.listChecks.map(form => form.id), 1, form).then(() => {
                 this.operSuccess()
             })
         },
@@ -108,7 +108,7 @@ export default {
                     this.allocFormVisible = false
                     this.allocFormVisible = true
                 } else {
-                    ClientCall.batchAlloc(null, this.listChecks.map(form => form.id), 0).then(() => {
+                    ClientCall.batchAlloc(this.listChecks.map(form => form.id), 0, null).then(() => {
                         this.operSuccess()
                     })
                 }

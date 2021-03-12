@@ -82,7 +82,7 @@ export default {
                 failRefeshList.filter(f => f.mId === typeId)[0].mFiles.push(fileData)
             }
         }).catch(res => {
-            //刷新下列表，避免列表显示上传失败的文件
+            //刷新列表，避免列表显示上传失败的文件
             failRefeshList.filter(f => f.mId === res.info.typeId)[0].mFiles = failRefeshList.filter(f => f.mId === res.info.typeId)[0].mFiles.filter(() => true)
         })
     },
@@ -231,6 +231,8 @@ export default {
                 return 'auditComplete';
             case 'filed':
                 return 'auditArc';
+            case 'take_advice':
+                return 'takeAdvice';
             default:
                 return serverStage;
         }
@@ -279,6 +281,8 @@ export default {
                 return '初审'
             case 'audit_second':
                 return '复审'
+            case 'take_advice':
+                return '征求意见'
             case 'complete':
                 return '完成'
             case 'filed':
@@ -289,34 +293,29 @@ export default {
                 return name
         }
     },
+    stepCodeTransfer(stepCode) {
+        if (stepCode === -30) {
+
+        }
+        return stepCode
+    },
     //获取步骤条时间
     getStepTimes(type, id, callback) {
         Workitem.getWorkitemReach({
             target: type,
             targetId: id
         }).then(res => {
-                let currentStepCode = -1
-                //1.获取有效的workitem(时间小于当前待办项目且code>当前待办项目的item为无效的)
-                //2.阶段名转换
                 let validSteps = []
-                let itemList = res.list.reverse()
+                let itemList = res.list.reverse() //倒序排,第一条为最新待办
                 for (let i = 0; i < itemList.length; i++) {
-                    let add = false
-                    if (currentStepCode === -1) {
-                        currentStepCode = itemList[i][3]  //记录当前code
-                        add = true
-                    } else {
-                        if (itemList[i][3] < currentStepCode) {
-                            add = true
-                        }
-                    }
-                    if (add) {
-                        validSteps.push({step: this.stepNameTransfer(itemList[i][2]), time: itemList[i][4]})
+                    validSteps.push({step: this.stepNameTransfer(itemList[i][2]), time: itemList[i][4]})
+                    if (itemList[i][3] === 0) {
+                        break;
                     }
                 }
                 let stepTimesMerge = new Map()
-                //2.取小阶段中第一个阶段的时间
-                validSteps.forEach(step => {
+                //合并阶段中取最早到达时间(比如争议处理分争议处理,审计处审核,送审人处理争议三个阶段,此时取争议处理到达时间)
+                validSteps.reverse().forEach(step => {
                     if (!stepTimesMerge.get(step.step)) {
                         stepTimesMerge.set(step.step, step.time)
                     }

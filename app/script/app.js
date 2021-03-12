@@ -11,6 +11,7 @@ import VueAxios from 'vue-axios';
 import Print from '../plugin/print/print'
 import Image from "../components/file/Image";
 
+
 //使用路由插件
 Vue.use(VueRouter);
 //网络工具

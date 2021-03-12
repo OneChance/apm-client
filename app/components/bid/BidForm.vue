@@ -503,8 +503,10 @@
 
 
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr v-if="(step==='project' || step === 'assigned') && !readonly" class="print-not-show">
-                            <th :class="(stepCode===10||stepCode===30)&&!readonly?'editing':''">审批意见</th>
+                        <tr v-if="(step==='project' || step === 'assigned'|| stepCode === 55) && !readonly"
+                            class="print-not-show">
+                            <th :class="(stepCode===10||stepCode===30||stepCode === 55)&&!readonly?'editing':''">审批意见
+                            </th>
                             <td colspan="3">
                                 <el-input type="textarea" v-model="comment" size="mini"></el-input>
                             </td>
@@ -819,7 +821,11 @@ export default {
                                 }
 
                                 //初始化附件
-                                if (this.step === 'auditFirst') {
+                                if (this.step === 'argueDeal') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.supplementFiles)
+                                } else if (this.step === 'argueHandle') {
+                                    ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.argueFiles)
+                                } else if (this.step === 'auditFirst') {
                                     ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditFirstFiles)
                                 } else if (this.step === 'auditSecond') {
                                     ClientCallCommon.setFiles(this.uploadFiles, this.bidForm.auditSecondFiles)
@@ -898,7 +904,7 @@ export default {
             },
             comment: '',
             comments: [],
-            uploadFiles: [],
+            uploadFiles: [], //传递给后端的文件数据
             members: [],
             allocInfoView: false,
             auditFirstInfoView: false,
@@ -975,7 +981,7 @@ export default {
                         } else if (this.stepCode === 30) {
                             event({
                                 targetId: this.bidForm.id,
-                                worktiemId: this.workitemId,
+                                workitemId: this.workitemId,
                                 status: this.bidForm.nextStep,
                                 comment: this.comment,
                                 type: 1
@@ -1127,9 +1133,9 @@ export default {
             let listType = ''
 
             if (this.step === 'argueDeal') {
-                failRefeshList = this.submissionForm.supplementFiles
+                failRefeshList = this.bidForm.supplementFiles
             } else if (this.step === 'argueHandle') {
-                failRefeshList = this.submissionForm.argueFiles
+                failRefeshList = this.bidForm.argueFiles
             } else if (this.step === 'auditFirst') {
                 failRefeshList = this.bidForm.auditFirstFiles
             } else if (this.step === 'auditSecond') {

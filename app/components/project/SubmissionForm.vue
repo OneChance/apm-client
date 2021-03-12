@@ -976,12 +976,13 @@
                         </tr>
 
                         <!--这里的意见非表单数据 是写入意见表的-->
-                        <tr v-if="stepCode===10||stepCode===30||stepCode===65" class="print-not-show">
-                            <th :class="(stepCode===10||stepCode===30||stepCode===65) && !readonly?'editing':''">审批意见
+                        <tr v-if="stepCode===10||stepCode===30||stepCode===65||stepCode===85" class="print-not-show">
+                            <th :class="(stepCode===10||stepCode===30||stepCode===65||stepCode===85) && !readonly?'editing':''">
+                                审批意见
                             </th>
                             <td colspan="3">
                                 <el-input type="textarea" v-model="comment" size="mini"
-                                          :disabled="(stepCode!==10 && stepCode!==30 && stepCode!==65) || readonly"></el-input>
+                                          :disabled="(stepCode!==10 && stepCode!==30 && stepCode!==65 && stepCode!==85) || readonly"></el-input>
                             </td>
                         </tr>
 

@@ -40,7 +40,7 @@ export default {
         })
     },
     //批量审计立项（不同意）
-    batchAudit(approve, checks) {
+    batchAudit(checks, approve) {
         checks.forEach(check => {
             check.type = approve
             check.content = ''
@@ -106,22 +106,22 @@ export default {
     takeAdvice: function (form) {
         return Audit.takeAdvice(form)
     },
-    batchArc(comment, checks, approve) {
+    batchArc(checks, approve, comment) {
         checks.forEach(check => {
             check.type = approve
-            check.comment = comment
+            check.content = comment
         })
         return Audit.arc(checks)
     },
     //批量处理归档阶段的送审表,同意到结束,不同意回到完成
-    batchBackToComplete(comment, checks, approve) {
+    batchBackToComplete(checks, approve, comment) {
         checks.forEach(check => {
             check.type = approve
-            check.comment = comment
+            check.content = comment
         })
         return Audit.arcToComplete(checks)
     },
-    batchBackToAuditSecond(comment, checks, approve) {
+    batchBackToAuditSecond(checks, approve, comment) {
         checks.forEach(check => {
             check.type = approve
             check.comment = comment
