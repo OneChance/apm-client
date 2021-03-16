@@ -12,7 +12,7 @@ module.exports = merge(common, {
     },
     devtool: 'inline-source-map',
     devServer: {
-        port: 8891,
+        port: 8894,
         disableHostCheck: true,
         compress: true, //启动gzip压缩,加快启动速度
         hot: true //开启HMR，只重新打包修改的模块
